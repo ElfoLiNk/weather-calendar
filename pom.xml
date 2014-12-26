@@ -14,5 +14,6 @@
     <module>MeteoCal-ear</module>
     <module>MeteoCal-web</module>
     <module>MeteoCal-ejb</module>
-  </modules>
+        <module>MeteoCal-EJBClient</module>
+    </modules>
 </project>
