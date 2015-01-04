@@ -38,7 +38,6 @@ import it.polimi.meteocal.entities.Setting;
 import it.polimi.meteocal.entities.User;
 import it.polimi.meteocal.util.AuthUtil;
 import it.polimi.meteocal.util.PasswordHash;
-import it.polimi.meteocal.util.SocialAPISecret;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.security.GeneralSecurityException;
