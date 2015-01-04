@@ -55,8 +55,8 @@ import org.apache.log4j.Logger;
 @Stateless
 public class HandleAuthFacebookImpl implements HandleAuthFacebook {
 
-    private final static String APP_ID = SocialAPISecret.APP_ID;
-    private final static String APPSECRET = SocialAPISecret.APPSECRET;
+    private final static String APP_ID = "< Insert APP ID >";
+    private final static String APPSECRET = "< Insert APP SECRET >";
     private final static String URL_BASE = "http://www.meteocal.tk";
 
     /**

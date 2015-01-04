@@ -47,8 +47,8 @@ import twitter4j.conf.ConfigurationBuilder;
 public class HandleAuthTwitterImpl implements HandleAuthTwitter {
 
     // OAuth Data
-    private final static String CLIENT_ID = SocialAPISecret.TWITTER_CLIENT_ID;
-    private final static String CLIENT_SECRET = SocialAPISecret.TWITTER_CLIENT_SECRET;
+    private final static String CLIENT_ID = "< Insert CLIENT ID >";
+    private final static String CLIENT_SECRET = "< Insert CLIENT SECRET >";
     private final static String URL_BASE = "http://www.meteocal.tk";
 
     /**

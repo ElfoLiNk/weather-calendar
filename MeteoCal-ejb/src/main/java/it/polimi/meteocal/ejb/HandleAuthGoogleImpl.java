@@ -65,8 +65,8 @@ import org.apache.log4j.Logger;
 @Stateless
 public class HandleAuthGoogleImpl implements HandleAuthGoogle {
 
-    private final static String CLIENT_ID = SocialAPISecret.CLIENT_ID;
-    private final static String CLIENT_SECRET = SocialAPISecret.CLIENT_SECRET;
+    private final static String CLIENT_ID =  "< Insert CLIENT ID >";
+    private final static String CLIENT_SECRET = "< Insert CLIENT SECRET >";
     private static final String APPLICATION_NAME = "MeteoCal";
     /**
      * Global instance of the HTTP transport.
