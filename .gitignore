@@ -53,3 +53,7 @@ bin
 ################################
 MANIFEST.MF
 nb-configuration.xml
+
+# API ID/Secret #
+#####################
+SocialAPISecret.java
