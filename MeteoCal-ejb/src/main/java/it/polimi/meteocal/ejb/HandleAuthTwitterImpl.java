@@ -29,8 +29,9 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -49,12 +50,16 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
     private final static String CLIENT_ID = "< Insert CLIENT ID >";
     private final static String CLIENT_SECRET = "< Insert CLIENT SECRET >";
     private final static String URL_BASE = "http://www.meteocal.tk";
+    
+    private static final Logger LOGGER = LogManager.getLogger(HandleAuthTwitterImpl.class.getName());
 
     /**
-     * Method that return the Twitter object that allows the access to the Twitter API
+     * Method that return the Twitter object that allows the access to the
+     * Twitter API
      *
      * @param user the user in MeteoCal
-     * @return null  if there was a problem with the creation of the Twitter object
+     * @return null if there was a problem with the creation of the Twitter
+     * object
      */
     public static Twitter getTwitterObject(User user) {
         Twitter twitter;
@@ -75,9 +80,8 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
                 user.getTwitterTokenSecret());
         try {
             twitter.setOAuthAccessToken(at);
-        }
-        catch (Exception e) {
-            Logger.getLogger(HandleAuthTwitterImpl.class.getName()).log(Level.ERROR, null, e);
+        } catch (Exception e) {
+            LOGGER.log(Level.ERROR, e);
             return null;
         }
         return twitter;
@@ -114,12 +118,11 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
                         + "/MeteoCal-web/loginTwitter.xhtml");
             }
             urlLogin = requestToken.getAuthenticationURL();
-        }
-        catch (TwitterException e) {
-            Logger.getLogger(HandleAuthTwitterImpl.class.getName()).log(Level.ERROR, null, e);
+        } catch (TwitterException e) {
+            LOGGER.log(Level.ERROR, e);
         }
         cont++;
-        Logger.getLogger(HandleAuthTwitterImpl.class.getName()).log(Level.INFO, "Conteggio: " + cont);
+        LOGGER.log(Level.INFO, "Conteggio: " + cont);
 
         return urlLogin;
     }
@@ -127,7 +130,7 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
     @Override
     public boolean doLoginTwitter(String verifier) {
         try {
-            Logger.getLogger(HandleAuthTwitterImpl.class.getName()).log(Level.INFO, "Verifier: " + verifier);
+            LOGGER.log(Level.INFO, "Verifier: " + verifier);
 
             accessToken = twitter.getOAuthAccessToken(requestToken, verifier);
 
@@ -152,35 +155,34 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
                     // MANCA BIRTH DATE
                     try {
                         utente.setPassword(PasswordHash.createHash(utente.getFirstName() + "." + utente.getLastName()));
-                    }
-                    catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
-                        Logger.getLogger(HandleAuthGoogleImpl.class.getName()).log(Level.FATAL, ex, ex);
+                    } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
+                        LOGGER.log(Level.FATAL, ex, ex);
                     }
 
                     Setting setting = new Setting();
                     setting.setTimeZone(TimeZone.getTimeZone(user.getTimeZone()));
                     utente.setSetting(setting);
 
-                    Logger.getLogger(HandleAuthTwitterImpl.class.getName()).log(Level.INFO, utente.toString());
+                    LOGGER.log(Level.INFO, utente.toString());
 
                     em.persist(utente);
                     em.flush();
                     em.refresh(utente);
                 } else {
                     // The user is already in the system
-                    Logger.getLogger(HandleAuthTwitterImpl.class.getName()).log(Level.INFO, "User already registred with twitter");
+                    LOGGER.log(Level.INFO, "User already registred with twitter");
 
                     utente = q.getResultList().get(0);
                     if (utente.getTwitterToken().equals(accessToken.getToken())) {
-                        Logger.getLogger(HandleAuthTwitterImpl.class.getName()).log(Level.INFO, "Twitter token not changed");
+                        LOGGER.log(Level.INFO, "Twitter token not changed");
                     } else {
-                        Logger.getLogger(HandleAuthTwitterImpl.class.getName()).log(Level.INFO, "Twitter token updated");
+                        LOGGER.log(Level.INFO, "Twitter token updated");
                     }
                     if (utente.getTwitterTokenSecret().equals(accessToken
                             .getTokenSecret())) {
-                        Logger.getLogger(HandleAuthTwitterImpl.class.getName()).log(Level.INFO, "TwitterToken secret not updated");
+                        LOGGER.log(Level.INFO, "TwitterToken secret not updated");
                     } else {
-                        Logger.getLogger(HandleAuthTwitterImpl.class.getName()).log(Level.INFO, "TwitterToken secret updated");
+                        LOGGER.log(Level.INFO, "TwitterToken secret updated");
                         utente.setTwitterToken(accessToken.getToken());
                         utente.setTwitterTokenSecret(accessToken
                                 .getTokenSecret());
@@ -210,7 +212,7 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
                 } else {
 
                     // The user account is already in the system
-                    Logger.getLogger(HandleAuthTwitterImpl.class.getName()).log(Level.INFO, "User already registered in the system");
+                    LOGGER.log(Level.INFO, "User already registered in the system");
                     User utenteVecchio = q.getResultList().get(0);
                     if (!Objects.equals(utente.getId(), utenteVecchio.getId())) {
                         // Need to merge the two account
@@ -237,9 +239,8 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
 
             }
 
-        }
-        catch (TwitterException e) {
-            Logger.getLogger(HandleAuthTwitterImpl.class.getName()).log(Level.INFO, null, e);
+        } catch (TwitterException e) {
+            LOGGER.log(Level.INFO, e);
             return false;
         }
         return true;

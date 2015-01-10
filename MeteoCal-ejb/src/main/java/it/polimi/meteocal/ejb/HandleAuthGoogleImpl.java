@@ -55,8 +55,9 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Session Bean implementation class HandleAuthGoogleImpl
@@ -67,6 +68,9 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
     private final static String CLIENT_ID =  "< Insert CLIENT ID >";
     private final static String CLIENT_SECRET = "< Insert CLIENT SECRET >";
     private static final String APPLICATION_NAME = "MeteoCal";
+    
+    private static final Logger LOGGER = LogManager.getLogger(HandleAuthGoogleImpl.class.getName());
+    
     /**
      * Global instance of the HTTP transport.
      */
@@ -79,10 +83,11 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
             .getDefaultInstance();
 
     /**
-     * Method that return the Plus object that allows the access to the GooglePlus API
+     * Method that return the Plus object that allows the access to the
+     * GooglePlus API
      *
      * @param user the user in MeteoCal
-     * @return null  if there was a problem with the creation of the Plus object
+     * @return null if there was a problem with the creation of the Plus object
      */
     public static Plus getPlusObject(User user) {
         Plus plus = null;
@@ -105,14 +110,14 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
                             HandleAuthGoogleImpl.setGoogleToken(credential,
                                     tokenResponse, utente2);
                             // Handle success.
-                            Logger.getLogger(HandleAuthGoogleImpl.class.getName()).log(Level.INFO, "Credential was refreshed successfully.");
+                            LOGGER.log(Level.INFO, "Credential was refreshed successfully.");
                         }
 
                         @Override
                         public void onTokenErrorResponse(Credential credential,
                                 TokenErrorResponse tokenErrorResponse) {
                             // Handle error.
-                            Logger.getLogger(HandleAuthGoogleImpl.class.getName()).log(Level.ERROR, "Credential was not refreshed successfully. "
+                            LOGGER.log(Level.ERROR, "Credential was not refreshed successfully. "
                                     + "Redirect to error page or login screen.");
                         }
                     })
@@ -125,9 +130,9 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
             /* Though not necessary when first created, you can manually refresh the token, which is needed after 60 minutes. */
             if (credential.getExpiresInSeconds() < 1) {
                 boolean ref = credential.refreshToken();
-                Logger.getLogger(HandleAuthGoogleImpl.class.getName()).log(Level.INFO, "Refresh token: " + ref);
-                Logger.getLogger(HandleAuthGoogleImpl.class.getName()).log(Level.INFO, "Access token: " + credential.getAccessToken());
-                Logger.getLogger(HandleAuthGoogleImpl.class.getName()).log(Level.INFO, "Refresh token: " + credential.getRefreshToken());
+                LOGGER.log(Level.INFO, "Refresh token: " + ref);
+                LOGGER.log(Level.INFO, "Access token: " + credential.getAccessToken());
+                LOGGER.log(Level.INFO, "Refresh token: " + credential.getRefreshToken());
 
             }
 
@@ -135,9 +140,8 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
             plus = new Plus.Builder(httpTransport, JSON_FACTORY, credential)
                     .setApplicationName(APPLICATION_NAME).build();
 
-        }
-        catch (IOException | GeneralSecurityException e) {
-            Logger.getLogger(HandleAuthGoogleImpl.class.getName()).log(Level.ERROR, e, e);
+        } catch (IOException | GeneralSecurityException e) {
+            LOGGER.log(Level.ERROR, e, e);
         }
 
         return plus;
@@ -145,21 +149,21 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
 
     /**
      * Method that updates the google token in the DB using the refresh token
-     * 
+     *
      * @param credential the credential for access the google API
      * @param tokenResponse the http response with the token
      * @param user the user in MeteoCal
      * @see Credential, TokenResponse
      */
     protected static void setGoogleToken(Credential credential, TokenResponse tokenResponse, User user) {
-        EntityManagerFactory EMF = Persistence
+        EntityManagerFactory emf = Persistence
                 .createEntityManagerFactory("MeteoCalEJB");
-        EntityManager EM = EMF.createEntityManager();
+        EntityManager em = emf.createEntityManager();
         try {
             httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 
             String tokenGoogle = tokenResponse.toString();
-            Logger.getLogger(HandleAuthGoogleImpl.class.getName()).log(Level.INFO, tokenGoogle);
+            LOGGER.log(Level.INFO, tokenGoogle);
             JsonParser parser = new JsonParser();
             JsonObject newToken = parser.parse(tokenGoogle).getAsJsonObject();
             JsonObject oldToken = parser.parse(user.getGoogleToken())
@@ -171,21 +175,20 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
             Streams.write(newToken, jsonWriter);
             tokenGoogle = stringWriter.toString();
 
-            Logger.getLogger(HandleAuthGoogleImpl.class.getName()).log(Level.INFO, tokenGoogle);
+            LOGGER.log(Level.INFO, tokenGoogle);
 
             if (tokenGoogle.contains("refresh_token")) {
-                Logger.getLogger(HandleAuthGoogleImpl.class.getName()).log(Level.INFO, "GoogleToken updated");
+                LOGGER.log(Level.INFO, "GoogleToken updated");
                 user.setGoogleToken(tokenGoogle);
-                EM.merge(user);
-                EM.joinTransaction();
-                EM.flush();
+                em.merge(user);
+                em.joinTransaction();
+                em.flush();
             }
+        } catch (GeneralSecurityException | IOException e) {
+            LOGGER.log(Level.ERROR, e, e);
         }
-        catch (GeneralSecurityException | IOException e) {
-            Logger.getLogger(HandleAuthGoogleImpl.class.getName()).log(Level.ERROR, e, e);
-        }
-        EM.close();
-        EMF.close();
+        em.close();
+        emf.close();
     }
 
     @PersistenceContext
@@ -194,7 +197,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
     private GoogleAuthorizationCodeFlow flow;
 
     public HandleAuthGoogleImpl() {
-       
+
     }
 
     @Override
@@ -253,20 +256,18 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
 
                         try {
                             utente.setDateBirth(new SimpleDateFormat("MM/dd").parse(mePerson.getBirthday()));
-                        }
-                        catch (ParseException ex) {
-                            Logger.getLogger(HandleAuthGoogleImpl.class.getName()).log(Level.WARN, null, ex);
+                        } catch (ParseException ex) {
+                            LOGGER.log(Level.WARN, ex);
                         }
 
                     }
                     try {
                         utente.setPassword(PasswordHash.createHash(utente.getFirstName() + "." + utente.getLastName()));
-                    }
-                    catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
-                        Logger.getLogger(HandleAuthGoogleImpl.class.getName()).log(Level.FATAL, ex, ex);
+                    } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
+                        LOGGER.log(Level.FATAL, ex, ex);
                     }
 
-                    Logger.getLogger(HandleAuthGoogleImpl.class.getName()).log(Level.INFO, utente.toString());
+                    LOGGER.log(Level.INFO, utente.toString());
 
                     Setting setting = new Setting();
                     setting.setTimeZone(TimeZone.getTimeZone("GMT+1"));
@@ -276,10 +277,10 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
                     em.refresh(utente);
                 } else if (!q.getResultList().isEmpty()) {
                     // The user is already in the system
-                    Logger.getLogger(HandleAuthGoogleImpl.class.getName()).log(Level.INFO, "User already registered with Google");
+                    LOGGER.log(Level.INFO, "User already registered with Google");
                     utente = q.getResultList().get(0);
                     if (tokenGoogle.contains("refresh_token")) {
-                        Logger.getLogger(HandleAuthGoogleImpl.class.getName()).log(Level.INFO, "GoogleToken updated");
+                        LOGGER.log(Level.INFO, "GoogleToken updated");
                         utente.setGoogleToken(tokenGoogle);
                         em.merge(utente);
                         em.flush();
@@ -287,7 +288,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
 
                 } else {
 
-                    Logger.getLogger(HandleAuthGoogleImpl.class.getName()).log(Level.INFO, "User already registered with classic method");
+                    LOGGER.log(Level.INFO, "User already registered with classic method");
                     utente = q2.getResultList().get(0);
                     //TODO merge informazioni da google mancanti
 
@@ -314,7 +315,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
                 } else {
 
                     // User account already in the system
-                    Logger.getLogger(HandleAuthGoogleImpl.class.getName()).log(Level.INFO, "User already registered with GooglePlus");
+                    LOGGER.log(Level.INFO, "User already registered with GooglePlus");
                     User utenteVecchio = q.getResultList().get(0);
                     if (!Objects.equals(utente.getId(), utenteVecchio.getId())) {
                         // Need to merge the two account
@@ -341,13 +342,11 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
 
             }
 
-        }
-        catch (IOException e) {
-            Logger.getLogger(HandleAuthGoogleImpl.class.getName()).log(Level.ERROR, null, e);
+        } catch (IOException e) {
+            LOGGER.log(Level.ERROR, e);
             return false;
-        }
-        catch (GeneralSecurityException ex) {
-            Logger.getLogger(HandleAuthGoogleImpl.class.getName()).log(Level.ERROR, null, ex);
+        } catch (GeneralSecurityException ex) {
+            LOGGER.log(Level.ERROR, ex);
         }
 
         return true;
@@ -369,14 +368,14 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
 
     @Override
     public String getUrlLoginGoogle() {
-        final List<String> SCOPE = Arrays.asList(
+        final List<String> scope = Arrays.asList(
                 "https://www.googleapis.com/auth/plus.login",
                 "https://www.googleapis.com/auth/userinfo.email");
 
-        final String REDIRECT_URI = "http://www.meteocal.tk/MeteoCal-web/loginGoogle.xhtml";
+        final String redirectUrl = "http://www.meteocal.tk/MeteoCal-web/loginGoogle.xhtml";
 
         flow = new GoogleAuthorizationCodeFlow.Builder(new NetHttpTransport(),
-                new JacksonFactory(), CLIENT_ID, CLIENT_SECRET, SCOPE)
+                new JacksonFactory(), CLIENT_ID, CLIENT_SECRET, scope)
                 //.setApprovalPrompt("force")
                 // Set the access type to offline so that the token can be
                 // refreshed.
@@ -397,7 +396,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
         // other
         // options at https://developers.google.com/+/web/signin/
         return flow.newAuthorizationUrl()
-                .setRedirectUri(REDIRECT_URI).build();
+                .setRedirectUri(redirectUrl).build();
 
     }
 
@@ -426,25 +425,24 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
                 utente = q.getResultList().get(0);
                 String tokenGoogle = tokenResponse.toString();
 
-                Logger.getLogger(HandleAuthGoogleImpl.class.getName()).log(Level.INFO, "GoogleToken updated");
+                LOGGER.log(Level.INFO, "GoogleToken updated");
                 utente.setGoogleToken(tokenGoogle);
                 em.merge(utente);
                 em.flush();
 
-            }
-            catch (IOException e) {
-                Logger.getLogger(HandleAuthGoogleImpl.class.getName()).log(Level.ERROR, e, e);
+            } catch (IOException e) {
+                LOGGER.log(Level.ERROR, e, e);
             }
 
             // Handle success.
-            Logger.getLogger(HandleAuthGoogleImpl.class.getName()).log(Level.INFO, "Credential was refreshed successfully.");
+            LOGGER.log(Level.INFO, "Credential was refreshed successfully.");
         }
 
         @Override
         public void onTokenErrorResponse(Credential credential,
                 TokenErrorResponse tokenErrorResponse) {
             // Handle error.
-            Logger.getLogger(HandleAuthGoogleImpl.class.getName()).log(Level.ERROR, "Credential was not refreshed successfully. "
+            LOGGER.log(Level.ERROR, "Credential was not refreshed successfully. "
                     + "Redirect to error page or login screen.");
         }
     }

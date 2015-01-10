@@ -23,6 +23,7 @@ import it.polimi.meteocal.entities.Setting;
 import it.polimi.meteocal.entities.User;
 import it.polimi.meteocal.util.AuthUtil;
 import it.polimi.meteocal.util.PasswordHash;
+import it.polimi.meteocal.util.SocialAPISecret;
 import it.polimi.meteocal.util.Visibility;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -44,8 +45,9 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Session Bean implementation class HandleAuthFacebookImpl
@@ -56,12 +58,16 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
     private final static String APP_ID = "< Insert APP ID >";
     private final static String APPSECRET = "< Insert APP SECRET >";
     private final static String URL_BASE = "http://www.meteocal.tk";
+    
+    private static final Logger LOGGER = LogManager.getLogger(HandleAuthFacebook.class.getName());
 
     /**
-     * Method that return the FacebookClient that allows the access to the Facebook API
+     * Method that return the FacebookClient that allows the access to the
+     * Facebook API
      *
      * @param user the user in MeteoCal
-     * @return null  if there was a problem with the creation of the Facebook Client
+     * @return null if there was a problem with the creation of the Facebook
+     * Client
      */
     public static FacebookClient getFacebookClientObject(User user) {
         String accessToken;
@@ -94,19 +100,19 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
                     + "&redirect_uri="
                     + redirectUrl
                     + "&client_secret=" + APPSECRET + "&code=" + faceCode;
-            Logger.getLogger(HandleAuthFacebookImpl.class.getName()).log(Level.INFO, "URL FB: " + newUrl);
+            LOGGER.log(Level.INFO, "URL FB: " + newUrl);
             CloseableHttpClient httpclient = HttpClientBuilder.create().build();
             try {
                 HttpGet httpget = new HttpGet(newUrl);
                 ResponseHandler<String> responseHandler = new BasicResponseHandler();
                 String responseBody = httpclient.execute(httpget,
                         responseHandler);
-                Logger.getLogger(HandleAuthFacebookImpl.class.getName()).log(Level.INFO, "Response Body: " + responseBody);
+                LOGGER.log(Level.INFO, "Response Body: " + responseBody);
                 accessToken = StringUtils.removeStart(responseBody,
                         "access_token=");
                 int i = accessToken.indexOf("&");
                 accessToken = accessToken.substring(0, i);
-                Logger.getLogger(HandleAuthFacebookImpl.class.getName()).log(Level.INFO, "AccessToken: " + accessToken);
+                LOGGER.log(Level.INFO, "AccessToken: " + accessToken);
 
                 facebookClient = new DefaultFacebookClient(accessToken,
                         APPSECRET);
@@ -129,19 +135,19 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
                         em.refresh(utente);
                     } else if (!q.getResultList().isEmpty()) {
                         // The User is already in the system with fb
-                        Logger.getLogger(HandleAuthFacebookImpl.class.getName()).log(Level.INFO, "User already registered with Facebook");
+                        LOGGER.log(Level.INFO, "User already registered with Facebook");
                         utente = q.getResultList().get(0);
                         if (utente.getFacebookToken().equals(accessToken)) {
-                            Logger.getLogger(HandleAuthFacebookImpl.class.getName()).log(Level.INFO, "Facebook token no needed change");
+                            LOGGER.log(Level.INFO, "Facebook token no needed change");
                         } else {
-                            Logger.getLogger(HandleAuthFacebookImpl.class.getName()).log(Level.INFO, "Facebook token updated");
+                            LOGGER.log(Level.INFO, "Facebook token updated");
                             utente.setFacebookToken(accessToken);
                             em.merge(utente);
                             em.flush();
                         }
 
                     } else {
-                        Logger.getLogger(HandleAuthFacebookImpl.class.getName()).log(Level.INFO, "User already registered with classic method");
+                        LOGGER.log(Level.INFO, "User already registered with classic method");
                         utente = q2.getResultList().get(0);
                         //TODO merge informazioni da facebook mancanti
 
@@ -169,7 +175,7 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
                     } else {
 
                         // User account already in the system
-                        Logger.getLogger(HandleAuthFacebookImpl.class.getName()).log(Level.INFO, "User already registered with Facebook");
+                        LOGGER.log(Level.INFO, "User already registered with Facebook");
                         User oldUser = q.getResultList().get(0);
                         if (!Objects.equals(utente.getId(), oldUser.getId())) {
                             // Need to merge the two account
@@ -195,20 +201,16 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
 
                 }
 
-            }
-            catch (ClientProtocolException e) {
-                Logger.getLogger(HandleAuthFacebookImpl.class.getName()).log(Level.ERROR, null, e);
-            }
-            catch (IOException e) {
-                Logger.getLogger(HandleAuthFacebookImpl.class.getName()).log(Level.ERROR, null, e);
-            }
-            finally {
+            } catch (ClientProtocolException e) {
+                LOGGER.log(Level.ERROR, e);
+            } catch (IOException e) {
+                LOGGER.log(Level.ERROR, e);
+            } finally {
                 try {
                     httpclient.close();
-                }
-                catch (IOException e) {
+                } catch (IOException e) {
 
-                    Logger.getLogger(HandleAuthFacebookImpl.class.getName()).log(Level.WARN, null, e);
+                    LOGGER.log(Level.WARN, e);
                 }
             }
         }
@@ -245,9 +247,9 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
 
     /**
      * This metod maps the facebook user to MeteoCal User.
-     * 
+     *
      * @param userFB the Facebook Class for the User.
-     * @return The User entity of MeteoCal to persist in the DB 
+     * @return The User entity of MeteoCal to persist in the DB
      */
     private User setupNewUser(com.restfb.types.User userFB) {
         User utente = new User();
@@ -261,23 +263,21 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
 
             try {
                 utente.setDateBirth(new SimpleDateFormat("MM/dd").parse(userFB.getBirthday()));
-            }
-            catch (ParseException ex) {
-                Logger.getLogger(HandleAuthFacebookImpl.class.getName()).log(Level.WARN, null, ex);
+            } catch (ParseException ex) {
+                LOGGER.log(Level.WARN, ex);
             }
 
         }
         utente.setAvatar("https://graph.facebook.com/" + userFB.getId() + "/picture?type=normal");
         try {
             utente.setPassword(PasswordHash.createHash(userFB.getFirstName() + "." + userFB.getLastName()));
-        }
-        catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
-            Logger.getLogger(HandleAuthFacebookImpl.class.getName()).log(Level.FATAL, ex, ex);
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
+            LOGGER.log(Level.FATAL, ex, ex);
         }
         // SET UP SETTING
         Setting setting = new Setting();
         setting.setTimeZone(TimeZone.getTimeZone("GMT" + userFB.getTimezone()));
-        Logger.getLogger(HandleAuthFacebookImpl.class.getName()).log(Level.INFO, "TimeZone User " + utente.getId() + ": " + setting.getTimeZone().toString());
+        LOGGER.log(Level.INFO, "TimeZone User " + utente.getId() + ": " + setting.getTimeZone().toString());
         utente.setSetting(setting);
 
         // SETUP CALENDAR
