@@ -23,6 +23,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -30,15 +31,19 @@ import javax.persistence.OneToOne;
  */
 @Entity
 @NamedQueries({
-    @NamedQuery(name = RescheduleNotification.FIND_BY_EVENT, query = "SELECT n FROM RescheduleNotification n WHERE n.event = :event"),})
+    @NamedQuery(name = RescheduleNotification.FIND_BY_EVENT, query = "SELECT n FROM RescheduleNotification n WHERE n.event = :event OR n.suggestedEvent = :event"),
+    @NamedQuery(name = RescheduleNotification.FIND_OLD_NOTIFICATION, query = "SELECT n FROM RescheduleNotification n WHERE n.event.startDate <= :now"),})
 public class RescheduleNotification extends Notification {
 
     public static final String FIND_BY_EVENT = "RescheduleNotification.FIND_BY_EVENT";
+    public static final String FIND_OLD_NOTIFICATION = "RescheduleNotification.FIND_OLD_NOTIFICATION";
 
     @OneToOne
+    @NotNull
     private Event event;
 
     @OneToOne
+    @NotNull
     private Event suggestedEvent;
 
     public Event getSuggestedEvent() {

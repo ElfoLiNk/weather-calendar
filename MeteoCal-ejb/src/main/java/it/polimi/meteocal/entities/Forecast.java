@@ -23,15 +23,19 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 
 /**
  *
  * @author Matteo Gazzetta, Alessandro Fato
  */
+@Table(indexes = {
+    @Index(columnList = "LOCATION")})
 @Entity
 @NamedQueries({
     @NamedQuery(name = Forecast.FIND_BY_LOCATION, query = "SELECT f FROM Forecast f WHERE f.location LIKE :location"),

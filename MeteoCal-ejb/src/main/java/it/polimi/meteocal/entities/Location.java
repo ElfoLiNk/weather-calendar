@@ -17,34 +17,44 @@
 package it.polimi.meteocal.entities;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 /**
  *
  * @author Matteo Gazzetta, Alessandro Fato
  */
+@Table(indexes = {
+    @Index(columnList = "NAME")})
 @Entity
 @NamedQueries({
-    @NamedQuery(name = Location.FIND_BY_SEARCHQUERY, query = "SELECT l FROM Location l WHERE l.name LIKE :query"),})
+    @NamedQuery(name = Location.FIND_BY_SEARCHQUERY, query = "SELECT l FROM Location l WHERE l.name LIKE :query"),
+    @NamedQuery(name = Location.FIND_BY_LOCATION_AND_COUNTRYCODE, query = "SELECT l FROM Location l WHERE (l.name LIKE :name AND l.countryCode = :countrycode)"),})
 public class Location implements Serializable {
 
     private static final long serialVersionUID = 1L;
     public static final String FIND_BY_SEARCHQUERY = "Location.FIND_BY_SEARCHQUERY";
+    public static final String FIND_BY_LOCATION_AND_COUNTRYCODE = "Location.FIND_BY_LOCATION_AND_COUNTRYCODE";
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(length = 50)
     private String name;
 
     private float latitude;
 
     private float longitude;
 
+    @Column(length = 2)
     private String countryCode;
 
     public String getName() {
@@ -105,7 +115,7 @@ public class Location implements Serializable {
 
     @Override
     public String toString() {
-        return "it.polimi.meteocal.entities.Location[ id=" + id + " ]";
+        return "Location{" + "id=" + id + ", name=" + name + ", latitude=" + latitude + ", longitude=" + longitude + ", countryCode=" + countryCode + '}';
     }
 
 }

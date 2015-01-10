@@ -25,6 +25,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -42,6 +43,7 @@ public abstract class Notification implements Serializable {
     private Long id;
 
     @OneToOne
+    @NotNull
     private User user;
 
     public User getUser() {

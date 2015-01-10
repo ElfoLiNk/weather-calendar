@@ -28,6 +28,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
@@ -36,9 +38,14 @@ import javax.validation.constraints.NotNull;
  * @author Matteo Gazzetta, Alessandro Fato
  */
 @Entity
+@NamedQueries({
+    @NamedQuery(name = Calendar.FIND_BY_ORGANIZEDEVENT, query = "SELECT c FROM Calendar c WHERE :event MEMBER OF c.organizedEvents"),})
+
 public class Calendar implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    public static final String FIND_BY_ORGANIZEDEVENT = "Calendar.FIND_BY_ORGANIZEDEVENT";
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -92,7 +99,7 @@ public class Calendar implements Serializable {
 
     }
 
-    public void addparticipatedEvent(Event event) {
+    public void addParticipatedEvent(Event event) {
         participatedEvents.add(event);
 
     }

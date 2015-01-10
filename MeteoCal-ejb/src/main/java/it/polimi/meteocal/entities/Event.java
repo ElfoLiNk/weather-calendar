@@ -19,8 +19,10 @@ package it.polimi.meteocal.entities;
 import it.polimi.meteocal.util.Site;
 import it.polimi.meteocal.util.Visibility;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -99,11 +101,11 @@ public class Event implements Serializable {
 
     @OneToMany
     @JoinTable(name = "event_participants")
-    private List<User> eventParticipants;
+    private List<User> eventParticipants = new ArrayList<>();
 
     @OneToMany
     @JoinTable(name = "event_inviteduser")
-    private List<User> invitedUsers;
+    private List<User> invitedUsers = new ArrayList<>();
 
     public Event(User eo, String name, String description, String location, Site site, Calendar startDate, Calendar endDate, Forecast forecast, Visibility visibility, List<User> eventParticipants, List<User> invitedUsers) {
         this.eo = eo;
@@ -224,4 +226,79 @@ public class Event implements Serializable {
         return "Event{" + "id=" + id + ", eo=" + eo + ", name=" + name + ", description=" + description + ", location=" + location + ", site=" + site + ", startDate=" + startDate.getTime() + ", endDate=" + endDate.getTime() + ", forecast=" + forecast + ", visibility=" + visibility + ", eventParticipants=" + eventParticipants + ", invitedUsers=" + invitedUsers + '}';
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 89 * hash + Objects.hashCode(this.id);
+        hash = 89 * hash + Objects.hashCode(this.eo);
+        hash = 89 * hash + Objects.hashCode(this.name);
+        hash = 89 * hash + Objects.hashCode(this.description);
+        hash = 89 * hash + Objects.hashCode(this.location);
+        hash = 89 * hash + Objects.hashCode(this.site);
+        hash = 89 * hash + Objects.hashCode(this.startDate);
+        hash = 89 * hash + Objects.hashCode(this.endDate);
+        hash = 89 * hash + Objects.hashCode(this.forecast);
+        hash = 89 * hash + Objects.hashCode(this.visibility);
+        hash = 89 * hash + Objects.hashCode(this.eventParticipants);
+        hash = 89 * hash + Objects.hashCode(this.invitedUsers);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Event other = (Event) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        if (!Objects.equals(this.eo, other.eo)) {
+            return false;
+        }
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        if (!Objects.equals(this.description, other.description)) {
+            return false;
+        }
+        if (!Objects.equals(this.location, other.location)) {
+            return false;
+        }
+        if (this.site != other.site) {
+            return false;
+        }
+        if (!Objects.equals(this.startDate, other.startDate)) {
+            return false;
+        }
+        if (!Objects.equals(this.endDate, other.endDate)) {
+            return false;
+        }
+        if (!Objects.equals(this.forecast, other.forecast)) {
+            return false;
+        }
+        if (this.visibility != other.visibility) {
+            return false;
+        }
+        if (!Objects.equals(this.eventParticipants, other.eventParticipants)) {
+            return false;
+        }
+        if (!Objects.equals(this.invitedUsers, other.invitedUsers)) {
+            return false;
+        }
+        return true;
+    }
+
+    public void addInvitedUser(User user) {
+        invitedUsers.add(user);
+
+    }
+
+    public void addEventParticipant(User user) {
+        eventParticipants.add(user);
+
+    }
 }

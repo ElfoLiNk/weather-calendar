@@ -23,6 +23,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -31,13 +32,16 @@ import javax.persistence.OneToOne;
 @Entity
 @NamedQueries({
     @NamedQuery(name = EventNotification.FIND_BY_EVENT, query = "SELECT n FROM EventNotification n WHERE n.event = :event"),
-    @NamedQuery(name = EventNotification.FIND_BY_EVENT_AND_USER, query = "SELECT n FROM EventNotification n WHERE n.event = :event AND n.user = :user"),})
+    @NamedQuery(name = EventNotification.FIND_BY_EVENT_AND_USER, query = "SELECT n FROM EventNotification n WHERE n.event = :event AND n.user = :user"),
+    @NamedQuery(name = EventNotification.FIND_OLD_NOTIFICATION, query = "SELECT n FROM EventNotification n WHERE n.event.startDate <= :now"),})
 public class EventNotification extends Notification {
 
     public static final String FIND_BY_EVENT = "EventNotification.FIND_BY_EVENT";
     public static final String FIND_BY_EVENT_AND_USER = "EventNotification.FIND_BY_EVENT_AND_USER";
+    public static final String FIND_OLD_NOTIFICATION = "EventNotification.FIND_OLD_NOTIFICATION";
 
     @OneToOne
+    @NotNull
     private Event event;
 
     @Enumerated(EnumType.STRING)
