@@ -31,7 +31,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Objects;
 import java.util.TimeZone;
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
@@ -77,9 +76,6 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
 
     @PersistenceContext
     EntityManager em;
-
-    @EJB
-    HandleUser gestoreUtente;
 
     /**
      * Default constructor.
