@@ -37,7 +37,7 @@
                     <version>6</version>
                     <defaultLibBundleDir>lib</defaultLibBundleDir>
                 </configuration>
-            </plugin>
+            </plugin>   
         </plugins>
     </build>
     <dependencies>

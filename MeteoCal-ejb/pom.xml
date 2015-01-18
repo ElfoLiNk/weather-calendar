@@ -131,6 +131,12 @@
             <version>20141113</version>
         </dependency>
         <dependency>
+            <groupId>com.neovisionaries</groupId>
+            <artifactId>nv-i18n</artifactId>
+            <version>1.14</version>
+        </dependency>
+
+        <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
             <version>7.0</version>
