@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title><ui:insert name="title">MeteoCal</ui:insert></title>
+        <ui:insert name="header"></ui:insert>
+        <style type="text/css">
+            body {
+                font-size: 80%;
+            }
+
+            .ui-layout-unit {
+                border: none;
+                padding: 5px;
+            }
+
+            .ui-datalist-content {
+                border: none !important;
+            }
+
+            .ui-datalist-item {
+                list-style-type: none;
+            }
+
+            .ui-layout-north {
+                overflow: hidden !important;
+            }
+
+            .ui-layout-north .ui-layout-unit-content {
+                overflow: hidden !important;
+            }
+            .ui-autocomplete {
+                width: 100%;
+
+            }
+            .ui-autocomplete-input {
+                width: 80%;
+            }
+        </style>
+        <script type="text/javascript">
+            function handleRegistrationRequest(xhr, status, args)
+            {
+                if (args.validationFailed || !args.registered) {
+                    $("#registrationDlgId").effect("shake", {times: 3}, 100);
+                } else {
+                    registrationDlg.hide();
+                    $("#registerLink").fadeOut();
+                }
+            }
+            function handleLoginRequest(xhr, status, args) {
+                if (args.validationFailed || !args.loggedIn) {
+                    PF('loginDlg').jq.effect("shake", {times: 5}, 100);
+                }
+                else {
+                    PF('loginDlg').hide();
+                    $('#loginLink').fadeOut();
+                }
+            }
+
+
+        </script>
+    </h:head>
+
+    <h:body>
+        <p:layout fullPage="true">
+
+            <p:layoutUnit position="north" size="100">
+                <div class="ui-grid ui-grid-responsive">
+                    <div class="ui-grid-row" style="margin: 20px auto;">
+                        <div class="ui-grid-col-3" style="margin: -20px auto;">
+                            <p:link outcome="calendar">
+                                <p:graphicImage style="max-width:100%; max-height:95%;"
+                                                library="images" name="meteocal-logo.png" alt="Logo MeteoCal"/>
+                            </p:link> 
+                        </div>
+                        <div class="ui-grid-col-8">
+                            <p:autoComplete id="searchBar"  value="#{searchBean.input}" completeMethod="#{searchBean.search}" style="width:100%;"
+                                            var="result" itemLabel="#{result.name}" itemValue="#{result}" converter="resultConverter" forceSelection="true">
+                                <p:column style="width:10%">
+                                    <h:outputText value="#{result.type}" />
+                                </p:column>
+
+                                <p:column>
+                                    <h:outputText value="#{result.name}" />
+                                </p:column>
+                                <p:ajax event="itemSelect" listener="#{calendarBean.handleSelect}" />
+                            </p:autoComplete>  
+                        </div>
+                        <div class="ui-grid-col-1" style="text-align: center;">
+                            <p:link outcome="settings" title="Settings" >
+                                <p:graphicImage 
+                                    library="images"  name="settings.svg" width="25"
+                                    height="25" />
+                            </p:link>
+                        </div>
+                        <div class="ui-grid-col-1" >
+                            <h:form>
+                                <p:commandButton value="Logout" icon="ui-icon-extlink" action="#{loginBean.logout}" 
+                                                 ajax="false" 
+                                                 actionListener="#{loginBean.redirect('http://www.meteocal.tk/MeteoCal-web/index.xhtml')}"  />
+                            </h:form> 
+                        </div>
+                    </div>
+                </div>
+            </p:layoutUnit>
+
+
+
+            <p:layoutUnit position="west" size="300" style="text-align: center">
+
+                <h:form id="userInfoForm">
+                    <p:growl id="msgs" showDetail="true" />
+                    <p:panelGrid id="userInfo" columns="1" layout="grid">
+                        <f:facet name="header">
+                            <h:outputText value="#{calendarBean.currentUser.firstName} #{calendarBean.currentUser.lastName} Calendar" />
+                        </f:facet>
+                        <p:graphicImage id="userImg" value="#{calendarBean.currentUser.avatar}" height="100" width="100" />
+                        <p:commandButton rendered="#{not calendarBean.loggedUser.preferedCalendarsIDs.contains(calendarBean.currentUser.calendarId) and not calendarBean.loggedUser.id.equals(calendarBean.currentUser.id)}"
+                                         action="#{calendarBean.addPreferedCalendar()}"
+                                         id="addPostPreferito" update="msgs,userInfoForm,:preferedCalendarForm" value="" 
+                                         style=" background-image: url('#{resource['images/star_add.png']}') !important;
+                                         height: 32px;
+                                         width: 32px;"
+                                         title="Add Prefered" />
+
+                        <p:commandButton rendered="#{calendarBean.loggedUser.preferedCalendarsIDs.contains(calendarBean.currentUser.calendarId)}"
+                                         action="#{calendarBean.delPreferedCalendar()}"
+                                         id="delPostPreferito" update="msgs,userInfoForm,:preferedCalendarForm" value=""   
+                                         style=" background-image: url('#{resource['images/star.png']}') !important;
+                                         height: 32px;
+                                         width: 32px;"
+                                         title="Remove Prefered" />
+                    </p:panelGrid>
+                </h:form>
+
+                <h:form id="notificationForm">
+                    <p:dataTable var="notification" 
+                                 value="#{calendarBean.loggedUser.notifications}" 
+                                 scrollRows="5" scrollable="true" liveScroll="true" scrollHeight="150" style="margin-bottom:0"
+                                 emptyMessage="No notification available">
+                        <f:facet name="header">
+                            Notifications
+                        </f:facet>
+                        <p:column headerText="Message">
+                            <h:outputText value="#{fn:substring(notification.message, 0,47)}" />
+                        </p:column>
+                        <p:column headerText="Show" style="width:32px;text-align: center">
+                            <p:commandButton update=":notificationForm:notificationDetail" oncomplete="PF('notificationDialog').show()" icon="ui-icon-search" title="View">
+                                <f:setPropertyActionListener value="#{notification}" target="#{calendarBean.selectedNotification}" />
+                            </p:commandButton>
+
+                        </p:column>
+
+                    </p:dataTable>
+
+                    <p:dialog header="Notification Info" widgetVar="notificationDialog" modal="true" appendTo="@(body)" showEffect="fade" hideEffect="fade" resizable="false">
+                        <p:outputPanel id="notificationDetail" style="text-align:center;">
+                            <h:panelGrid  columns="1"  rendered="#{not empty calendarBean.selectedNotification}"  >
+
+                                <h:outputText value="#{calendarBean.selectedNotification.message}" />
+
+                                <p:outputPanel>
+                                    <p:commandButton id="acceptButton"  value="Accept"   immediate="true"  process="@this" update="notificationForm,:scheduleForm"
+                                                     action="#{calendarBean.acceptNotification}"
+                                                     oncomplete="PF('myschedule').update();PF('notificationDialog').hide();" />
+                                    <p:commandButton id="declineButton"  value="Decline"   immediate="true"  process="@this"  update="notificationForm"
+                                                     action="#{calendarBean.declineNotification}"
+                                                     oncomplete="PF('myschedule').update();PF('notificationDialog').hide();" />
+                                </p:outputPanel>
+                            </h:panelGrid>
+
+                        </p:outputPanel>
+                    </p:dialog>
+                </h:form>
+
+                <h:form id="preferedCalendarForm">
+                    <p:dataTable var="preferedCalendar" value="#{calendarBean.loggedUser.preferedCalendarsIDs}" 
+                                 scrollRows="5" scrollable="true" liveScroll="true" scrollHeight="150" style="margin-bottom:0"
+                                 emptyMessage="No prefered calendar">
+                        <f:facet name="header">
+                            Prefered Calendar
+                        </f:facet>
+                        <p:column>
+                            <h:commandLink action="#{calendarBean.handlePreferedCalendar(preferedCalendar)}" >
+                                <h:outputText value="#{calendarBean.getOwnerName(preferedCalendar)} Calendar" />
+                            </h:commandLink>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </p:layoutUnit>
+
+
+            <p:layoutUnit position="center">
+                <ui:insert name="center">
+                </ui:insert>
+            </p:layoutUnit>
+
+        </p:layout>
+
+    </h:body>
+</html>
