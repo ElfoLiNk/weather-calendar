@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+
+    </h:head>
+
+
+    <ui:composition template="/templates/commonTemplate.xhtml">
+        <ui:define name="center">
+            <h1 align="center">SocialNetwork Collegati</h1>
+            <p align="center">
+                <h:outputLink rendered="#{(handleAccount.isTwitterCollegato())}">
+                    <p:graphicImage value="#{resource['images/twitter.svg']}"
+                                    height="200" width="200"
+                                    rendered="#{handleAccount.isTwitterCollegato()}"
+                                    style="padding: 2px;" />
+                    <p:graphicImage value="#{resource['images/twitter.svg']}"
+                                    height="200" width="200"
+                                    rendered="#{!(handleAccount.isTwitterCollegato())}"
+                                    style="-webkit-filter: grayscale(100%);-moz-filter: grayscale(100%);filter: grayscale(100%);padding: 2px;" />
+                </h:outputLink>
+                <h:outputLink rendered="#{!(handleAccount.isTwitterCollegato())}"
+                              value="#{twitterLogin.linkLoginTwitter}">
+                    <p:graphicImage value="#{resource['images/twitter.svg']}"
+                                    height="200" width="200"
+                                    rendered="#{handleAccount.isTwitterCollegato()}"
+                                    style="padding: 2px;" />
+                    <p:graphicImage value="#{resource['images/twitter.svg']}"
+                                    height="200" width="200"
+                                    rendered="#{!(handleAccount.isTwitterCollegato())}"
+                                    style="-webkit-filter: grayscale(100%);-moz-filter: grayscale(100%);filter: grayscale(100%);padding: 2px;" />
+                </h:outputLink>
+                <h:outputLink rendered="#{(handleAccount.isGoogleCollegato())}">
+                    <p:graphicImage value="#{resource['images/googleplus.svg']}"
+                                    height="210" width="210"
+                                    rendered="#{handleAccount.isGoogleCollegato()}"
+                                    style="padding: 2px;" />
+                    <p:graphicImage value="#{resource['images/googleplus.svg']}"
+                                    height="210" width="210"
+                                    rendered="#{!(handleAccount.isGoogleCollegato())}"
+                                    style="-webkit-filter: grayscale(100%);-moz-filter: grayscale(100%);filter: grayscale(100%);padding: 2px;" />
+                </h:outputLink>
+                <h:outputLink rendered="#{!(handleAccount.isGoogleCollegato())}"
+                              value="#{googleLogin.linkLoginGoogle}">
+                    <p:graphicImage value="#{resource['images/googleplus.svg']}"
+                                    height="210" width="210"
+                                    rendered="#{handleAccount.isGoogleCollegato()}"
+                                    style="padding: 2px;" />
+                    <p:graphicImage value="#{resource['images/googleplus.svg']}"
+                                    height="210" width="210"
+                                    rendered="#{!(handleAccount.isGoogleCollegato())}"
+                                    style="-webkit-filter: grayscale(100%);-moz-filter: grayscale(100%);filter: grayscale(100%);padding: 2px;" />
+                </h:outputLink>
+                <h:outputLink rendered="#{(handleAccount.isFacebookCollegato())}">
+                    <p:graphicImage value="#{resource['images/facebook.svg']}"
+                                    height="200" width="200"
+                                    rendered="#{handleAccount.isFacebookCollegato()}"
+                                    style="padding: 2px;" />
+                    <p:graphicImage value="#{resource['images/facebook.svg']}"
+                                    height="200" width="200"
+                                    rendered="#{!(handleAccount.isFacebookCollegato())}"
+                                    style="-webkit-filter: grayscale(100%);-moz-filter: grayscale(100%);filter: grayscale(100%);padding: 2px;" />
+                </h:outputLink>
+                <h:outputLink rendered="#{!(handleAccount.isFacebookCollegato())}"
+                              value="#{facebookLogin.linkLoginFacebook}">
+                    <p:graphicImage value="#{resource['images/facebook.svg']}"
+                                    height="200" width="200"
+                                    rendered="#{handleAccount.isFacebookCollegato()}"
+                                    style="padding: 2px;" />
+                    <p:graphicImage value="#{resource['images/facebook.svg']}"
+                                    height="200" width="200"
+                                    rendered="#{!(handleAccount.isFacebookCollegato())}"
+                                    style="-webkit-filter: grayscale(100%);-moz-filter: grayscale(100%);filter: grayscale(100%);padding: 2px;" />
+                </h:outputLink>
+            </p>
+        </ui:define>
+    </ui:composition>
+
+</html>

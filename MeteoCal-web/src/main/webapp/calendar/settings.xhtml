@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/templates/commonTemplate.xhtml">
+        <ui:define name="title">MeteoCal - Settings of #{settingBean.loggedUser.firstName} #{settingBean.loggedUser.lastName}</ui:define>
+        <ui:define name="center">
+            <div style="margin:0 auto" align="center">
+                <h:form id="settingsForm" enctype="multipart/form-data">
+                    <h2>Personal Information</h2>
+                    <p:growl id="msgs" showDetail="true" />
+                    <h:panelGrid columns="3" cellpadding="5" >
+                        <p:outputLabel value="FirstName:"/>
+                        <p:inputText id="firstName"
+                                     value="#{settingBean.loggedUser.firstName}"
+                                     label="FirstName"
+                                     required="true"  />
+                        <p:message for="firstName" />
+
+                        <p:outputLabel value="LastName:" />
+                        <p:inputText id="lastName"
+                                     value="#{settingBean.loggedUser.lastName}" label="LastName" 
+                                     required="true"/>
+                        <p:message for="lastName" />
+
+                        <p:outputLabel for="gender" value="Gender" />
+                        <p:selectOneButton id="gender" value="#{settingBean.loggedUser.gender}">
+                            <f:selectItem itemLabel="Male" itemValue="MALE" />
+                            <f:selectItem itemLabel="Female" itemValue="FEMALE" />
+                        </p:selectOneButton>
+                        <p:message for="gender" />
+
+                        <p:outputLabel for="dateBirth" value="Birth Date:" />
+                        <p:calendar id="dateBirth" value="#{settingBean.loggedUser.dateBirth}" pattern="dd-MM-yyyy" mask="true" yearRange="c-100:c" />
+                        <p:message for="dateBirth" />
+
+                        <p:outputLabel value="Email:"/>
+                        <p:inputText id ="email"
+                                     value="#{settingBean.loggedUser.email}"
+                                     required="true" label="EmailId">
+                            <f:validateRegex pattern="[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[A-Z]{2}|it|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)\b" />
+                        </p:inputText>
+                        <p:message for="email" />
+
+                        <p:outputLabel value="Old Password:*"/>
+                        <p:password id="oldpassword"
+                                    value="#{settingBean.loggedUser.password}"
+                                    required="true" label="Password" validatorMessage="Password need at least one digit, one uppercase letter and 8 lenght">
+                            <f:validateRegex pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" />
+                        </p:password>
+                        <p:message for="oldpassword" />
+
+                        <p:outputLabel value="New Password"/>
+                        <p:password id="newpassword" feedback="true"
+                                    value="#{settingBean.newpassword}" match="renewpassword"
+                                    label="New Password" validatorMessage="Password need at least one digit, one uppercase letter and 8 lenght">
+                            <f:validateRegex pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" />
+                        </p:password>
+                        <p:message for="newpassword" />
+
+                        <p:outputLabel value="Confirm New Password"/>
+                        <p:password id="renewpassword"
+                                    value="#{settingBean.renewpassword}" 
+                                    label="New Password" validatorMessage="Password need at least one digit, one uppercase letter and 8 lenght">
+                            <f:validateRegex pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" />
+                        </p:password>
+                        <p:message for="renewpassword" />
+
+                        <p:outputLabel value="Avatar:"/>
+                        <p:fileUpload id="avatarUpload" value="#{settingBean.uploadedFile}" mode="simple"
+                                      dragDropSupport="true" fileLimit="1" sizeLimit="100000"
+                                      multiple="false" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+                        <p:message for="avatarUpload" />
+
+                    </h:panelGrid>
+
+                    <h2>Calendar Setting</h2>
+                    <h:panelGrid columns="3" cellpadding="5" >
+                        <h:outputLabel for="visibility" value="Visibility:" />
+                        <p:selectOneRadio id="visibility" value="#{settingBean.calendarVisibility}">
+                            <f:selectItem itemLabel="Public" itemValue="PUBLIC" />
+                            <f:selectItem itemLabel="Private" itemValue="PRIVATE" />
+                        </p:selectOneRadio>
+                        <p:message for="visibility" />
+
+                        <h:outputLabel for="timezone" value="TimeZone:" />
+                        <p:selectOneMenu id="timezone" value="#{settingBean.loggedUser.setting.timeZone.ID}" filter="true" filterMatchMode="startsWith">
+                            <f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+                            <f:selectItems value="#{settingBean.loggedUser.setting.timeZone.getAvailableIDs()}" />
+                        </p:selectOneMenu>
+                        <p:message for="timezone" />
+
+                        <h:outputLabel for="timeformat" value="TimeFormat:" />
+                        <p:selectOneRadio id="timeformat" value="#{settingBean.loggedUser.setting.timeFormat}">
+                            <f:selectItem itemLabel="24h" itemValue="DEFAULT" />
+                            <f:selectItem itemLabel="AM/PM" itemValue="AMPM" />
+                        </p:selectOneRadio>
+                        <p:message for="timeformat" />
+
+
+                        <h:outputLabel for="dateformat" value="DateFormat:" />
+                        <p:selectOneMenu id="dateformat" value="#{settingBean.loggedUser.setting.dateFormat}">
+                            <f:selectItem itemLabel="dd/MM/yyyy" itemValue="DMY" />
+                            <f:selectItem itemLabel="MM/dd/yyyy" itemValue="MDY" />
+                            <f:selectItem itemLabel="yyyy/MM/dd" itemValue="YMD" />
+                        </p:selectOneMenu>
+                        <p:message for="dateformat" />
+
+                    </h:panelGrid>
+
+                    <p:commandButton value="Reset" type="reset"  />
+                    <p:commandButton value="Save" ajax="false"
+                                     actionListener="#{settingBean.changeSetting()}"
+                                     update="@form" 
+                                     icon="ui-icon-check" />
+
+                </h:form>
+                <p:spacer height="10px" />
+                <p:link outcome="account" value="Add Social Account" />
+            </div>
+
+        </ui:define>
+    </ui:composition>
+
+
+</html>

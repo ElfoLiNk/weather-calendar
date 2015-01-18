@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <head><title></title></head>
+    <h:body>
+
+        <ui:composition template="/templates/commonTemplate.xhtml">
+
+
+            <ui:define name="title">MeteoCal - Calendar of #{calendarBean.currentUser.firstName} #{calendarBean.currentUser.lastName}</ui:define>
+
+            <ui:define name="center">
+
+                <h:form id="scheduleForm">
+                    <p:growl id="messages" showDetail="true" />
+                    <p:schedule id="schedule" value="#{calendarBean.eventModel}"
+                                widgetVar="myschedule"  timeZone="#{calendarBean.loggedUser.setting.timeZone.ID}"  timeFormat="#{(calendarBean.loggedUser.setting.timeFormat == 'DEFAULT') ? 'H:mm' : null}" 
+                                axisFormat="#{(calendarBean.loggedUser.setting.timeFormat == 'DEFAULT') ? 'H:mm' : null}" >
+
+                        <p:ajax event="dateSelect"  disabled="#{not calendarBean.currentUser.id.equals(calendarBean.loggedUser.id)}"
+                                listener="#{calendarBean.onDateSelect}" update="eventDetails"
+                                oncomplete="PF('eventDialog').show()" />
+                        <p:ajax event="eventSelect"
+                                listener="#{calendarBean.onEventSelect}"
+                                update="eventDetails" oncomplete="PF('eventDialog').show()" />
+                        <p:ajax event="eventMove" disabled="#{not calendarBean.currentUser.id.equals(calendarBean.loggedUser.id)}"
+                                listener="#{calendarBean.onEventMove}" update="messages" />
+                        <p:ajax event="eventResize" disabled="#{not calendarBean.currentUser.id.equals(calendarBean.loggedUser.id)}"
+                                listener="#{calendarBean.onEventResize}" update="messages" />
+
+                    </p:schedule>
+
+
+                    <p:dialog widgetVar="eventDialog" header="Event Details"
+                              showEffect="clip" hideEffect="clip" resizable="false">
+                        <h:panelGrid id="eventDetails" columns="2">
+                            <h:outputLabel for="title" value="Title:" />
+                            <p:inputText rendered="#{calendarBean.event.eoId.equals(calendarBean.loggedUser.id)}" id="title" value="#{calendarBean.event.title}"
+                                         required="true" />
+                            <h:outputText rendered="#{not calendarBean.event.eoId.equals(calendarBean.loggedUser.id)}" id="titleLabel" value="#{calendarBean.event.title}" />
+
+                            <h:outputLabel for="description" value="Description:" />
+                            <p:inputText rendered="#{calendarBean.event.eoId.equals(calendarBean.loggedUser.id)}" id="description" value="#{calendarBean.event.description}"
+                                         />
+                            <h:outputText rendered="#{not calendarBean.event.eoId.equals(calendarBean.loggedUser.id)}" id="descriptionLabel" value="#{calendarBean.event.description}"
+                                          />
+
+                            <h:outputLabel for="location" value="Location:" />
+                            <p:autoComplete forceSelection="true" id="location" rendered="#{calendarBean.event.eoId.equals(calendarBean.loggedUser.id)}" value="#{calendarBean.event.location}"  completeMethod="#{searchBean.completeLocations}" style="width:100%; top: auto;" />
+                            <h:outputText rendered="#{not calendarBean.event.eoId.equals(calendarBean.loggedUser.id)}" id="locationLabel" value="#{calendarBean.event.location}"
+                                          />
+
+                            <h:outputLabel for="site" value="Site:" />
+                            <p:selectOneRadio rendered="#{calendarBean.event.eoId.equals(calendarBean.loggedUser.id)}"  id="site" value="#{calendarBean.event.site}">
+                                <f:selectItem itemLabel="Indoor" itemValue="INDOOR" />
+                                <f:selectItem itemLabel="Outdoor" itemValue="OUTDOOR" />
+                            </p:selectOneRadio>
+                            <h:outputText rendered="#{not calendarBean.event.eoId.equals(calendarBean.loggedUser.id)}" id="siteText" value="#{calendarBean.event.site}"
+                                          />
+
+
+                            <h:outputLabel for="from" value="From:" />
+                            <p:calendar rendered="#{calendarBean.event.eoId.equals(calendarBean.loggedUser.id)}"  id="from" 
+                                        value="#{calendarBean.event.startDate}"  
+                                        pattern="#{settingBean.loggedUser.setting.dateFormat == 'DMY' ? 'dd/MM/yyyy' :
+                                                   settingBean.loggedUser.setting.dateFormat == 'MDY' ? 'MM/dd/yyyy' :
+                                                   'yyyy/MM/dd'} HH:mm"
+                                        timeZone="#{calendarBean.loggedUser.setting.timeZone.ID}" >
+                                <p:ajax event="dateSelect" listener="#{calendarBean.checkEventDate()}"   update="allDay,from,to" process="@this" />
+                            </p:calendar>
+                            <h:outputText rendered="#{not calendarBean.event.eoId.equals(calendarBean.loggedUser.id)}"
+                                          value="#{calendarBean.event.startDate}" >
+                                <f:convertDateTime pattern="#{settingBean.loggedUser.setting.dateFormat == 'DMY' ? 'dd/MM/yyyy' :
+                                                              settingBean.loggedUser.setting.dateFormat == 'MDY' ? 'MM/dd/yyyy' :
+                                                              'yyyy/MM/dd'} HH:mm" />
+                            </h:outputText>
+
+                            <h:outputLabel for="to" value="To:" />
+                            <p:calendar rendered="#{calendarBean.event.eoId.equals(calendarBean.loggedUser.id)}"  id="to" 
+                                        value="#{calendarBean.event.endDate}" 
+                                        pattern="#{settingBean.loggedUser.setting.dateFormat == 'DMY' ? 'dd/MM/yyyy' :
+                                                   settingBean.loggedUser.setting.dateFormat == 'MDY' ? 'MM/dd/yyyy' :
+                                                   'yyyy/MM/dd'} HH:mm"  
+                                        timeZone="#{calendarBean.loggedUser.setting.timeZone.ID}" >
+                                <p:ajax event="dateSelect" listener="#{calendarBean.checkEventDate()}"   update="allDay,from,to" process="@this" />
+                            </p:calendar>
+                            <h:outputText rendered="#{not calendarBean.event.eoId.equals(calendarBean.loggedUser.id)}" value="#{calendarBean.event.endDate}" >
+                                <f:convertDateTime pattern="#{settingBean.loggedUser.setting.dateFormat == 'DMY' ? 'dd/MM/yyyy' :
+                                                              settingBean.loggedUser.setting.dateFormat == 'MDY' ? 'MM/dd/yyyy' :
+                                                              'yyyy/MM/dd'} HH:mm" />
+                            </h:outputText>
+
+                            <h:outputLabel for="allDay" value="All Day:" />
+                            <h:selectBooleanCheckbox rendered="#{calendarBean.event.eoId.equals(calendarBean.loggedUser.id)}"  id="allDay"
+                                                     value="#{calendarBean.event.allDay}" />
+                            <h:outputText rendered="#{not calendarBean.event.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.allDay}"  value="Yes" />
+                            <h:outputText rendered="#{not calendarBean.event.eoId.equals(calendarBean.loggedUser.id) and not calendarBean.event.allDay}"  value="No" />
+
+
+                            <h:outputLabel for="visibility" value="Visibility:" />
+                            <p:selectOneRadio rendered="#{calendarBean.event.eoId.equals(calendarBean.loggedUser.id)}"  id="visibility" value="#{calendarBean.event.visibility}">
+                                <f:selectItem itemLabel="Public" itemValue="PUBLIC" />
+                                <f:selectItem itemLabel="Private" itemValue="PRIVATE" />
+                            </p:selectOneRadio>
+                            <h:outputText rendered="#{not calendarBean.event.eoId.equals(calendarBean.loggedUser.id)}" id="visibilityText" value="#{calendarBean.event.visibility}" />
+
+                            <h:outputLabel for="participants" value="Participants:" />   
+
+                            <p:dataScroller  id="participants" rendered="#{calendarBean.event.id != null}" value="#{calendarBean.event.listParticipantAndInvitedUsers}" var="user" chunkSize="10">
+                                <h:panelGrid columns="2">
+                                    <h:outputText value="#{user.firstName} #{user.lastName}" style="display:inline-block"/>
+                                    <p:graphicImage  library="images"  name="accept.svg" rendered="#{calendarBean.event.eventParticipants.contains(user)}" alt="Accepted" width="20" height="20"/>
+                                    <p:graphicImage  library="images"  name="pending.svg" rendered="#{calendarBean.event.invitedUsers.contains(user)}" alt="Pending"  width="20" height="20" />   
+                                    <p:graphicImage library="images"  name="declined.svg" rendered="#{not calendarBean.event.invitedUsers.contains(user) and not calendarBean.event.eventParticipants.contains(user)}" alt="Declined"   width="20" height="20" />
+
+                                </h:panelGrid>
+                            </p:dataScroller>
+
+                            <h:outputLabel for="addParticipantsButton" rendered="#{calendarBean.event.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.id != null}" value="" />
+                            <p:commandButton id="addParticipantsButton" rendered="#{calendarBean.event.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.id != null}" type="button" value="Add" onclick="PF('addParticipantDialog').show();" />
+
+                            <h:outputLabel for="weather" value="Weather:" rendered="#{calendarBean.event.weather != null}"/>
+                            <h:panelGrid id="weather" columns="2" rendered="#{calendarBean.event.weather != null}" style="text-align: center;">
+
+
+                                <p:graphicImage value="http://openweathermap.org/img/w/#{calendarBean.event.weather.icon}.png"/>
+                                <h:outputText value="#{calendarBean.event.weather.description}"/>
+
+                                <h:outputLabel value="Temperature: "/>
+                                <h:outputText value=" #{calendarBean.event.weather.temperature} °C"/>
+
+
+
+                            </h:panelGrid>
+
+                            <p:spacer width="20" height="20" /> 
+                            <p:spacer width="20" height="20" /> 
+                            <p:spacer width="20" height="5" /> 
+                            <h:outputLabel rendered="#{calendarBean.event.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.id != null}" for="removeButton" value="" />
+                            <p:commandButton rendered="#{calendarBean.event.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.id != null}" 
+                                             id="removeButton" value="Delete Event  " update="messages,:notificationForm"
+                                             actionListener="#{calendarBean.removeEvent}"
+                                             oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
+
+                            <h:outputLabel rendered="#{calendarBean.event.eventParticipants.contains(calendarBean.loggedUser)}" for="cancelButton" value="" />
+                            <p:commandButton rendered="#{calendarBean.event.eventParticipants.contains(calendarBean.loggedUser)}"
+                                             id="cancelButton" value="Cancel Partecipation" update="messages,:notificationForm"
+                                             actionListener="#{calendarBean.cancelEvent}"
+                                             oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
+
+                            <p:commandButton rendered="#{calendarBean.event.editable and calendarBean.event.id == null}" type="reset" value="Reset" />
+                            <p:commandButton id="addButton" value="Save" update="messages"
+                                             actionListener="#{calendarBean.addEvent}" rendered="#{calendarBean.event.eoId.equals(calendarBean.loggedUser.id)}"
+                                             oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
+                            <p:commandButton id="okButton" type="button" value="Ok" rendered="#{not calendarBean.event.eoId.equals(calendarBean.loggedUser.id)}"
+                                             onclick="PF('myschedule').update();
+                                                     PF('eventDialog').hide();" />
+                        </h:panelGrid>
+                    </p:dialog>
+
+                    <p:dialog widgetVar="addParticipantDialog" header="Add Participant"
+                              showEffect="clip" hideEffect="clip" resizable="false" >
+                        <h:panelGrid id="addParticipant" columns="2">
+                            <p:autoComplete id="searchBarParticipant"  value="#{searchBean.input}" completeMethod="#{searchBean.searchUser}" style="width:100%; top: auto;"
+                                            var="result" itemLabel="#{result.name}" itemValue="#{result}" converter="resultConverter" forceSelection="true">
+                                <p:column style="width:10%">
+                                    <h:outputText value="#{result.type}" />
+                                </p:column>
+                                <p:column>
+                                    <h:outputText value="#{result.name}" />
+                                </p:column>
+                                <p:ajax event="itemSelect" listener="#{calendarBean.handleSelect}" />
+                            </p:autoComplete>
+                            <p:commandButton id="addParticipantButton"  value="Add" update="messages,:scheduleForm:eventDetails" 
+                                             actionListener="#{calendarBean.addParticipant}"
+                                             oncomplete="PF('addParticipantDialog').hide();" />
+                        </h:panelGrid>
+
+                    </p:dialog>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+    </h:body>
+</html>
