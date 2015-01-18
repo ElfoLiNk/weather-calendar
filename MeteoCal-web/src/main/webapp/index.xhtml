@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title><ui:insert name="title">MeteoCal</ui:insert></title>
+        <ui:insert name="header"></ui:insert>
+        <style type="text/css">
+            body {
+                font-size: 80%;
+            }
+
+            .ui-layout-unit {
+                border: none;
+                padding: 5px;
+            }
+
+            .ui-datalist-content {
+                border: none !important;
+            }
+
+            .ui-datalist-item {
+                list-style-type: none;
+            }
+
+            .ui-layout-north {
+                overflow: hidden !important;
+            }
+
+            .ui-layout-north .ui-layout-unit-content {
+                overflow: hidden !important;
+            }
+        </style>
+        <script type="text/javascript">
+            function handleRegistrationRequest(xhr, status, args)
+            {
+                if (args.validationFailed || !args.registered) {
+                    $("#registrationDlgId").effect("shake", {times: 3}, 100);
+                } else {
+                    PF('registrationDlg').hide();
+                    $("#registerLink").fadeOut();
+                }
+            }
+            function handleLoginRequest(xhr, status, args) {
+                if (args.validationFailed || !args.loggedIn) {
+                    PF('loginDlg').jq.effect("shake", {times: 5}, 100);
+                }
+                else {
+                    PF('loginDlg').hide();
+                    $('#loginLink').fadeOut();
+                }
+            }
+
+
+        </script>
+    </h:head>
+
+    <h:body>
+        <p:layout fullPage="true">
+
+            <p:layoutUnit position="north" size="0"
+                          resizable="true" closable="false" collapsible="true">
+                <ui:insert name="north">
+
+                </ui:insert>
+            </p:layoutUnit>
+
+            <p:layoutUnit position="south" size="0" resizable="true"
+                          closable="false" collapsible="true">
+                <ui:insert name="south">
+                </ui:insert>
+            </p:layoutUnit>
+
+            <p:layoutUnit position="west" size="250" resizable="true"
+                          closable="false" collapsible="true">
+                <ui:insert name="west">
+                </ui:insert>
+            </p:layoutUnit>
+
+            <p:layoutUnit position="east" size="250" resizable="true"
+                          closable="false" collapsible="true" effect="drop">
+            </p:layoutUnit>
+
+            <p:layoutUnit position="center" id="centerPanel">
+                <ui:insert name="center">
+                    <p align="center">
+                        <p:graphicImage 
+                            library="images" name="meteocal-logo.png" alt="Logo MeteoCal"/>
+                    </p>
+                    <p align="center">
+
+                        <p:link href="#{twitterLogin.linkLoginTwitter}">
+                            <p:graphicImage 
+                                library="images"  name="twitter.svg" width="200"
+                                height="200" style="padding: 5px"/>
+                        </p:link> 
+                        <p:link href="#{facebookLogin.linkLoginFacebook}">
+                            <p:graphicImage
+                                library="images"  name="facebook.svg" width="200"
+                                height="200" style="padding: 5px"/>
+                        </p:link> 
+                        <p:link href="#{googleLogin.linkLoginGoogle}">
+                            <p:graphicImage
+                                library="images"  name="googleplus.svg"  width="210"
+                                height="210" style="padding: 5px"/>
+                        </p:link>
+                    </p>
+                    <p align="center">
+
+
+
+                        <p:commandButton id="loginLink" value="Login" type="button" onclick="PF('loginDlg').show();" />
+
+                        <p:commandButton id="registerLink" value="Registration" type="button" onclick="PF('registrationDlg').show();" /> 
+
+                    </p>
+
+
+
+                    <p:dialog header="Login" widgetVar="loginDlg" resizable="false"   focus="loginFormDlg:emailLogin">
+
+                        <h:form id="loginFormDlg">
+                            <p:growl id="msgs" showDetail="true" />
+                            <h:panelGrid columns="3" cellpadding="5">
+
+                                <h:outputLabel for="emailLogin" value="Email:" />
+                                <p:inputText id="emailLogin" value="#{loginBean.loginUser.email}" required="true" label="email" >
+                                    <f:validateRegex pattern="[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[A-Z]{2}|it|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)\b" />
+                                </p:inputText>
+                                <p:message for="emailLogin" />
+
+                                <h:outputLabel for="passwordLogin" value="Password:" />
+                                <p:password id="passwordLogin"  value="#{loginBean.loginUser.password}" required="true" label="password" >
+                                    <f:validateRegex pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" />
+                                </p:password>
+                                <p:message for="passwordLogin" />
+
+                                <f:facet name="footer">
+                                    <p:commandButton value="Login" update="@form" actionListener="#{loginBean.doLogin}"
+                                                     oncomplete="handleLoginRequest(xhr, status, args)" />
+                                </f:facet>  
+                            </h:panelGrid>
+                        </h:form>
+                    </p:dialog>
+
+
+
+
+                    <p:dialog id="registrationDlgId" widgetVar="registrationDlg"
+                              header="Registration Form"
+                              focus="registrationFormDlg:emailRegistration"
+                              resizable="false">
+                        <h:form id="registrationFormDlg">
+                            <p:growl id="messages" showDetail="true" />
+                            <h:panelGrid columns="3" cellpadding="5">
+
+                                <p:outputLabel for="emailRegistration" value="Email:"/>
+                                <p:inputText id ="emailRegistration"
+                                             value="#{registrationBean.registerUser.email}"
+                                             required="true" label="Email"  validatorMessage="Please insert a valid email">
+                                    <f:validateRegex pattern="[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[A-Z]{2}|it|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)\b" />
+                                </p:inputText>
+                                <p:message for="emailRegistration" />
+
+                                <p:outputLabel for="passwordRegistration" value="Password:"/>
+                                <p:password  id="passwordRegistration" feedback="true" inline="true" 
+                                             value="#{registrationBean.registerUser.password}"
+                                             required="true" label="Password"  match="passwordCheck"
+                                             validatorMessage="Password need at least one digit, one uppercase letter and 8 lenght">
+                                    <f:validateRegex pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" />
+                                </p:password>
+                                <p:message for="passwordCheck" />
+                                <p:outputLabel for="passwordCheck" value="Confirm Password:"/>
+                                <p:password  id="passwordCheck" feedback="true" inline="true" 
+                                             value="#{registrationBean.passwordCheck}"
+                                             required="true" label="Password"
+                                             validatorMessage="Password need at least one digit, one uppercase letter and 8 lenght">
+                                    <f:validateRegex pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" />
+                                </p:password>
+                                <p:message for="passwordCheck" />
+
+                                <p:outputLabel value="First Name: *"/>
+                                <p:inputText id="firstName"
+                                             value="#{registrationBean.registerUser.firstName}"
+                                             label="FirstName"
+                                             required="true"/>
+                                <p:message for="firstName" />
+
+                                <p:outputLabel value="Last Name: *" />
+                                <p:inputText id="lastName"
+                                             value="#{registrationBean.registerUser.lastName}" label="LastName" 
+                                             required="true"/>
+                                <p:message for="lastName" />
+
+                                <p:outputLabel for="gender" value="Gender:  " />
+                                <p:selectOneButton id="gender" value="#{registrationBean.registerUser.gender}">
+                                    <f:selectItem itemLabel="Male" itemValue="MALE" />
+                                    <f:selectItem itemLabel="Female" itemValue="FEMALE" />
+                                </p:selectOneButton>
+                                <p:message for="gender" />
+
+                                <p:outputLabel for="dateBirth" value="Birth Date:" />
+                                <p:calendar id="dateBirth" value="#{registrationBean.registerUser.dateBirth}"  pattern="dd-MM-yyyy" mask="true" yearRange="c-100:c" >
+                                    <p:ajax event="dateSelect" listener="#{registrationBean.onDateSelect}" update="messages" />
+                                </p:calendar>
+                                <p:message for="dateBirth" />
+
+                                <f:facet name="footer">
+                                    <p:commandButton value="Register"
+                                                     actionListener="#{registrationBean.doRegister}"
+                                                     update="@form" oncomplete=
+                                                     "handleRegistrationRequest(xhr, status, args)"
+                                                     icon="ui-icon-check" />
+                                </f:facet>
+                            </h:panelGrid>
+                        </h:form>
+                    </p:dialog>
+                </ui:insert>
+            </p:layoutUnit>
+
+        </p:layout>
+    </h:body>
+
+</html>
