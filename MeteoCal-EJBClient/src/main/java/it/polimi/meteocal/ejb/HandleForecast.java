@@ -75,12 +75,9 @@ public interface HandleForecast {
     public void addDailyForecasts(String location);
 
     /**
-     * Method usefull to clean the DB from the old forecast information for the
-     * given location
-     *
-     * @param location the location of the event to check
+     * Method usefull to clean the DB from the old forecast information 
      */
-    public void removeOldForecast(String location);
+    public void removeOldForecast();
 
     /**
      * Method that crawl the location of the OWM API and save it in the DB Used

@@ -130,8 +130,9 @@ public interface HandleUser {
      * Method that save the notification in the DB
      *
      * @param notification the notification to save in the DB
+     * @return true if the notification is added, false otherwise
      */
-    public void addNotification(EventNotificationDTO notification);
+    public boolean addNotification(EventNotificationDTO notification);
 
     /**
      * Method that handle the user accepts to a notification
