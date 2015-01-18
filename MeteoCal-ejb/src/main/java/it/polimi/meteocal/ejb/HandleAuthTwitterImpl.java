@@ -47,9 +47,9 @@ import twitter4j.conf.ConfigurationBuilder;
 public class HandleAuthTwitterImpl implements HandleAuthTwitter {
 
     // OAuth Data
-    private final static String CLIENT_ID = "< Insert CLIENT ID >";
-    private final static String CLIENT_SECRET = "< Insert CLIENT SECRET >";
-    private final static String URL_BASE = "http://www.meteocal.tk";
+    private static final String CLIENT_ID = "< Insert CLIENT ID >";
+    private static final String CLIENT_SECRET =  "< Insert CLIENT SECRET >";
+    private static final String URL_BASE = "http://www.meteocal.tk";
     
     private static final Logger LOGGER = LogManager.getLogger(HandleAuthTwitterImpl.class.getName());
 
@@ -78,6 +78,7 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
 
         AccessToken at = new AccessToken(user.getTwitterToken(),
                 user.getTwitterTokenSecret());
+        LOGGER.log(Level.INFO, at);
         try {
             twitter.setOAuthAccessToken(at);
         } catch (Exception e) {
@@ -93,7 +94,7 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
     @PersistenceContext
     EntityManager em;
 
-    private Twitter twitter;
+    private final Twitter twitter;
     private RequestToken requestToken;
     private AccessToken accessToken;
     private int cont;
@@ -123,7 +124,7 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
         }
         cont++;
         LOGGER.log(Level.INFO, "Conteggio: " + cont);
-
+        LOGGER.log(Level.INFO, "URL LOGIN " + urlLogin);
         return urlLogin;
     }
 

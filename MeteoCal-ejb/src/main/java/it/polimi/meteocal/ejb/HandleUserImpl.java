@@ -54,7 +54,7 @@ import org.apache.logging.log4j.Logger;
  */
 @Stateless
 public class HandleUserImpl implements HandleUser {
-    
+
     private static final Logger LOGGER = LogManager.getLogger(HandleUserImpl.class.getName());
 
     /**
@@ -66,20 +66,21 @@ public class HandleUserImpl implements HandleUser {
      * @param oldUser the old user to save informations
      */
     public static void mergeOldUserNewUser(EntityManager em, User newUser, User oldUser) {
-        // MOVE CALENDAR
-        newUser.setCalendar(oldUser.getCalendar());
-        // MOVE EVENTS
+        // MOVE/CHANGE EO EVENTS
         for (Event event : oldUser.getCalendar().getOrganizedEvents()) {
             event.setEo(newUser);
             em.merge(event);
+            newUser.getCalendar().getOrganizedEvents().add(event);
         }
+        // MOVE/CHANGE EP EVENTS
         for (Event event : oldUser.getCalendar().getParticipatedEvents()) {
             event.getEventParticipants().remove(oldUser);
             event.getEventParticipants().add(newUser);
             em.merge(event);
+            newUser.getCalendar().getParticipatedEvents().add(event);
         }
         // MOVE SETTING
-        newUser.setSetting(oldUser.getSetting());
+        //newUser.setSetting(oldUser.getSetting());
 
         em.merge(newUser);
         em.flush();
@@ -309,9 +310,20 @@ public class HandleUserImpl implements HandleUser {
     public void changeSettings(UserDTO loggedUser) throws ErrorRequestException {
         User user = em.find(User.class, Long.valueOf(loggedUser.getId()));
         if (user != null) {
-
-            // Change User Setting
-            user.setEmail(loggedUser.getEmail());
+            // CHECK EMAIL
+            if (!user.getEmail().equals(loggedUser.getEmail())) {
+                TypedQuery<User> query = em.createNamedQuery(User.FIND_BY_EMAIL,
+                        User.class);
+                query.setParameter("email", loggedUser.getEmail());
+                if (query.getResultList().isEmpty()) {
+                    user.setEmail(loggedUser.getEmail());
+                } else {
+                    throw new ErrorRequestException("email already used", false);
+                }
+            }
+            // Change User BIO
+            user.setFirstName(loggedUser.getFirstName());
+            user.setLastName(loggedUser.getLastName());
             user.setGender(loggedUser.getGender());
             user.setDateBirth(loggedUser.getDateBirth());
             try {
@@ -360,23 +372,31 @@ public class HandleUserImpl implements HandleUser {
     }
 
     @Override
-    public void addNotification(EventNotificationDTO notification) {
+    public boolean addNotification(EventNotificationDTO notification) {
 
         User user = em.find(User.class, Long.valueOf(notification.getUserId()));
 
         if (user != null) {
-            EventNotification notif = new EventNotification();
-            notif.setUser(user);
-            notif.setStatus(notification.getStatus());
-            notif.setMessage(notification.getMessage());
             Event event = em.find(Event.class, Long.valueOf(notification.getEventId()));
-            notif.setEvent(event);
-            user.getListNotifications().add(notif);
-            em.persist(notif);
-            em.merge(user);
-            em.flush();
+            if (event != null) {
+                TypedQuery<EventNotification> query = em.createNamedQuery(EventNotification.FIND_BY_EVENT,
+                        EventNotification.class);
+                query.setParameter("event", event);
+                if (query.getResultList().isEmpty()) {
+                    EventNotification notif = new EventNotification();
+                    notif.setUser(user);
+                    notif.setStatus(notification.getStatus());
+                    notif.setMessage(notification.getMessage());
+                    notif.setEvent(event);
+                    user.getListNotifications().add(notif);
+                    em.persist(notif);
+                    em.merge(user);
+                    em.flush();
+                    return true;
+                }
+            }
         }
-
+        return false;
     }
 
     @Override
@@ -512,7 +532,7 @@ public class HandleUserImpl implements HandleUser {
                 em.remove(notification);
                 em.flush();
                 LOGGER.log(Level.INFO, "DECLINED PARTICEPITATION TO EVENT: " + notification.getEvent().getId());
-            } else {
+            } else if (user != null && event != null) {
                 // USER DECLINE TO ALERT NOTIFICATION
                 event.getEventParticipants().remove(user);
                 user.getCalendar().getParticipatedEvents().remove(event);

@@ -65,8 +65,8 @@ import org.apache.logging.log4j.Logger;
 @Stateless
 public class HandleAuthGoogleImpl implements HandleAuthGoogle {
 
-    private final static String CLIENT_ID =  "< Insert CLIENT ID >";
-    private final static String CLIENT_SECRET = "< Insert CLIENT SECRET >";
+    private static final String CLIENT_ID =  "< Insert CLIENT ID >";
+    private static final String CLIENT_SECRET = "< Insert CLIENT SECRET >";
     private static final String APPLICATION_NAME = "MeteoCal";
     
     private static final Logger LOGGER = LogManager.getLogger(HandleAuthGoogleImpl.class.getName());
@@ -74,7 +74,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
     /**
      * Global instance of the HTTP transport.
      */
-    private static HttpTransport httpTransport;
+    private HttpTransport httpTransport;
 
     /**
      * Global instance of the JSON factory.
@@ -97,7 +97,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
             return null;
         }
         try {
-            httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+            HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
             GoogleCredential credential = new GoogleCredential.Builder()
                     .setTransport(new NetHttpTransport())
                     .setJsonFactory(new JacksonFactory())
@@ -160,7 +160,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
                 .createEntityManagerFactory("MeteoCalEJB");
         EntityManager em = emf.createEntityManager();
         try {
-            httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+            HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 
             String tokenGoogle = tokenResponse.toString();
             LOGGER.log(Level.INFO, tokenGoogle);
@@ -231,7 +231,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
 
             if (!AuthUtil.isUserLogged()) {
                 // Saves the new data of the user in the DB
-                User utente = null;
+                User user = null;
                 TypedQuery<User> q = em.createNamedQuery(User.FIND_BY_GOOGLE_ID, User.class);
                 q.setParameter("googleId", mePerson.getId());
                 TypedQuery<User> q2 = em.createNamedQuery(User.FIND_BY_EMAIL, User.class);
@@ -243,61 +243,61 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
                 }
                 if (q.getResultList().isEmpty() && q2.getResultList().isEmpty()) {
                     // The user is not in the system
-                    utente = new User();
-                    utente.setGoogleId(mePerson.getId());
-                    utente.setGoogleToken(tokenGoogle);
-                    utente.setFirstName(mePerson.getName().getGivenName());
-                    utente.setLastName(mePerson.getName().getFamilyName());
-                    utente.setAvatar(mePerson.getImage().getUrl());
+                    user = new User();
+                    user.setGoogleId(mePerson.getId());
+                    user.setGoogleToken(tokenGoogle);
+                    user.setFirstName(mePerson.getName().getGivenName());
+                    user.setLastName(mePerson.getName().getFamilyName());
+                    user.setAvatar(mePerson.getImage().getUrl());
                     if (mePerson.getEmails() != null) {
-                        utente.setEmail(mePerson.getEmails().get(0).getValue());
+                        user.setEmail(mePerson.getEmails().get(0).getValue());
                     }
                     if (mePerson.getBirthday() != null) {
 
                         try {
-                            utente.setDateBirth(new SimpleDateFormat("MM/dd").parse(mePerson.getBirthday()));
+                            user.setDateBirth(new SimpleDateFormat("MM/dd").parse(mePerson.getBirthday()));
                         } catch (ParseException ex) {
                             LOGGER.log(Level.WARN, ex);
                         }
 
                     }
                     try {
-                        utente.setPassword(PasswordHash.createHash(utente.getFirstName() + "." + utente.getLastName()));
+                        user.setPassword(PasswordHash.createHash(user.getFirstName() + "." + user.getLastName()));
                     } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
                         LOGGER.log(Level.FATAL, ex, ex);
                     }
 
-                    LOGGER.log(Level.INFO, utente.toString());
+                    LOGGER.log(Level.INFO, user.toString());
 
                     Setting setting = new Setting();
                     setting.setTimeZone(TimeZone.getTimeZone("GMT+1"));
-                    utente.setSetting(setting);
-                    em.persist(utente);
+                    user.setSetting(setting);
+                    em.persist(user);
                     em.flush();
-                    em.refresh(utente);
+                    em.refresh(user);
                 } else if (!q.getResultList().isEmpty()) {
                     // The user is already in the system
                     LOGGER.log(Level.INFO, "User already registered with Google");
-                    utente = q.getResultList().get(0);
+                    user = q.getResultList().get(0);
                     if (tokenGoogle.contains("refresh_token")) {
                         LOGGER.log(Level.INFO, "GoogleToken updated");
-                        utente.setGoogleToken(tokenGoogle);
-                        em.merge(utente);
+                        user.setGoogleToken(tokenGoogle);
+                        em.merge(user);
                         em.flush();
                     }
 
                 } else {
 
                     LOGGER.log(Level.INFO, "User already registered with classic method");
-                    utente = q2.getResultList().get(0);
+                    user = q2.getResultList().get(0);
                     //TODO merge informazioni da google mancanti
 
-                    em.merge(utente);
+                    em.merge(user);
                     em.flush();
                 }
 
                 // Make the session for the user
-                AuthUtil.makeUserSession(utente.getId());
+                AuthUtil.makeUserSession(user.getId());
 
             } else {
                 // User already registered in the system
@@ -316,11 +316,11 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
 
                     // User account already in the system
                     LOGGER.log(Level.INFO, "User already registered with GooglePlus");
-                    User utenteVecchio = q.getResultList().get(0);
-                    if (!Objects.equals(utente.getId(), utenteVecchio.getId())) {
+                    User oldUser = q.getResultList().get(0);
+                    if (!Objects.equals(utente.getId(), oldUser.getId())) {
                         // Need to merge the two account
                         utente = HandleUserImpl.mergeUserAccount(utente,
-                                utenteVecchio);
+                                oldUser);
 
                         // set the new GooglePlus data
                         utente.setGoogleId(mePerson.getId());
@@ -332,9 +332,9 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
                         // Transfer all the settings
                         HandleUserImpl
                                 .mergeOldUserNewUser(em,
-                                        utente, utenteVecchio);
+                                        utente, oldUser);
 
-                        em.remove(utenteVecchio);
+                        em.remove(oldUser);
                         em.flush();
                     }
 
