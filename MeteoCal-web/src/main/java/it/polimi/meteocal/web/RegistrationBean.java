@@ -52,10 +52,18 @@ public class RegistrationBean implements Serializable {
 
     private String passwordCheck;
 
+    /**
+     *
+     * @return the confirm password 
+     */
     public String getPasswordCheck() {
         return passwordCheck;
     }
 
+    /**
+     *
+     * @param passwordCheck the confirm password to set
+     */
     public void setPasswordCheck(String passwordCheck) {
         this.passwordCheck = passwordCheck;
     }
@@ -67,14 +75,25 @@ public class RegistrationBean implements Serializable {
 
     }
 
+    /**
+     *
+     * @return the registered user
+     */
     public UserDTO getRegisterUser() {
         return registerUser;
     }
 
+    /**
+     *
+     * @param registerUser the registered user to set
+     */
     public void setRegisterUser(UserDTO registerUser) {
         this.registerUser = registerUser;
     }
 
+    /**
+     * PostConstruct to initialize the class
+     */
     @PostConstruct
     public void dialogPostConstruct() {
         registerUser = new UserDTO();
@@ -102,6 +121,11 @@ public class RegistrationBean implements Serializable {
         RequestContext.getCurrentInstance().addCallbackParam("registered", registered);
     }
 
+    /**
+     * Method that show a message to the user with the selected date
+     * 
+     * @param event the select event of the user
+     */
     public void onDateSelect(SelectEvent event) {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");

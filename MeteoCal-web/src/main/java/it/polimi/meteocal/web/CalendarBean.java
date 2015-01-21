@@ -68,6 +68,14 @@ public class CalendarBean implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = LogManager.getLogger(CalendarBean.class.getName());
 
+    /**
+     * Method that add days and minutes to the given date
+     * 
+     * @param date the date to modify
+     * @param days the days delta to add to the date
+     * @param minutes the minutes delta to add to the date
+     * @return the modified date
+     */
     public static Date addDaysMinutes(Date date, int days, int minutes) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -99,51 +107,101 @@ public class CalendarBean implements Serializable {
 
     private ResultDTO selectedResult;
 
+    /**
+     *
+     * @return the logged user 
+     */
     public UserDTO getLoggedUser() {
         return loggedUser;
     }
 
+    /**
+     *
+     * @param loggedUser the logged user to set
+     */
     public void setLoggedUser(UserDTO loggedUser) {
         this.loggedUser = loggedUser;
     }
 
+    /**
+     *
+     * @return the selected result
+     */
     public ResultDTO getSelectedResult() {
         return selectedResult;
     }
 
+    /**
+     *
+     * @param selectedResult the selected result to set
+     */
     public void setSelectedResult(ResultDTO selectedResult) {
         this.selectedResult = selectedResult;
     }
 
+    /**
+     *
+     * @return the current user
+     */
     public UserDTO getCurrentUser() {
         return currentUser;
     }
 
+    /**
+     *
+     * @param currentUser the current user to set
+     */
     public void setCurrentUser(UserDTO currentUser) {
         this.currentUser = currentUser;
     }
 
+    /**
+     *
+     * @return the selected calendar id
+     */
     public String getSelectedCalendarId() {
         return selectedCalendarId;
     }
 
+    /**
+     *
+     * @param selectedCalendarId the calendar id to set
+     */
     public void setSelectedCalendarId(String selectedCalendarId) {
         this.selectedCalendarId = selectedCalendarId;
     }
 
+    /**
+     *
+     * @return the selected notification
+     */
     public NotificationDTO getSelectedNotification() {
         return selectedNotification;
     }
 
+    /**
+     *
+     * @param selectedNotification the selected notification to set
+     */
     public void setSelectedNotification(NotificationDTO selectedNotification) {
         this.selectedNotification = selectedNotification;
     }
 
+    /**
+     *
+     * @return the notifications of the current user
+     */
     public List<NotificationDTO> getNotifications() {
 
         return getCurrentUser().getNotifications();
     }
 
+    /**
+     * Method that retrieve the user's calendar name
+     * 
+     * @param calendarId the calendar id to set
+     * @return the name of the owner of the calendar
+     */
     public String getOwnerName(String calendarId) {
         UserDTO user = handleUser.getOwner(calendarId);
         return user.getFirstName() + " " + user.getLastName();
@@ -230,6 +288,9 @@ public class CalendarBean implements Serializable {
         event = new WeatherScheduleEvent();
     }
 
+    /**
+     * PostConstruct that initialize the class
+     */
     @PostConstruct
     public void init() {
         handleUser.removeOldNotification();
@@ -276,14 +337,26 @@ public class CalendarBean implements Serializable {
         }
     }
 
+    /**
+     *
+     * @return the event of the calendar
+     */
     public WeatherScheduleEvent getEvent() {
         return event;
     }
 
+    /**
+     *
+     * @return the event model of the calendar
+     */
     public WeatherScheduleModel getEventModel() {
         return eventModel;
     }
 
+    /**
+     *
+     * @return the initial date
+     */
     public Date getInitialDate() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(calendar.get(Calendar.YEAR), Calendar.FEBRUARY,
@@ -292,6 +365,11 @@ public class CalendarBean implements Serializable {
         return calendar.getTime();
     }
 
+    /**
+     * Initialize the event on SelectEvent 
+     * 
+     * @param selectEvent the event on the calendar
+     */
     public void onDateSelect(SelectEvent selectEvent) {
         event = new WeatherScheduleEvent("", (Date) selectEvent.getObject(),
                 (Date) selectEvent.getObject(), true);
@@ -299,6 +377,11 @@ public class CalendarBean implements Serializable {
 
     }
 
+    /**
+     * Method that move the event based on the deltas
+     * 
+     * @param event the event to move with deltas
+     */
     public void onEventMove(ScheduleEntryMoveEvent event) {
         if (loggedUser.getId().equals(eventModel.getEvent(event.getScheduleEvent().getId()).getEoId())) {
             try {
@@ -317,6 +400,11 @@ public class CalendarBean implements Serializable {
         }
     }
 
+    /**
+     * Method that resize the event based on the deltas
+     * 
+     * @param event the event to resize with deltas
+     */
     public void onEventResize(ScheduleEntryResizeEvent event) {
         if (loggedUser.getId().equals(eventModel.getEvent(event.getScheduleEvent().getId()).getEoId())) {
             try {
@@ -336,14 +424,27 @@ public class CalendarBean implements Serializable {
 
     }
 
+    /**
+     * Method that load the selected event in the calendar by the user
+     * 
+     * @param selectEvent the selected event
+     */
     public void onEventSelect(SelectEvent selectEvent) {
         event = (WeatherScheduleEvent) selectEvent.getObject();
     }
 
+    /**
+     *
+     * @param event the event to set
+     */
     public void setEvent(WeatherScheduleEvent event) {
         this.event = event;
     }
 
+    /**
+     *
+     * @param eventModel the event model to set
+     */
     public void setEventModel(WeatherScheduleModel eventModel) {
         this.eventModel = eventModel;
     }
@@ -352,6 +453,10 @@ public class CalendarBean implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
 
+    /**
+     * Method that remove the event from the model and from the system
+     * and send visual notification to the user
+     */
     public void removeEvent() {
         if (event.getId() == null) {
             addMessage(new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -383,6 +488,10 @@ public class CalendarBean implements Serializable {
         event = new WeatherScheduleEvent();
     }
 
+     /**
+     * Method that cancel the user from the partecipated users and the event from the model
+     * and send visual notification to the user
+     */
     public void cancelEvent() {
         if (event.getId() == null) {
             addMessage(new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -414,6 +523,9 @@ public class CalendarBean implements Serializable {
         event = new WeatherScheduleEvent();
     }
 
+    /**
+     * Method that add the current calendar to the preferred
+     */
     public void addPreferedCalendar() {
         handleUser.addPreferedCalendar(currentUser.getCalendarId());
         FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -423,6 +535,9 @@ public class CalendarBean implements Serializable {
         loggedUser.getPreferedCalendarsIDs().add(currentUser.getCalendarId());
     }
 
+    /**
+     * Method that remove the current calendar from the preferred
+     */
     public void delPreferedCalendar() {
         handleUser.delPreferedCalendar(currentUser.getCalendarId());
         FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -431,6 +546,11 @@ public class CalendarBean implements Serializable {
         loggedUser.getPreferedCalendarsIDs().remove(currentUser.getCalendarId());
     }
 
+    /**
+     * Method that handle the user selection in the search bar
+     * 
+     * @param event the select event of the user
+     */
     public void handleSelect(SelectEvent event) {
         // SELECT SEARCH BAR
         selectedResult = (ResultDTO) event.getObject();
@@ -452,11 +572,19 @@ public class CalendarBean implements Serializable {
 
     }
 
+    /**
+     * Redirect Method
+     * 
+     * @param outcome the outcome to reach
+     */
     public void redirect(String outcome) {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         facesContext.getApplication().getNavigationHandler().handleNavigation(facesContext, null, outcome);
     }
 
+    /**
+     * Method that handle the consistency of the event date
+     */
     public void checkEventDate() {
         event.setAllDay(false);
         if (event.getStartDate().after(event.getEndDate())) {
@@ -468,10 +596,14 @@ public class CalendarBean implements Serializable {
         }
     }
 
+    /**
+     * Method that add the user to the invited and send an event notification
+     */
     public void addParticipant() {
         if (selectedResult != null && event.getId() != null) {
             try {
                 UserDTO user = handleUser.getUser(Long.valueOf(selectedResult.getId()));
+                // CHECK IF ALREADY ADDED
                 boolean alreadyAdded = true;
                 if (!event.getListParticipantAndInvitedUsers().isEmpty()) {
                     for (UserDTO userList : event.getListParticipantAndInvitedUsers()) {
@@ -528,6 +660,9 @@ public class CalendarBean implements Serializable {
         selectedResult = null;
     }
 
+    /**
+     * Method that accept the notification
+     */
     public void acceptNotification() {
         LOGGER.log(Level.INFO, "Selected Notification: " + selectedNotification.toString());
         handleUser.acceptNotification(selectedNotification);
@@ -538,6 +673,9 @@ public class CalendarBean implements Serializable {
 
     }
 
+    /**
+     * Method that decline the notification
+     */
     public void declineNotification() {
         LOGGER.log(Level.INFO, "Selected Notification: " + selectedNotification.toString());
         handleUser.declineNotification(selectedNotification);
@@ -610,6 +748,11 @@ public class CalendarBean implements Serializable {
         }
     }
 
+    /**
+     * Method that handle the link to shows the user his prefered calendar
+     * 
+     * @param preferedCalendarId the id of the preferred calendar
+     */
     public void handlePreferedCalendar(String preferedCalendarId) {
         selectedCalendarId = preferedCalendarId;
         selectedResult = new ResultDTO();

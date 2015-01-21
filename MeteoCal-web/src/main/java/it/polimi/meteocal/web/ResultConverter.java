@@ -43,6 +43,13 @@ public class ResultConverter implements Converter {
     
     private static final Logger LOGGER = LogManager.getLogger(ResultConverter.class.getName());
 
+    /**
+     *
+     * @param fc context
+     * @param uic user interface component
+     * @param value the id of the object
+     * @return the corresponding object of the id
+     */
     @Override
     public Object getAsObject(FacesContext fc, UIComponent uic, String value) {
         if (value != null && value.trim().length() > 0) {
@@ -64,6 +71,13 @@ public class ResultConverter implements Converter {
         return null;
     }
 
+    /**
+     *
+     * @param fc context
+     * @param uic user interface component
+     * @param object the object
+     * @return the name of the object
+     */
     @Override
     public String getAsString(FacesContext fc, UIComponent uic, Object object) {
         if (object != null) {

@@ -62,26 +62,52 @@ public class SearchBean implements Serializable {
         result = new ArrayList<>();
     }
 
+    /**
+     *
+     * @return the query of the search
+     */
     public String getQuery() {
         return query;
     }
 
+    /**
+     *
+     * @param query the query to set
+     */
     public void setQuery(String query) {
         this.query = query;
     }
 
+    /**
+     *
+     * @return the input of the user
+     */
     public String getInput() {
         return input;
     }
 
+    /**
+     *
+     * @param input the input to set
+     */
     public void setInput(String input) {
         this.input = input;
     }
 
+    /**
+     *
+     * @param event ajax event
+     */
     public void reset(AjaxBehaviorEvent event) {
         result = new ArrayList<>();
     }
 
+    /**
+     * Method that search all the public user calendars and the owned/participated events and public events
+     * 
+     * @param query the query to search
+     * @return the results of the search
+     */
     public List<ResultDTO> search(String query) {
 
         result = new ArrayList<>();
@@ -93,6 +119,12 @@ public class SearchBean implements Serializable {
         return result;
     }
 
+    /**
+     * Method that search the user in the system
+     * 
+     * @param query the query of the search
+     * @return the results of the search
+     */
     public List<ResultDTO> searchUser(String query) {
         result = new ArrayList<>();
         if (!query.isEmpty()) {
@@ -102,6 +134,11 @@ public class SearchBean implements Serializable {
         return result;
     }
 
+    /**
+     * Method that search a valid location
+     * @param query the query of the search
+     * @return the name of the location resulted by the search
+     */
     public List<String> completeLocations(String query) {
         List<String> filteredLocations = new ArrayList<>();
         if (!query.isEmpty() && query.length() > 1) {
@@ -110,6 +147,10 @@ public class SearchBean implements Serializable {
         return filteredLocations;
     }
 
+    /**
+     *
+     * @return the results of the search
+     */
     public List<ResultDTO> getResult() {
         return result;
     }

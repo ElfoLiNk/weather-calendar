@@ -33,6 +33,24 @@ import org.primefaces.model.DefaultScheduleEvent;
  */
 public class WeatherScheduleEvent extends DefaultScheduleEvent {
 
+    /**
+     * Full Constructor
+     * 
+     * @param id the id of the event
+     * @param title the title of the event
+     * @param description the description of the event
+     * @param start the start date of the event
+     * @param end the end date of the event
+     * @param allDay if the event is all day
+     * @param location the location of the event
+     * @param site the site of the event
+     * @param visibility the visibility of the event
+     * @param eoId the id of the owner of the event 
+     * @param listParticipantAndInvitedUsers the list of participated and invited users
+     * @param eventParticipants the list of the event participants
+     * @param invitedUsers the list of the invited user
+     * @param weather the weather of the event
+     */
     public WeatherScheduleEvent(String id, String title, String description, Date start, Date end, boolean allDay, String location, Site site, Visibility visibility, String eoId, List<UserDTO> listParticipantAndInvitedUsers, List<UserDTO> eventParticipants, List<UserDTO> invitedUsers, WeatherDTO weather) {
         super(title, start, end, allDay);
         super.setId(id);
@@ -48,21 +66,51 @@ public class WeatherScheduleEvent extends DefaultScheduleEvent {
 
     }
 
+    /**
+     * Default Constructor
+     */
     public WeatherScheduleEvent() {
     }
 
+    /**
+     * 
+     * @param title the title of the event
+     * @param start the start date of the event
+     * @param end the end date of the event
+     */
     public WeatherScheduleEvent(String title, Date start, Date end) {
         super(title, start, end);
     }
 
+    /**
+     *
+     * @param title the title of the event
+     * @param start the start date of the event
+     * @param end the end date of the event
+     * @param allDay if the event is all day
+     */
     public WeatherScheduleEvent(String title, Date start, Date end, boolean allDay) {
         super(title, start, end, allDay);
     }
 
+    /**
+     *
+     * @param title the title of the event
+     * @param start the start date of the event
+     * @param end the end date of the event
+     * @param styleClass the style class of the event
+     */
     public WeatherScheduleEvent(String title, Date start, Date end, String styleClass) {
         super(title, start, end, styleClass);
     }
 
+    /**
+     *
+     * @param title the title of the event
+     * @param start the start date of the event
+     * @param end the end date of the event
+     * @param data the data of the event
+     */
     public WeatherScheduleEvent(String title, Date start, Date end, Object data) {
         super(title, start, end, data);
     }
@@ -82,66 +130,130 @@ public class WeatherScheduleEvent extends DefaultScheduleEvent {
 
     private String visibility = "PRIVATE";
 
+    /**
+     *
+     * @return the id of the event organizer
+     */
     public String getEoId() {
         return eoId;
     }
 
+    /**
+     *
+     * @param eoId the id of the event organizer to set
+     */
     public void setEoId(String eoId) {
         this.eoId = eoId;
     }
 
+    /**
+     *
+     * @return the list of partipants and invited users of the event
+     */
     public List<UserDTO> getListParticipantAndInvitedUsers() {
         return listParticipantAndInvitedUsers;
     }
 
+    /**
+     *
+     * @param listParticipantAndInvitedUsers the list of partipants and invited users to set
+     */
     public void setListParticipantAndInvitedUsers(List<UserDTO> listParticipantAndInvitedUsers) {
         this.listParticipantAndInvitedUsers = listParticipantAndInvitedUsers;
     }
 
+    /**
+     *
+     * @return the visibility of the event
+     */
     public String getVisibility() {
         return visibility;
     }
 
+    /**
+     *
+     * @param visibility the visibility to set
+     */
     public void setVisibility(String visibility) {
         this.visibility = visibility;
     }
 
+    /**
+     *
+     * @return the invited users of the event
+     */
     public List<UserDTO> getInvitedUsers() {
         return invitedUsers;
     }
 
+    /**
+     *
+     * @param invitedUsers the invited user to set
+     */
     public void setInvitedUsers(List<UserDTO> invitedUsers) {
         this.invitedUsers = invitedUsers;
     }
 
+    /**
+     *
+     * @return the weather of the event
+     */
     public WeatherDTO getWeather() {
         return weather;
     }
 
+    /**
+     *
+     * @param weather the weather to set
+     */
     public void setWeather(WeatherDTO weather) {
         this.weather = weather;
     }
 
+    /**
+     *
+     * @return the site of the event
+     */
     public String getSite() {
         return site;
     }
 
+    /**
+     *
+     * @param site the site to set
+     */
     public void setSite(String site) {
         this.site = site;
     }
 
+    /**
+     *
+     * @return the location of the event
+     */
     public String getLocation() {
         return location;
     }
 
+    /**
+     *
+     * @param location the location to set
+     */
     public void setLocation(String location) {
         this.location = location;
     }
 
+    /**
+     *
+     * @return the list of event participants
+     */
     public List<UserDTO> getEventParticipants() {
         return eventParticipants;
     }
 
+    /**
+     *
+     * @param eventParticipants the list of event participants to set
+     */
     public void setEventParticipants(List<UserDTO> eventParticipants) {
         this.eventParticipants = eventParticipants;
     }

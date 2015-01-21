@@ -39,14 +39,26 @@ public class HandleAccount {
     @EJB
     HandleAuthFacebook handleAuthFacebook;
 
+    /**
+     *
+     * @return
+     */
     public boolean isTwitterCollegato() {
         return handleAuthTwitter.isTwitterCollegato();
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isGoogleCollegato() {
         return handleAuthGoogle.isGoogleCollegato();
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isFacebookCollegato() {
         return handleAuthFacebook.isFacebookCollegato();
     }

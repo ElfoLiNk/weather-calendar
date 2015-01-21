@@ -37,6 +37,16 @@ public class AuthenticationFilter implements Filter {
 
     private FilterConfig config;
 
+    /**
+     * The doFilter method that check if the user is authenticated so if there
+     * is a valid session
+     *
+     * @param req the request of the client
+     * @param resp the response of the server
+     * @param chain the chain of the communication
+     * @throws IOException
+     * @throws ServletException
+     */
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp,
             FilterChain chain) throws IOException, ServletException {
@@ -53,11 +63,20 @@ public class AuthenticationFilter implements Filter {
         }
     }
 
+    /**
+     * Init of the filter
+     *
+     * @param config the config of the filter to set
+     * @throws ServletException
+     */
     @Override
     public void init(FilterConfig config) throws ServletException {
         this.config = config;
     }
 
+    /**
+     * Destroy the filter config
+     */
     @Override
     public void destroy() {
         config = null;

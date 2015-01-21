@@ -70,54 +70,105 @@ public class SettingBean {
     public SettingBean() {
     }
 
+    /**
+     *
+     * @return the user calendar visibility
+     */
     public Visibility getCalendarVisibility() {
         return calendarVisibility;
     }
 
+    /**
+     *
+     * @param calendarVisibility the user calendar visibility to set
+     */
     public void setCalendarVisibility(Visibility calendarVisibility) {
         this.calendarVisibility = calendarVisibility;
     }
 
+    /**
+     *
+     * @return the new password of the user
+     */
     public String getNewpassword() {
         return newpassword;
     }
 
+    /**
+     *
+     * @param newpassword the newpassword to set
+     */
     public void setNewpassword(String newpassword) {
         this.newpassword = newpassword;
     }
 
+    /**
+     *
+     * @return the confirm password of the new password
+     */
     public String getRenewpassword() {
         return renewpassword;
     }
 
+    /**
+     *
+     * @param renewpassword the confirm password to set
+     */
     public void setRenewpassword(String renewpassword) {
         this.renewpassword = renewpassword;
     }
 
+    /**
+     *
+     * @return the uploaded file of the user
+     */
     public UploadedFile getUploadedFile() {
         return uploadedFile;
     }
 
+    /**
+     *
+     * @param uploadedFile the uploaded file to set
+     */
     public void setUploadedFile(UploadedFile uploadedFile) {
         this.uploadedFile = uploadedFile;
     }
 
+    /**
+     *
+     * @return the logged user
+     */
     public UserDTO getLoggedUser() {
         return loggedUser;
     }
 
+    /**
+     *
+     * @param loggedUser the logged user to set
+     */
     public void setLoggedUser(UserDTO loggedUser) {
         this.loggedUser = loggedUser;
     }
 
+    /**
+     *
+     * @return
+     */
     public HandleUser getHandleUser() {
         return handleUser;
     }
 
+    /**
+     *
+     * @param handleUser
+     */
     public void setHandleUser(HandleUser handleUser) {
         this.handleUser = handleUser;
     }
 
+    /**
+     * PostConstruct that initialize the class
+     */
     @PostConstruct
     public void init() {
         // LOAD LOGGED USER 
@@ -160,6 +211,9 @@ public class SettingBean {
         LOGGER.log(Level.INFO, loggedUser.getSetting().getTimeZone().getDisplayName());
     }
 
+    /**
+     * Method that change the setting of the user and his personal information
+     */
     public void changeSetting() {
         long id = 0;
         try {

@@ -56,14 +56,25 @@ public class LoginBean implements Serializable {
 
     }
 
+    /**
+     *
+     * @return the login user
+     */
     public UserDTO getLoginUser() {
         return loginUser;
     }
 
+    /**
+     *
+     * @param loginUser the login user to set
+     */
     public void setLoginUser(UserDTO loginUser) {
         this.loginUser = loginUser;
     }
 
+    /**
+     * PostConstruct that initialize the class
+     */
     @PostConstruct
     public void dialogPostConstruct() {
         loginUser = new UserDTO();
@@ -93,12 +104,22 @@ public class LoginBean implements Serializable {
         context.addCallbackParam("loggedIn", loggedIn);
     }
 
+    /**
+     * Method that invalidate the user session
+     * 
+     * @return redirect to index
+     */
     public String logout() {
         LOGGER.log(Level.INFO, "LOGOUT");
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
         return "http://www.meteocal.tk/MeteoCal-web/index.xhtml?faces-redirect=true";
     }
 
+    /**
+     * Redirect method
+     * 
+     * @param outcome where redirects
+     */
     public void redirect(String outcome) {
         try {
             FacesContext.getCurrentInstance().getExternalContext()

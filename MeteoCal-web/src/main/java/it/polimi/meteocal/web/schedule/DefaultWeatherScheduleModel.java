@@ -31,10 +31,17 @@ public class DefaultWeatherScheduleModel implements WeatherScheduleModel, Serial
 
     private List<WeatherScheduleEvent> events;
 
+    /**
+     * Defaulf Constructor
+     */
     public DefaultWeatherScheduleModel() {
         events = new ArrayList<>();
     }
 
+    /**
+     * Constructor with events
+     * @param events the events of the model to set
+     */
     public DefaultWeatherScheduleModel(List<WeatherScheduleEvent> events) {
         this.events = events;
     }
@@ -92,6 +99,7 @@ public class DefaultWeatherScheduleModel implements WeatherScheduleModel, Serial
     public void clear() {
         events = new ArrayList<>();
     }
+
 
     @Override
     public void addEvent(ScheduleEvent event) {
