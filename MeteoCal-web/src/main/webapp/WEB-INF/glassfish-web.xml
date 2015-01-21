@@ -11,5 +11,5 @@
         <role-name>USER</role-name>
         <group-name>USER</group-name>
     </security-role-mapping>
-    <property name="alternatedocroot_1" value="from=/images/* dir=/var/webapp" /> 
+    <property name="alternatedocroot_1" value="from=/images/* dir=var/webapp" /> 
 </glassfish-web-app>
