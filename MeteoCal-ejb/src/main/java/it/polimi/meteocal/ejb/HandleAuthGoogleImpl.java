@@ -153,7 +153,8 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
      * @param credential the credential for access the google API
      * @param tokenResponse the http response with the token
      * @param user the user in MeteoCal
-     * @see Credential, TokenResponse
+     * @see Credential
+     * @see TokenResponse
      */
     protected static void setGoogleToken(Credential credential, TokenResponse tokenResponse, User user) {
         EntityManagerFactory emf = Persistence
@@ -196,6 +197,9 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
 
     private GoogleAuthorizationCodeFlow flow;
 
+    /**
+     * Default constructor.
+     */
     public HandleAuthGoogleImpl() {
 
     }

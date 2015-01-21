@@ -50,7 +50,7 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
     private static final String CLIENT_ID = "< Insert CLIENT ID >";
     private static final String CLIENT_SECRET =  "< Insert CLIENT SECRET >";
     private static final String URL_BASE = "http://www.meteocal.tk";
-    
+
     private static final Logger LOGGER = LogManager.getLogger(HandleAuthTwitterImpl.class.getName());
 
     /**
@@ -88,9 +88,6 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
         return twitter;
     }
 
-    /**
-     * Default constructor.
-     */
     @PersistenceContext
     EntityManager em;
 
@@ -99,6 +96,9 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
     private AccessToken accessToken;
     private int cont;
 
+    /**
+     * Default constructor.
+     */
     public HandleAuthTwitterImpl() {
         ConfigurationBuilder builder = new ConfigurationBuilder();
         builder.setOAuthConsumerKey(CLIENT_ID);

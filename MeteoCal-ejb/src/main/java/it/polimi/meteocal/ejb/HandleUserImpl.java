@@ -219,26 +219,26 @@ public class HandleUserImpl implements HandleUser {
         query.setParameter("email", newUser.getEmail());
         if (query.getResultList().isEmpty()) {
             // The user isn't in the system
-            User utente = new User();
-            utente.setFirstName(newUser.getFirstName());
-            utente.setLastName(newUser.getLastName());
-            utente.setEmail(newUser.getEmail());
-            utente.setDateBirth(newUser.getDateBirth());
-            utente.setGender(newUser.getGender());
+            User user = new User();
+            user.setFirstName(newUser.getFirstName());
+            user.setLastName(newUser.getLastName());
+            user.setEmail(newUser.getEmail());
+            user.setDateBirth(newUser.getDateBirth());
+            user.setGender(newUser.getGender());
             try {
-                utente.setPassword(PasswordHash.createHash(newUser.getPassword()));
+                user.setPassword(PasswordHash.createHash(newUser.getPassword()));
             } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
                 LOGGER.log(Level.FATAL, ex, ex);
             }
             Calendar calendar = new Calendar();
-            utente.setCalendar(calendar);
+            user.setCalendar(calendar);
             Setting setting = new Setting();
             setting.setTimeZone(TimeZone.getDefault());
-            utente.setSetting(setting);
+            user.setSetting(setting);
 
-            em.persist(utente);
+            em.persist(user);
             em.flush();
-            em.refresh(utente);
+            em.refresh(user);
         } else {
 
             throw new ErrorRequestException("Email already used by a User", false);
@@ -580,7 +580,6 @@ public class HandleUserImpl implements HandleUser {
                 }
 
             }
-
         }
     }
 

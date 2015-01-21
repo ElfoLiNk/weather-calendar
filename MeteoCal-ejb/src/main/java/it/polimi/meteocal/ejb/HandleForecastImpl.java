@@ -1,4 +1,4 @@
-    /*
+/*
  * Copyright (C) 2014 Matteo Gazzetta, Alessandro Fato
  *
  * This program is free software: you can redistribute it and/or modify
@@ -238,21 +238,23 @@ public class HandleForecastImpl implements HandleForecast {
         query.setParameter("today", today);
         List<Event> oldForecastEvent = new ArrayList<>();
         for (Forecast oldForecast : query.getResultList()) {
-            LOGGER.log(Level.INFO, "REMOVED: " + oldForecast.toString());
+            // CHECK EVENT RELATED TO OLD FORECAST
             TypedQuery<Event> q = em.createNamedQuery(Event.FIND_BY_FORECAST,
                     Event.class);
             q.setParameter("forecast", oldForecast);
             oldForecastEvent = q.getResultList();
             for (Event event : oldForecastEvent) {
                 if (event.getStartDate().after(today)) {
+                    // EVENT IN THE FUTURE SO FORECAST AVAILABLE
                     event.setForecast(null);
                     em.merge(event);
+                    em.remove(oldForecast);
+                    em.flush();
+                    LOGGER.log(Level.INFO, "REMOVED: " + oldForecast.toString());
+                }else{
+                    // EVENT IN THE PAST SO DON'T REMOVE FORECAST
+                    oldForecastEvent.remove(event);
                 }
-
-            }
-            if (oldForecastEvent.isEmpty()) {
-                em.remove(oldForecast);
-                em.flush();
             }
         }
         // UPDATE EVENT FORECAST

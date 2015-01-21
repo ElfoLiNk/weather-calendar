@@ -51,7 +51,7 @@ import org.apache.logging.log4j.Logger;
  */
 @Stateless
 public class HandleEventImpl implements HandleEvent {
-    
+
     private static final Logger LOGGER = LogManager.getLogger(HandleEventImpl.class.getName());
 
     @PersistenceContext
@@ -62,7 +62,6 @@ public class HandleEventImpl implements HandleEvent {
 
     @EJB
     HandleForecast handleForecast;
-    
 
     @Override
     public long addEvent(Long userId, EventDTO insertEvent) throws ErrorRequestException {
@@ -218,8 +217,14 @@ public class HandleEventImpl implements HandleEvent {
         startCalendar.setTime(insertEvent.getStartDate());
         java.util.Calendar endCalendar = eventOld.getEndDate();
         endCalendar.setTime(insertEvent.getEndDate());
-        Event eventUpdated = new Event(eventOld.getEo(), insertEvent.getTitle(), insertEvent.getDescription(), insertEvent.getLocation(), insertEvent.getSite(), startCalendar, endCalendar, null, insertEvent.getVisibility(), null, null);
-        eventUpdated.setId(eventOld.getId());
+        eventOld.setName(insertEvent.getTitle());
+        eventOld.setDescription(insertEvent.getDescription());
+        eventOld.setLocation(insertEvent.getLocation());
+        eventOld.setSite(insertEvent.getSite());
+        eventOld.setStartDate(startCalendar);
+        eventOld.setEndDate(endCalendar);
+        eventOld.setVisibility(insertEvent.getVisibility());
+
         if (insertEvent.getEventParticipants() != null) {
             List<User> userParticiants = new ArrayList<>();
             for (UserDTO insertUserParticipants : insertEvent.getEventParticipants()) {
@@ -228,7 +233,7 @@ public class HandleEventImpl implements HandleEvent {
                     userParticiants.add(user);
                 }
             }
-            eventUpdated.setEventParticipants(userParticiants);
+            eventOld.setEventParticipants(userParticiants);
         }
         if (insertEvent.getInvitedUsers() != null) {
             List<User> userInvited = new ArrayList<>();
@@ -239,19 +244,19 @@ public class HandleEventImpl implements HandleEvent {
                     userInvited.add(user);
                 }
             }
-            eventUpdated.setInvitedUsers(userInvited);
+            eventOld.setInvitedUsers(userInvited);
         }
 
         if (insertEvent.getLocation() != null) {
             ForecastDTO forecast = handleForecast.getForecast(insertEvent.getLocation(), insertEvent.getStartDate());
             if (forecast != null) {
-                eventUpdated.setForecast(em.find(Forecast.class, forecast.getId()));
+                eventOld.setForecast(em.find(Forecast.class, forecast.getId()));
             } else {
-                eventUpdated.setForecast(null);
+                eventOld.setForecast(null);
             }
         }
 
-        return eventUpdated;
+        return eventOld;
     }
 
     @Override
@@ -626,14 +631,14 @@ public class HandleEventImpl implements HandleEvent {
         }
         java.util.Calendar nearestDate = getDateNearest(forecastDates, event.getStartDate());
 
-        long forecastId = 0;
+        long forecastId = -1;
         for (ForecastDTO forecast : forecasts) {
             if (forecast.getDate().equals(nearestDate)) {
                 forecastId = forecast.getId();
                 LOGGER.log(Level.INFO, "ForecastID: " + forecastId);
             }
         }
-        if (forecastId != 0) {
+        if (forecastId != -1) {
             // ADD FINAL FORECAST TO SUGGESTED EVENT AND SETUP DATE
             Forecast selectedForecast = em.find(Forecast.class, forecastId);
             suggestedEvent.setForecast(selectedForecast);
