@@ -17,9 +17,11 @@
 package it.polimi.meteocal.ejb;
 
 import it.polimi.meteocal.dto.ForecastDTO;
+import it.polimi.meteocal.dto.WeatherDTO;
 import it.polimi.meteocal.entities.Event;
 import it.polimi.meteocal.entities.Forecast;
 import it.polimi.meteocal.entities.Location;
+import it.polimi.meteocal.entities.Weather;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -28,47 +30,54 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
+ * Test class of HandleForecastImplTest
  *
  * @author Matteo
+ * @see HandleForecastImplTest
  */
 public class HandleForecastImplTest {
 
     private HandleForecastImpl handleForecast;
 
     private TypedQuery<Forecast> query;
+    private Forecast forecast;
+    private Weather weather;
+    private ForecastDTO forecastDTO;
+    private WeatherDTO weatherDTO;
 
     /**
-     *
+     * HandleForecastImplTest default construct
      */
     public HandleForecastImplTest() {
     }
 
     /**
-     *
+     * setUpClass method
      */
     @BeforeClass
     public static void setUpClass() {
     }
 
     /**
-     *
+     * tearDownClass method
      */
     @AfterClass
     public static void tearDownClass() {
     }
 
     /**
-     *
+     * setUp method
      */
     @Before
     public void setUp() {
@@ -81,10 +90,37 @@ public class HandleForecastImplTest {
         when(handleForecast.em.createNamedQuery(Forecast.FIND_BY_LOCATION,
                 Forecast.class)).thenReturn(query);
 
+         // SETUP FORECAST
+        forecast = new Forecast();
+        forecast.setId(0L);
+        forecast.setCreationDate(Calendar.getInstance());
+        forecast.setForecastDate(Calendar.getInstance());
+        forecast.setLocation("Milan, IT");
+        // SETUP WEATHER
+        weather = new Weather();
+        weather.setId(0L);
+        weather.setDescription("Weather Description");
+        // SETUP BAD WEATHER CONDITION
+        weather.setWeatherConditionCode("500");
+        forecast.setWeather(weather);
+        List<Forecast> forecasts = new ArrayList<Forecast>();
+        forecasts.add(forecast);
+        when(query.getResultList()).thenReturn(forecasts);
+
+        forecastDTO = new ForecastDTO();
+        // SETUP FORECAST DTO 
+        forecastDTO.setId(forecast.getId());
+        forecastDTO.setLocation(forecast.getLocation());
+        forecastDTO.setCreationDate(forecast.getCreationDate());
+        forecastDTO.setDate(forecast.getCreationDate());
+        // SETUP WEATHER DTO
+        weatherDTO = new WeatherDTO(0L, weather.getWeatherConditionCode(), weather.getDescription(), weather.getTemperature(), weather.getIcon());
+        forecastDTO.setWeather(weatherDTO);
+
     }
 
     /**
-     *
+     * tearDown method
      */
     @After
     public void tearDown() {
@@ -96,11 +132,10 @@ public class HandleForecastImplTest {
     @Test
     public void testGetForecast_String_Date() {
         System.out.println("getForecast");
-        String location = "";
+        String location = "Milan, IT";
         Date date = new Date();
-        ForecastDTO expResult = null;
         ForecastDTO result = handleForecast.getForecast(location, date);
-        assertEquals(expResult, result);
+        assertEquals(forecastDTO, result);
     }
 
     /**
@@ -109,9 +144,9 @@ public class HandleForecastImplTest {
     @Test
     public void testGetForecasts() {
         System.out.println("getForecasts");
-        String location = "";
-
+        String location = "Milan, IT";
         List<ForecastDTO> expResult = new ArrayList<>();
+        expResult.add(forecastDTO);
         List<ForecastDTO> result = handleForecast.getForecasts(location);
         assertEquals(expResult, result);
     }
@@ -122,11 +157,10 @@ public class HandleForecastImplTest {
     @Test
     public void testGetForecast_long() {
         System.out.println("getForecast");
+        when(handleForecast.em.find(Forecast.class, forecast.getId())).thenReturn(forecast);
         long idForecast = 0L;
-
-        ForecastDTO expResult = null;
         ForecastDTO result = handleForecast.getForecast(idForecast);
-        assertEquals(expResult, result);
+        assertEquals(forecastDTO, result);
 
     }
 

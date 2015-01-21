@@ -20,15 +20,16 @@ import it.polimi.meteocal.dto.EventDTO;
 import it.polimi.meteocal.dto.ForecastDTO;
 import it.polimi.meteocal.dto.ResultDTO;
 import it.polimi.meteocal.dto.WeatherDTO;
-import it.polimi.meteocal.entities.User;
 import it.polimi.meteocal.entities.Event;
 import it.polimi.meteocal.entities.EventNotification;
 import it.polimi.meteocal.entities.Forecast;
 import it.polimi.meteocal.entities.RescheduleNotification;
+import it.polimi.meteocal.entities.User;
 import it.polimi.meteocal.entities.Weather;
 import it.polimi.meteocal.exception.ErrorRequestException;
 import it.polimi.meteocal.util.ContextMocker;
 import it.polimi.meteocal.util.Site;
+import it.polimi.meteocal.util.Status;
 import it.polimi.meteocal.util.Visibility;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -41,22 +42,39 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import org.mockito.InjectMocks;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 /**
+ * Test class of HandleEventImpl
  *
  * @author Matteo
+ * @see HandleEventImpl
  */
 public class HandleEventImplTest {
 
+    @InjectMocks
     private HandleEventImpl handleEvent;
+
+    @Spy
+    private HandleForecastImpl handleForecast;
 
     private it.polimi.meteocal.entities.Calendar calendar;
 
@@ -142,6 +160,7 @@ public class HandleEventImplTest {
         forecast.setForecastDate(Calendar.getInstance());
         forecast.setLocation(event.getLocation());
         weather = new Weather();
+        weather.setId(0L);
         weather.setDescription("Weather Description");
         weather.setWeatherConditionCode("500");
         forecast.setWeather(weather);
@@ -191,7 +210,7 @@ public class HandleEventImplTest {
     }
 
     /**
-     *
+     * tearDown method
      */
     @After
     public void tearDown() {
@@ -262,8 +281,10 @@ public class HandleEventImplTest {
     public void testUpdateEvent() throws ErrorRequestException {
         System.out.println("updateEvent");
         long expResult = 0L;
+        eventDTO.setDescription("MODIFIED EVENT");
         long result = handleEvent.updateEvent(user.getId(), eventDTO);
         assertEquals(expResult, result);
+        assertEquals(eventDTO.getDescription(), event.getDescription());
     }
 
     /**
@@ -377,10 +398,18 @@ public class HandleEventImplTest {
         when(queryCalendar.getResultList()).thenReturn(calendarQL);
         List<Event> listEvent = new ArrayList<>();
         listEvent.add(event);
+        when(queryReschNotify.getResultList()).thenReturn(new ArrayList<>());
         when(query.getResultList()).thenReturn(listEvent);
         when(handleEvent.handleForecast.getForecast(event.getLocation(), event.getStartDate().getTime())).thenReturn(forecastDTO);
+        List<ForecastDTO> forecasts = new ArrayList<>();
+        WeatherDTO wDTO = new WeatherDTO(weather.getId(), "801", weatherDTO.getDescription(), weatherDTO.getTemperature(), weatherDTO.getIcon());
+        ForecastDTO fDTO = new ForecastDTO(forecastDTO.getId(), forecastDTO.getLocation(), forecastDTO.getLatitude(), forecastDTO.getLongitude(), forecastDTO.getDate(), forecastDTO.getCreationDate(), wDTO);
+        forecasts.add(fDTO);
+        when(handleEvent.handleForecast.getForecasts(event.getLocation())).thenReturn(forecasts);
+        TypedQuery<Event> queryOccupation = mock(TypedQuery.class);
+        when(handleEvent.em.createNamedQuery(Event.FIND_USER_OCCUPATION_RESCHEDULE, Event.class)).thenReturn(queryOccupation);
+        when(queryOccupation.getResultList()).thenReturn(new ArrayList<>());
         handleEvent.checkEventWeatherCondition(user.getId());
-
     }
 
 }
