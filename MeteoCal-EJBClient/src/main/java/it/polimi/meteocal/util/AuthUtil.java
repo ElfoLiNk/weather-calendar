@@ -17,20 +17,20 @@
 package it.polimi.meteocal.util;
 
 import it.polimi.meteocal.auth.User;
-
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
  * Class that give utility to user authentication in MeteoCal
- * 
+ *
  * @author Matteo Gazzetta, Alessandro Fato
  */
 public class AuthUtil {
 
     /**
      * Method that create a user session in MeteoCal
+     *
      * @param userID
      */
     public static void makeUserSession(Long userID) {
@@ -43,7 +43,7 @@ public class AuthUtil {
     }
 
     /**
-     * if the user is logged gives the ID in MeteoCal 
+     * if the user is logged gives the ID in MeteoCal
      *
      * @return The ID of logged user
      */
@@ -62,7 +62,8 @@ public class AuthUtil {
     /**
      * Check if the user is logged
      *
-     * @return true the user is logged in, false if the user isn't logged or the session is invalid
+     * @return true the user is logged in, false if the user isn't logged or the
+     * session is invalid
      */
     public static boolean isUserLogged() {
         FacesContext context = FacesContext.getCurrentInstance();

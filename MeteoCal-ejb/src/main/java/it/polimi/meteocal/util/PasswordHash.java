@@ -27,12 +27,12 @@
  */
 package it.polimi.meteocal.util;
 
-import java.security.SecureRandom;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.SecretKeyFactory;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 
 /*
  * PBKDF2 salted password hashing.
@@ -41,15 +41,41 @@ import java.security.spec.InvalidKeySpecException;
  */
 public class PasswordHash {
 
+    /**
+     *
+     */
     public static final String PBKDF2_ALGORITHM = "PBKDF2WithHmacSHA1";
 
     // The following constants may be changed without breaking existing hashes.
-    public static final int SALT_BYTE_SIZE = 24;
+
+    /**
+     *
+     */
+        public static final int SALT_BYTE_SIZE = 24;
+
+    /**
+     *
+     */
     public static final int HASH_BYTE_SIZE = 24;
+
+    /**
+     *
+     */
     public static final int PBKDF2_ITERATIONS = 1000;
 
+    /**
+     *
+     */
     public static final int ITERATION_INDEX = 0;
+
+    /**
+     *
+     */
     public static final int SALT_INDEX = 1;
+
+    /**
+     *
+     */
     public static final int PBKDF2_INDEX = 2;
 
     /**
@@ -70,6 +96,8 @@ public class PasswordHash {
      *
      * @param password the password to hash
      * @return a salted PBKDF2 hash of the password
+     * @throws java.security.NoSuchAlgorithmException
+     * @throws java.security.spec.InvalidKeySpecException
      */
     public static String createHash(char[] password)
             throws NoSuchAlgorithmException, InvalidKeySpecException {

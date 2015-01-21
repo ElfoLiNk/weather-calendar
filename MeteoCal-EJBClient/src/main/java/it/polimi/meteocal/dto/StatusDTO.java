@@ -17,7 +17,8 @@
 package it.polimi.meteocal.dto;
 
 /**
- *
+ * Class that maps the Status of the connected social network 
+ * 
  * @author Matteo Gazzetta, Alessandro Fato
  */
 public class StatusDTO {
@@ -26,29 +27,56 @@ public class StatusDTO {
     private boolean googlePlusCollegato;
     private boolean twitterCollegato;
 
+    /**
+     * Default Constructor
+     */
     public StatusDTO() {
     }
 
+    /**
+     *
+     * @return if facebook is connected
+     */
     public boolean isFacebookCollegato() {
         return facebookCollegato;
     }
 
+    /**
+     *
+     * @param facebookCollegato set if facebook is connected
+     */
     public void setFacebookCollegato(boolean facebookCollegato) {
         this.facebookCollegato = facebookCollegato;
     }
 
+    /**
+     *
+     * @return if google plus is connected
+     */
     public boolean isGooglePlusCollegato() {
         return googlePlusCollegato;
     }
 
+    /**
+     *
+     * @param googlePlusCollegato set if google plus is connected
+     */
     public void setGooglePlusCollegato(boolean googlePlusCollegato) {
         this.googlePlusCollegato = googlePlusCollegato;
     }
 
+    /**
+     *
+     * @return if twitter is connected
+     */
     public boolean isTwitterCollegato() {
         return twitterCollegato;
     }
 
+    /**
+     *
+     * @param twitterCollegato set if twitter is connected
+     */
     public void setTwitterCollegato(boolean twitterCollegato) {
         this.twitterCollegato = twitterCollegato;
     }

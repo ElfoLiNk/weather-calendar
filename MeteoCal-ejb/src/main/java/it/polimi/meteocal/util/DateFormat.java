@@ -17,13 +17,26 @@
 package it.polimi.meteocal.util;
 
 /**
+ * Enum that rappresent the dateformat of the user date in MeteoCal.
+ * 
+ * DMY : Date format = "dd/MM/yyyy", Output = 20/02/2005.
+ * MDY : Date format = "MM/dd/yyyy", Output = 02/20/2005.
+ * YMD : Date format = "yyyy/MM/dd", Output = 2005/02/20.
  *
- * @author Matteo Gazzetta, Alessandro Fato 
- * DMY : Date format = "dd/MM/yyyy"; Output = 20/02/2005.
- * MDY : Date format = "MM/dd/yyyy"; Output = 02/20/2005.
- * YMD : Date format = "yyyy/MM/dd"; Output = 2005/02/20.
+ * @author Matteo Gazzetta, Alessandro Fato
  */
 public enum DateFormat {
 
-    DMY, MDY, YMD;
+    /**
+     * DMY : Date format = "dd/MM/yyyy"; Output = 20/02/2005.
+     */
+    DMY,
+    /**
+     * MDY : Date format = "MM/dd/yyyy"; Output = 02/20/2005.
+     */
+    MDY,
+    /**
+     * YMD : Date format = "yyyy/MM/dd"; Output = 2005/02/20.
+     */
+    YMD;
 }

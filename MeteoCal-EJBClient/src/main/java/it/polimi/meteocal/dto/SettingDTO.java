@@ -21,7 +21,8 @@ import it.polimi.meteocal.util.TimeFormat;
 import java.util.TimeZone;
 
 /**
- *
+ * Class that maps the Setting entity
+ * 
  * @author Matteo Gazzetta, Alessandro Fato
  */
 public class SettingDTO {
@@ -32,32 +33,62 @@ public class SettingDTO {
 
     private TimeZone timeZone;
 
+    /**
+     *
+     * @param dateFormat the date format of the setting to set
+     * @param timeFormat the time format of the setting to set
+     * @param timeZone the time zone of the setting to set
+     */
     public SettingDTO(DateFormat dateFormat, TimeFormat timeFormat, TimeZone timeZone) {
         this.dateFormat = dateFormat;
         this.timeFormat = timeFormat;
         this.timeZone = timeZone;
     }
 
+    /**
+     *
+     * @return the date format of the setting
+     */
     public DateFormat getDateFormat() {
         return dateFormat;
     }
 
+    /**
+     *
+     * @param dateFormat the date format to set
+     */
     public void setDateFormat(DateFormat dateFormat) {
         this.dateFormat = dateFormat;
     }
 
+    /**
+     *
+     * @return the time format of the setting
+     */
     public TimeFormat getTimeFormat() {
         return timeFormat;
     }
 
+    /**
+     *
+     * @param timeFormat the time format to set
+     */
     public void setTimeFormat(TimeFormat timeFormat) {
         this.timeFormat = timeFormat;
     }
 
+    /**
+     *
+     * @return the time zone of the notification
+     */
     public TimeZone getTimeZone() {
         return timeZone;
     }
 
+    /**
+     *
+     * @param timeZone the time zone to set
+     */
     public void setTimeZone(TimeZone timeZone) {
         this.timeZone = timeZone;
     }

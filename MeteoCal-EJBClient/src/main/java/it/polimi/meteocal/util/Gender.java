@@ -17,10 +17,19 @@
 package it.polimi.meteocal.util;
 
 /**
- *
+ * Enum that rappresent the Users gender in MeteoCal
+ * 
  * @author Matteo Gazzetta, Alessandro Fato
  */
  public enum Gender {
 
-        MALE, FEMALE;
+    /**
+     * Male
+     */
+    MALE,
+
+    /**
+     * Female
+     */
+    FEMALE;
     }

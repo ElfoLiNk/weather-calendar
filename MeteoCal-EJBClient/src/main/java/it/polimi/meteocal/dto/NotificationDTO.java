@@ -17,11 +17,18 @@
 package it.polimi.meteocal.dto;
 
 /**
+ * Class that maps the Notification entity
  *
  * @author Matteo Gazzetta, Alessandro Fato
  */
 public class NotificationDTO {
 
+    /**
+     *
+     * @param id the id of the notification
+     * @param userId the id of the user wich the notification is related
+     * @param message the message of the notification
+     */
     public NotificationDTO(String id, String userId, String message) {
         this.id = id;
         this.userId = userId;
@@ -30,10 +37,18 @@ public class NotificationDTO {
 
     private String id;
 
+    /**
+     *
+     * @return the id of the notification
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     *
+     * @param id the id to set
+     */
     public void setId(String id) {
         this.id = id;
     }
@@ -42,21 +57,40 @@ public class NotificationDTO {
 
     private String message;
 
+    /**
+     * Default Constructor
+     */
     public NotificationDTO() {
     }
 
+    /**
+     *
+     * @return the id of the user related to the notification
+     */
     public String getUserId() {
         return userId;
     }
 
+    /**
+     *
+     * @param userId the user id to set
+     */
     public void setUserId(String userId) {
         this.userId = userId;
     }
 
+    /**
+     *
+     * @return the message of the notification
+     */
     public String getMessage() {
         return message;
     }
 
+    /**
+     *
+     * @param message the message to set
+     */
     public void setMessage(String message) {
         this.message = message;
     }

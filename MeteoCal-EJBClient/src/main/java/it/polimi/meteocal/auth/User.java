@@ -18,21 +18,36 @@ package it.polimi.meteocal.auth;
 
 /**
  * Class for the user session on MeteoCal
+ *
  * @author Matteo Gazzetta, Alessandro Fato
  */
 public class User {
 
     private Long userID;
-    public final static String AUTH_KEY = "USER";
 
+    /**
+     * AUTH_KEY
+     */
+    public static final String AUTH_KEY = "USER";
+
+    /**
+     * Constructor wirh id
+     * @param userID the user id logged 
+     */
     public User(Long userID) {
         this.userID = userID;
     }
 
+    /**
+     * @return the id of the user
+     */
     public Long getUserID() {
         return userID;
     }
 
+    /**
+     * @param userID to set
+     */
     public void setUserID(Long userID) {
         this.userID = userID;
     }

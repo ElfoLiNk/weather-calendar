@@ -17,10 +17,19 @@
 package it.polimi.meteocal.util;
 
 /**
- *
+ * This Enum rappresent the Event is located
+ * 
  * @author Matteo Gazzetta, Alessandro Fato
  */
 public enum Site {
 
-    INDOOR, OUTDOOR;
+    /**
+     * Indoor
+     */
+    INDOOR,
+
+    /**
+     * Outdoor
+     */
+    OUTDOOR;
 }
