@@ -402,8 +402,16 @@ public class HandleEventImpl implements HandleEvent {
 
             event.setStartDate(startDate);
             event.setEndDate(endDate);
-            LOGGER.log(Level.INFO, event.toString());
 
+            if (event.getLocation() != null) {
+                ForecastDTO forecast = handleForecast.getForecast(event.getLocation(), event.getStartDate().getTime());
+                if (forecast != null) {
+                    event.setForecast(em.find(Forecast.class, forecast.getId()));
+                } else {
+                    event.setForecast(null);
+                }
+            }
+            LOGGER.log(Level.INFO, "EVENT MOVED: " + event.toString());
             em.merge(event);
             em.flush();
 
