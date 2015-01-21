@@ -23,21 +23,35 @@ import javax.persistence.Enumerated;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 /**
+ * Entity that rappresent the EventNotification in MeteoCal
  *
  * @author Matteo Gazzetta, Alessandro Fato
  */
 @Entity
+@Table(name ="eventnotification")
 @NamedQueries({
     @NamedQuery(name = EventNotification.FIND_BY_EVENT, query = "SELECT n FROM EventNotification n WHERE n.event = :event"),
     @NamedQuery(name = EventNotification.FIND_BY_EVENT_AND_USER, query = "SELECT n FROM EventNotification n WHERE n.event = :event AND n.user = :user"),
-    @NamedQuery(name = EventNotification.FIND_OLD_NOTIFICATION, query = "SELECT n FROM EventNotification n WHERE n.event.startDate <= :now"),})
+    @NamedQuery(name = EventNotification.FIND_OLD_NOTIFICATION, query = "SELECT n FROM EventNotification n WHERE n.event.endDate <= :now"),})
 public class EventNotification extends Notification {
 
+    /**
+     * Name for the NamedQuery
+     */
     public static final String FIND_BY_EVENT = "EventNotification.FIND_BY_EVENT";
+
+    /**
+     * Name for the NamedQuery
+     */
     public static final String FIND_BY_EVENT_AND_USER = "EventNotification.FIND_BY_EVENT_AND_USER";
+
+    /**
+     * Name for the NamedQuery
+     */
     public static final String FIND_OLD_NOTIFICATION = "EventNotification.FIND_OLD_NOTIFICATION";
 
     @OneToOne
@@ -47,18 +61,34 @@ public class EventNotification extends Notification {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    /**
+     *
+     * @return the status of the event notification
+     */
     public Status getStatus() {
         return status;
     }
 
+    /**
+     *
+     * @param status the status to set
+     */
     public void setStatus(Status status) {
         this.status = status;
     }
 
+    /**
+     *
+     * @return the event of the event notification
+     */
     public Event getEvent() {
         return event;
     }
 
+    /**
+     *
+     * @param event the event to set
+     */
     public void setEvent(Event event) {
         this.event = event;
     }

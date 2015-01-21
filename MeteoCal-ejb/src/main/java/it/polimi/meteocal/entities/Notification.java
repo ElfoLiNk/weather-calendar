@@ -25,18 +25,25 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 /**
+ * Entity that rappresent the Notification of the User in MeteoCal
  *
  * @author Matteo Gazzetta, Alessandro Fato
  */
 @Entity
+@Table(name = "notification")
 @NamedQueries({
     @NamedQuery(name = Notification.FIND_BY_USER, query = "SELECT n FROM Notification n WHERE n.user = :user"),})
 public abstract class Notification implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * Name for the NamedQuery
+     */
     public static final String FIND_BY_USER = "Notification.FIND_BY_USER";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,10 +53,18 @@ public abstract class Notification implements Serializable {
     @NotNull
     private User user;
 
+    /**
+     *
+     * @return the user of the notification
+     */
     public User getUser() {
         return user;
     }
 
+    /**
+     *
+     * @param user the user to set
+     */
     public void setUser(User user) {
         this.user = user;
     }
@@ -57,18 +72,34 @@ public abstract class Notification implements Serializable {
     @Column(length = 500)
     private String message;
 
+    /**
+     *
+     * @return the message of the notification
+     */
     public String getMessage() {
         return message;
     }
 
+    /**
+     *
+     * @param message the message to set
+     */
     public void setMessage(String message) {
         this.message = message;
     }
 
+    /**
+     *
+     * @return the id of the notification
+     */
     public Long getId() {
         return id;
     }
 
+    /**
+     *
+     * @param id the id to set
+     */
     public void setId(Long id) {
         this.id = id;
     }

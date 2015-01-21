@@ -23,7 +23,8 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- *
+ * Class that maps the Event entity
+ * 
  * @author Matteo Gazzetta, Alessandro Fato
  */
 public class EventDTO {
@@ -56,6 +57,22 @@ public class EventDTO {
 
     private WeatherDTO weather;
 
+    /**
+     *
+     * @param id the id of the event
+     * @param eoId the id of the owner of the event
+     * @param title the title of the event
+     * @param startDate the start date of the event
+     * @param endDate the end date of the event
+     * @param editable if the event is editable
+     * @param site the site of the event
+     * @param visibility the visibility of the event
+     * @param description the description of the evnet
+     * @param location the location of the event
+     * @param eventParticipants  the list of event participants
+     * @param invitedUsers the list of the invited users
+     * @param weather the weather of the event
+     */
     public EventDTO(String id, String eoId, String title, Date startDate, Date endDate, boolean editable, Site site, Visibility visibility, String description, String location, List<UserDTO> eventParticipants, List<UserDTO> invitedUsers, WeatherDTO weather) {
         this.id = id;
         this.eoId = eoId;
@@ -72,114 +89,226 @@ public class EventDTO {
         this.weather = weather;
     }
 
+    /**
+     *
+     * @return the weather of the event
+     */
     public WeatherDTO getWeather() {
         return weather;
     }
 
+    /**
+     *
+     * @param weather the weather to set
+     */
     public void setWeather(WeatherDTO weather) {
         this.weather = weather;
     }
 
+    /**
+     *
+     * @return the site of the event
+     */
     public Site getSite() {
         return site;
     }
 
+    /**
+     *
+     * @param site the site to set
+     */
     public void setSite(Site site) {
         this.site = site;
     }
 
+    /**
+     *
+     * @return the visibility of the event
+     */
     public Visibility getVisibility() {
         return visibility;
     }
 
+    /**
+     *
+     * @param visibility the visibility to set
+     */
     public void setVisibility(Visibility visibility) {
         this.visibility = visibility;
     }
 
+    /**
+     *
+     * @return the invited users of the event
+     */
     public List<UserDTO> getInvitedUsers() {
         return invitedUsers;
     }
 
+    /**
+     *
+     * @param invitedUsers the invited users to set
+     */
     public void setInvitedUsers(List<UserDTO> invitedUsers) {
         this.invitedUsers = invitedUsers;
     }
 
+    /**
+     *
+     * @return the event organizer id
+     */
     public String getEoId() {
         return eoId;
     }
 
+    /**
+     *
+     * @param eoId the event organizer to set
+     */
     public void setEoId(String eoId) {
         this.eoId = eoId;
     }
 
+    /**
+     *
+     * @return the description of the event
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     *
+     * @param description the description to set
+     */
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /**
+     *
+     * @return the location of the event
+     */
     public String getLocation() {
         return location;
     }
 
+    /**
+     *
+     * @param location the location to set
+     */
     public void setLocation(String location) {
         this.location = location;
     }
 
+    /**
+     *
+     * @return the event participants
+     */
     public List<UserDTO> getEventParticipants() {
         return eventParticipants;
     }
 
+    /**
+     *
+     * @param eventParticipants the event participants to set
+     */
     public void setEventParticipants(List<UserDTO> eventParticipants) {
         this.eventParticipants = eventParticipants;
     }
 
+    /**
+     *
+     * @return the id of the event
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     *
+     * @param id the id to set
+     */
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     *
+     * @return the title of the event
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     *
+     * @param title the title to set
+     */
     public void setTitle(String title) {
         this.title = title;
     }
 
+    /**
+     *
+     * @return the start date of the event
+     */
     public Date getStartDate() {
         return startDate;
     }
 
+    /**
+     *
+     * @param startDate the start date to set
+     */
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
+    /**
+     *
+     * @return the end date of the event
+     */
     public Date getEndDate() {
         return endDate;
     }
 
+    /**
+     *
+     * @param endDate the end date to set
+     */
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
 
+    /**
+     *
+     * @return if the event is all day
+     */
     public boolean isAllDay() {
         return allDay;
     }
 
+    /**
+     *
+     * @param allDay set if the event is all day
+     */
     public void setAllDay(boolean allDay) {
         this.allDay = allDay;
     }
 
+    /**
+     *
+     * @return if the event is editable
+     */
     public boolean isEditable() {
         return editable;
     }
 
+    /**
+     *
+     * @param editable set  if the event is editable
+     */
     public void setEditable(boolean editable) {
         this.editable = editable;
     }

@@ -17,7 +17,8 @@
 package it.polimi.meteocal.util;
 
 /**
- *
+ * Enum that rappresent the timeformat of the time for the user in MeteoCal.
+ * 
  * @author Matteo Gazzetta, Alessandro Fato
  *
  * DEFAULT : 24h
@@ -25,5 +26,13 @@ package it.polimi.meteocal.util;
  */
 public enum TimeFormat {
 
-    DEFAULT, AMPM
+    /**
+     * DEFAULT : 24h
+     */
+    DEFAULT,
+
+    /**
+     * AMPM : AM/PM
+     */
+    AMPM
 }

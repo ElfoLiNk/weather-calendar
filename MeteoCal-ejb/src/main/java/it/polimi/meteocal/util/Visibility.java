@@ -17,10 +17,19 @@
 package it.polimi.meteocal.util;
 
 /**
- *
+ * This Enum rappresent the visibility of the event and the calendar in MeteoCal
+ * 
  * @author Matteo Gazzetta, Alessandro Fato
  */
-public enum Visibility{
+public enum Visibility {
 
-    PUBLIC, PRIVATE;
+    /**
+     * Public
+     */
+    PUBLIC,
+
+    /**
+     * Private
+     */
+    PRIVATE;
 }

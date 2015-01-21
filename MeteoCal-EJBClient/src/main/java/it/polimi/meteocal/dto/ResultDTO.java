@@ -19,7 +19,8 @@ package it.polimi.meteocal.dto;
 import java.util.Objects;
 
 /**
- *
+ * Class that rappresent the result of the search query
+ * 
  * @author Matteo Gazzetta, Alessandro Fato
  */
 public class ResultDTO {
@@ -28,29 +29,56 @@ public class ResultDTO {
     private String id;
     private String name;
 
+    /**
+     * Default Constructor
+     */
     public ResultDTO() {
     }
 
+    /**
+     *
+     * @return the id of the result
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     *
+     * @param id the id to set
+     */
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     *
+     * @return the type of the result
+     */
     public String getType() {
         return type;
     }
 
+    /**
+     *
+     * @param type the type to set
+     */
     public void setType(String type) {
         this.type = type;
     }
 
+    /**
+     *
+     * @return the name of the result
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     *
+     * @param name the name to set
+     */
     public void setName(String name) {
         this.name = name;
     }

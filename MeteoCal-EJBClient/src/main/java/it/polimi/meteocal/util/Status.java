@@ -17,10 +17,24 @@
 package it.polimi.meteocal.util;
 
 /**
- *
+ * This enum rappresent the Notification status in MeteoCal
+ * 
  * @author Matteo Gazzetta, Alessandro Fato
  */
 public enum Status {
 
-    ACCEPTED, DECLINED, PENDING;
+    /**
+     * Accepted
+     */
+    ACCEPTED,
+
+    /**
+     * Declined
+     */
+    DECLINED,
+
+    /**
+     * Pending
+     */
+    PENDING;
 }

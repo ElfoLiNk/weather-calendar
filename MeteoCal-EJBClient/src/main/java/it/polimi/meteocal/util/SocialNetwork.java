@@ -18,12 +18,32 @@ package it.polimi.meteocal.util;
 
 /**
  * SocialNetwork: Facebook,Twitter,GooglePlus;
+ *
  * @author Matteo Gazzetta, Alessandro Fato
  */
 public enum SocialNetwork {
 
-    FACEBOOK, TWITTER, GOOGLE_PLUS;
+    /**
+     * Facebook
+     */
+    FACEBOOK,
 
+    /**
+     * Twitter
+     */
+    TWITTER,
+
+    /**
+     * GooglePlus
+     */
+    GOOGLE_PLUS;
+
+    /**
+     * Find and retrive the correct SocialNetwork enum
+     * 
+     * @param socialNetwork the socialnetwork to find
+     * @return the SocialNetwork enum correct
+     */
     public static SocialNetwork use(String socialNetwork) {
         if (socialNetwork.equals(SocialNetwork.FACEBOOK.name())) {
             return SocialNetwork.FACEBOOK;

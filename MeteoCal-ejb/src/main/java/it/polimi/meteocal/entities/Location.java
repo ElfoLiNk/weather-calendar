@@ -28,10 +28,11 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 /**
+ * Entity that rappresent valid Location in MeteoCal
  *
  * @author Matteo Gazzetta, Alessandro Fato
  */
-@Table(indexes = {
+@Table(name="location",indexes = {
     @Index(columnList = "NAME")})
 @Entity
 @NamedQueries({
@@ -40,7 +41,15 @@ import javax.persistence.Table;
 public class Location implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * Name for the NamedQuery
+     */
     public static final String FIND_BY_SEARCHQUERY = "Location.FIND_BY_SEARCHQUERY";
+
+    /**
+     * Name for the NamedQuery
+     */
     public static final String FIND_BY_LOCATION_AND_COUNTRYCODE = "Location.FIND_BY_LOCATION_AND_COUNTRYCODE";
 
     @Id
@@ -57,42 +66,82 @@ public class Location implements Serializable {
     @Column(length = 2)
     private String countryCode;
 
+    /**
+     *
+     * @return the name of the location
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     *
+     * @param name the name to set
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     *
+     * @return the latitude of the location
+     */
     public float getLatitude() {
         return latitude;
     }
 
+    /**
+     *
+     * @param latitude the latitute to set
+     */
     public void setLatitude(float latitude) {
         this.latitude = latitude;
     }
 
+    /**
+     *
+     * @return the longitude of the location
+     */
     public float getLongitude() {
         return longitude;
     }
 
+    /**
+     *
+     * @param longitude the longitude to set
+     */
     public void setLongitude(float longitude) {
         this.longitude = longitude;
     }
 
+    /**
+     *
+     * @return the country code of the location
+     */
     public String getCountryCode() {
         return countryCode;
     }
 
+    /**
+     *
+     * @param countryCode the country code to set
+     */
     public void setCountryCode(String countryCode) {
         this.countryCode = countryCode;
     }
 
+    /**
+     *
+     * @return the id of the location
+     */
     public Long getId() {
         return id;
     }
 
+    /**
+     *
+     * @param id the id to set
+     */
     public void setId(Long id) {
         this.id = id;
     }

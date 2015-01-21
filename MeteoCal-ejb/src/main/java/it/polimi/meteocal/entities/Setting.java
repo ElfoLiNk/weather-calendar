@@ -24,15 +24,18 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import org.eclipse.persistence.annotations.ConversionValue;
 import org.eclipse.persistence.annotations.Convert;
 import org.eclipse.persistence.annotations.ObjectTypeConverter;
 
 /**
+ * Entity that rappresent the Setting of the User in MeteoCal
  *
  * @author Matteo Gazzetta, Alessandro Fato
  */
 @Entity
+@Table(name = "setting")
 public class Setting implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -56,34 +59,66 @@ public class Setting implements Serializable {
 
     private TimeZone timeZone;
 
+    /**
+     *
+     * @return the date format of the setting
+     */
     public DateFormat getDateFormat() {
         return dateFormat;
     }
 
+    /**
+     *
+     * @param dateFormat the date format to set
+     */
     public void setDateFormat(DateFormat dateFormat) {
         this.dateFormat = dateFormat;
     }
 
+    /**
+     *
+     * @return the time format of the setting
+     */
     public TimeFormat getTimeFormat() {
         return timeFormat;
     }
 
+    /**
+     *
+     * @param timeFormat the time format to set
+     */
     public void setTimeFormat(TimeFormat timeFormat) {
         this.timeFormat = timeFormat;
     }
 
+    /**
+     *
+     * @return the time zone of the setting
+     */
     public TimeZone getTimeZone() {
         return timeZone;
     }
 
+    /**
+     *
+     * @param timeZone the time zone to set
+     */
     public void setTimeZone(TimeZone timeZone) {
         this.timeZone = timeZone;
     }
 
+    /**
+     *
+     * @return the id of the event
+     */
     public Long getId() {
         return id;
     }
 
+    /**
+     *
+     * @param id the id to set
+     */
     public void setId(Long id) {
         this.id = id;
     }

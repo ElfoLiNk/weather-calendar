@@ -17,7 +17,8 @@
 package it.polimi.meteocal.exception;
 
 /**
- *
+ * Exception to handle logic error in MeteoCal
+ * 
  * @author Matteo Gazzetta, Alessandro Fato
  */
 public class ErrorRequestException extends Exception {
@@ -25,11 +26,21 @@ public class ErrorRequestException extends Exception {
     private static final long serialVersionUID = 1L;
     private final boolean manyRequest;
 
+    /**
+     * Default Constructor 
+     * 
+     * @param msg the message of the exception
+     * @param manyRequest true if the user is doing to many request to the API or to the system, false otherwise
+     */
     public ErrorRequestException(String msg, boolean manyRequest) {
         super(msg);
         this.manyRequest = manyRequest;
     }
 
+    /**
+     *
+     * @return true if the user is doing to many request to the API or to the system, false otherwise
+     */
     public boolean isLimitRequestExceeded() {
         return manyRequest;
     }
