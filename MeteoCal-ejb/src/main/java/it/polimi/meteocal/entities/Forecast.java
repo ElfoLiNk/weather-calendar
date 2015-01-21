@@ -31,19 +31,27 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 
 /**
- *
+ * Entity that rappresent the Forecast of the Event in MeteoCal
+ * 
  * @author Matteo Gazzetta, Alessandro Fato
  */
-@Table(indexes = {
+@Table(name="forecast",indexes = {
     @Index(columnList = "LOCATION")})
 @Entity
 @NamedQueries({
     @NamedQuery(name = Forecast.FIND_BY_LOCATION, query = "SELECT f FROM Forecast f WHERE f.location LIKE :location"),
-    @NamedQuery(name = Forecast.FIND_OLD_FORECAST_LOCATION, query = "SELECT f FROM Forecast f WHERE f.creationDate < :today AND f.location LIKE :location"),})
+    @NamedQuery(name = Forecast.FIND_OLD_FORECAST, query = "SELECT f FROM Forecast f WHERE f.creationDate < :today"),})
 public class Forecast implements Serializable {
 
+    /**
+     * Name for the NamedQuery
+     */
     public static final String FIND_BY_LOCATION = "Forecast.FIND_BY_LOCATION";
-    public static final String FIND_OLD_FORECAST_LOCATION = "Forecast.FIND_OLD_FORECAST_LOCATION";
+
+    /**
+     * Name for the NamedQuery
+     */
+    public static final String FIND_OLD_FORECAST = "Forecast.FIND_OLD_FORECAST";
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -66,58 +74,114 @@ public class Forecast implements Serializable {
     @OneToOne(cascade = CascadeType.ALL)
     private Weather weather;
 
+    /**
+     *
+     * @return the location of the forcast
+     */
     public String getLocation() {
         return location;
     }
 
+    /**
+     *
+     * @param location the location to set
+     */
     public void setLocation(String location) {
         this.location = location;
     }
 
+    /**
+     *
+     * @return the latitude of the forecast
+     */
     public Float getLatitude() {
         return latitude;
     }
 
+    /**
+     *
+     * @param latitude the latitute to set
+     */
     public void setLatitude(Float latitude) {
         this.latitude = latitude;
     }
 
+    /**
+     *
+     * @return the longitude of the forecast
+     */
     public Float getLongitude() {
         return longitude;
     }
 
+    /**
+     *
+     * @param longitude the longitude to set
+     */
     public void setLongitude(Float longitude) {
         this.longitude = longitude;
     }
 
+    /**
+     *
+     * @return the forecast date of the forecast
+     */
     public java.util.Calendar getForecastDate() {
         return forecastDate;
     }
 
+    /**
+     *
+     * @param forecastDate the date of the forecast to ser
+     */
     public void setForecastDate(java.util.Calendar forecastDate) {
         this.forecastDate = forecastDate;
     }
 
+    /**
+     *
+     * @return the creation date of the forecast
+     */
     public java.util.Calendar getCreationDate() {
         return creationDate;
     }
 
+    /**
+     *
+     * @param creationDate the creation date to set
+     */
     public void setCreationDate(java.util.Calendar creationDate) {
         this.creationDate = creationDate;
     }
 
+    /**
+     *
+     * @return the weather of the forecast
+     */
     public Weather getWeather() {
         return weather;
     }
 
+    /**
+     *
+     * @param weather the weather to set
+     */
     public void setWeather(Weather weather) {
         this.weather = weather;
     }
 
+    /**
+     *
+     * @return the id of the forecast
+     */
     public Long getId() {
         return id;
     }
 
+    /**
+     *
+     * @param id the id to set
+     */
     public void setId(Long id) {
         this.id = id;
     }

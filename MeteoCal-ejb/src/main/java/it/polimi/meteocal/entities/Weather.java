@@ -21,12 +21,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
+ * Entity that rappresent the Weather of the Event in MeteoCal
  *
  * @author Matteo Gazzetta, Alessandro Fato
  */
 @Entity
+@Table(name = "weather")
 public class Weather implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -42,42 +45,82 @@ public class Weather implements Serializable {
 
     private String icon;
 
+    /**
+     *
+     * @return the icon of the weather
+     */
     public String getIcon() {
         return icon;
     }
 
+    /**
+     *
+     * @param icon the icon to set
+     */
     public void setIcon(String icon) {
         this.icon = icon;
     }
 
+    /**
+     *
+     * @return the weather condition code
+     */
     public String getWeatherConditionCode() {
         return weatherConditionCode;
     }
 
+    /**
+     *
+     * @param weatherConditionCode the weather condition code to set
+     */
     public void setWeatherConditionCode(String weatherConditionCode) {
         this.weatherConditionCode = weatherConditionCode;
     }
 
+    /**
+     *
+     * @return the description of the weather
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     *
+     * @param description the description to set
+     */
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /**
+     *
+     * @return the temperature of the weather
+     */
     public Float getTemperature() {
         return temperature;
     }
 
+    /**
+     *
+     * @param temperature the temperature to set
+     */
     public void setTemperature(Float temperature) {
         this.temperature = temperature;
     }
 
+    /**
+     *
+     * @return the id of the weather
+     */
     public Long getId() {
         return id;
     }
 
+    /**
+     *
+     * @param id the id to set
+     */
     public void setId(Long id) {
         this.id = id;
     }

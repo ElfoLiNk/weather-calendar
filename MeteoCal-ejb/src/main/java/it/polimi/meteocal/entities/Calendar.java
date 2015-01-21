@@ -20,6 +20,7 @@ import it.polimi.meteocal.util.Visibility;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -31,19 +32,25 @@ import javax.persistence.JoinTable;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 /**
+ * Entity that rappresent the Calendar of the User in MeteoCal
  *
  * @author Matteo Gazzetta, Alessandro Fato
  */
 @Entity
+@Table(name = "calendar")
 @NamedQueries({
     @NamedQuery(name = Calendar.FIND_BY_ORGANIZEDEVENT, query = "SELECT c FROM Calendar c WHERE :event MEMBER OF c.organizedEvents"),})
-
 public class Calendar implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * Name for the NamedQuery
+     */
     public static final String FIND_BY_ORGANIZEDEVENT = "Calendar.FIND_BY_ORGANIZEDEVENT";
 
     @Id
@@ -62,46 +69,124 @@ public class Calendar implements Serializable {
     @Enumerated(value = EnumType.STRING)
     private Visibility visibility = it.polimi.meteocal.util.Visibility.PRIVATE;
 
+    /**
+     * @return the calendar visibility
+     * @see Visibility
+     */
     public Visibility getVisibility() {
         return visibility;
     }
 
+    /**
+     * Set the Calendar visibility
+     *
+     * @param visibility the visibility to set
+     */
     public void setVisibility(Visibility visibility) {
         this.visibility = visibility;
     }
 
+    /**
+     * @return the list of the partecipated events by the owner's calendar
+     */
     public List<Event> getParticipatedEvents() {
         return participatedEvents;
     }
 
+    /**
+     * @param participatedEvents the list of participated events to set
+     */
     public void setParticipatedEvents(List<Event> participatedEvents) {
         this.participatedEvents = participatedEvents;
     }
 
+    /**
+     * @return the list of organized events by the calendar's owner
+     */
     public List<Event> getOrganizedEvents() {
         return organizedEvents;
     }
 
+    /**
+     *
+     * @param organizedEvents the list of owned events to set
+     */
     public void setOrganizedEvents(List<Event> organizedEvents) {
         this.organizedEvents = organizedEvents;
     }
 
+    /**
+     * @return the id of the calendar
+     */
     public Long getId() {
         return id;
     }
 
+    /**
+     * @param id the id to set
+     */
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Add event to the organized list
+     *
+     * @param event the event to add
+     */
     public void addOrganizedEvent(Event event) {
         organizedEvents.add(event);
 
     }
 
+    /**
+     * Add event to the participated list
+     *
+     * @param event the event to add
+     */
     public void addParticipatedEvent(Event event) {
         participatedEvents.add(event);
 
     }
 
+//    @Override
+//    public String toString() {
+//        return "Calendar{" + "id=" + id + ", participatedEvents=" + participatedEvents.size() + ", organizedEvents=" + organizedEvents.size() + ", visibility=" + visibility + '}';
+//    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 97 * hash + Objects.hashCode(this.id);
+        hash = 97 * hash + Objects.hashCode(this.participatedEvents);
+        hash = 97 * hash + Objects.hashCode(this.organizedEvents);
+        hash = 97 * hash + Objects.hashCode(this.visibility);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Calendar other = (Calendar) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        if (!Objects.equals(this.participatedEvents, other.participatedEvents)) {
+            return false;
+        }
+        if (!Objects.equals(this.organizedEvents, other.organizedEvents)) {
+            return false;
+        }
+        if (this.visibility != other.visibility) {
+            return false;
+        }
+        return true;
+    }
+
+    
 }

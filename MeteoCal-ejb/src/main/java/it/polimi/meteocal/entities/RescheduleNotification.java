@@ -23,19 +23,29 @@ import javax.persistence.Enumerated;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 /**
+ * Entity that rappresent the RescheduleNotification of the User in MeteoCal
  *
  * @author Matteo Gazzetta, Alessandro Fato
  */
 @Entity
+@Table(name = "reschedulenotification")
 @NamedQueries({
     @NamedQuery(name = RescheduleNotification.FIND_BY_EVENT, query = "SELECT n FROM RescheduleNotification n WHERE n.event = :event OR n.suggestedEvent = :event"),
     @NamedQuery(name = RescheduleNotification.FIND_OLD_NOTIFICATION, query = "SELECT n FROM RescheduleNotification n WHERE n.event.startDate <= :now"),})
 public class RescheduleNotification extends Notification {
 
+    /**
+     * Name for the NamedQuery
+     */
     public static final String FIND_BY_EVENT = "RescheduleNotification.FIND_BY_EVENT";
+
+    /**
+     * Name for the NamedQuery
+     */
     public static final String FIND_OLD_NOTIFICATION = "RescheduleNotification.FIND_OLD_NOTIFICATION";
 
     @OneToOne
@@ -46,10 +56,18 @@ public class RescheduleNotification extends Notification {
     @NotNull
     private Event suggestedEvent;
 
+    /**
+     *
+     * @return the suggested event of the reschedule notification
+     */
     public Event getSuggestedEvent() {
         return suggestedEvent;
     }
 
+    /**
+     *
+     * @param suggestedEvent the suggested event to set
+     */
     public void setSuggestedEvent(Event suggestedEvent) {
         this.suggestedEvent = suggestedEvent;
     }
@@ -57,18 +75,34 @@ public class RescheduleNotification extends Notification {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    /**
+     *
+     * @return the status of the reschedule notification
+     */
     public Status getStatus() {
         return status;
     }
 
+    /**
+     *
+     * @param status the status to set
+     */
     public void setStatus(Status status) {
         this.status = status;
     }
 
+    /**
+     *
+     * @return the event of the reschedule notification
+     */
     public Event getEvent() {
         return event;
     }
 
+    /**
+     *
+     * @param event the event to set
+     */
     public void setEvent(Event event) {
         this.event = event;
     }
