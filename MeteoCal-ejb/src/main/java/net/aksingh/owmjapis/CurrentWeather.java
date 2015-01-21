@@ -50,7 +50,6 @@ public class CurrentWeather extends AbstractWeather {
     /*
      Instance variables
      */
-
     private final String base;
     private final long cityId;
     private final String cityName;
@@ -355,10 +354,18 @@ public class CurrentWeather extends AbstractWeather {
             this.rain1h = (float) jsonObj.optDouble(Rain.JSON_RAIN_1HOUR, Double.NaN);
         }
 
+        /**
+         *
+         * @return
+         */
         public boolean hasRain() {
             return !Float.isNaN(this.rain1h);
         }
 
+        /**
+         *
+         * @return
+         */
         public float getRain() {
             return this.rain1h;
         }
@@ -443,50 +450,98 @@ public class CurrentWeather extends AbstractWeather {
             }
         }
 
+        /**
+         *
+         * @return
+         */
         public boolean hasType() {
             return this.type != Integer.MIN_VALUE;
         }
 
+        /**
+         *
+         * @return
+         */
         public boolean hasId() {
             return this.id != Integer.MIN_VALUE;
         }
 
+        /**
+         *
+         * @return
+         */
         public boolean hasMessage() {
             return !Double.isNaN(this.message);
         }
 
+        /**
+         *
+         * @return
+         */
         public boolean hasCountryCode() {
             return this.countryCode != null;
         }
 
+        /**
+         *
+         * @return
+         */
         public boolean hasSunriseTime() {
             return this.sunrise != null;
         }
 
+        /**
+         *
+         * @return
+         */
         public boolean hasSunsetTime() {
             return this.sunset != null;
         }
 
+        /**
+         *
+         * @return
+         */
         public int getType() {
             return this.type;
         }
 
+        /**
+         *
+         * @return
+         */
         public int getId() {
             return this.id;
         }
 
+        /**
+         *
+         * @return
+         */
         public double getMessage() {
             return this.message;
         }
 
+        /**
+         *
+         * @return
+         */
         public String getCountryCode() {
             return this.countryCode;
         }
 
+        /**
+         *
+         * @return
+         */
         public Date getSunriseTime() {
             return this.sunrise;
         }
 
+        /**
+         *
+         * @return
+         */
         public Date getSunsetTime() {
             return this.sunset;
         }
@@ -529,10 +584,18 @@ public class CurrentWeather extends AbstractWeather {
             this.gust = (float) jsonObj.optDouble(Wind.JSON_WIND_GUST, Double.NaN);
         }
 
+        /**
+         *
+         * @return
+         */
         public boolean hasWindGust() {
             return !Float.isNaN(this.gust);
         }
 
+        /**
+         *
+         * @return
+         */
         public float getWindGust() {
             return this.gust;
         }

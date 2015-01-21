@@ -46,6 +46,10 @@ public class DefaultWeatherScheduleModel implements WeatherScheduleModel, Serial
         this.events = events;
     }
 
+    /**
+     *
+     * @param event
+     */
     @Override
     public void addEvent(WeatherScheduleEvent event) {
         //event.setId(UUID.randomUUID().toString());
@@ -57,11 +61,20 @@ public class DefaultWeatherScheduleModel implements WeatherScheduleModel, Serial
         return events.remove(event);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public List<WeatherScheduleEvent> getWeatherEvents() {
         return events;
     }
 
+    /**
+     *
+     * @param id
+     * @return
+     */
     @Override
     public WeatherScheduleEvent getEvent(String id) {
         for (WeatherScheduleEvent event : events) {
@@ -90,17 +103,27 @@ public class DefaultWeatherScheduleModel implements WeatherScheduleModel, Serial
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int getEventCount() {
         return events.size();
     }
 
+    /**
+     *
+     */
     @Override
     public void clear() {
         events = new ArrayList<>();
     }
 
-
+    /**
+     *
+     * @param event
+     */
     @Override
     public void addEvent(ScheduleEvent event) {
         event.setId(UUID.randomUUID().toString());
@@ -108,11 +131,20 @@ public class DefaultWeatherScheduleModel implements WeatherScheduleModel, Serial
         events.add((WeatherScheduleEvent) event);
     }
 
+    /**
+     *
+     * @param event
+     * @return
+     */
     @Override
     public boolean deleteEvent(ScheduleEvent event) {
         return events.remove(event);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public List<ScheduleEvent> getEvents() {
         List<ScheduleEvent> eventi = new ArrayList<>();
@@ -122,6 +154,10 @@ public class DefaultWeatherScheduleModel implements WeatherScheduleModel, Serial
         return eventi;
     }
 
+    /**
+     *
+     * @param event
+     */
     @Override
     public void updateEvent(ScheduleEvent event) {
         int index = -1;

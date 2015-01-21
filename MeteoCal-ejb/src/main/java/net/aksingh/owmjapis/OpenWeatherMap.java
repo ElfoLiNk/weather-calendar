@@ -48,7 +48,7 @@ import org.json.JSONObject;
  * <code>OpenWeatherMap.org owm = new OpenWeatherMap(your-units, your-language, "your-api-key");</code>
  * </p>
  *
- * @author Ashutosh Kumar Singh <me@aksingh.net>
+ * @author Ashutosh Kumar Singh {@literal <me@aksingh.net>}
  * @version 12/19/2014
  * @see <a href="http://openweathermap.org/">OpenWeatherMap.org</a>
  * @see <a href="http://openweathermap.org/api">OpenWeatherMap.org API</a>
@@ -124,22 +124,43 @@ public class OpenWeatherMap {
     /*
      Getters
      */
+
+    /**
+     *
+     * @return
+     */
     public OWMAddress getOwmAddressInstance() {
         return owmAddress;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getApiKey() {
         return owmAddress.getAppId();
     }
 
+    /**
+     *
+     * @return
+     */
     public Units getUnits() {
         return owmAddress.getUnits();
     }
 
+    /**
+     *
+     * @return
+     */
     public String getMode() {
         return owmAddress.getMode();
     }
 
+    /**
+     *
+     * @return
+     */
     public Language getLang() {
         return owmAddress.getLang();
     }
@@ -179,82 +200,173 @@ public class OpenWeatherMap {
         owmAddress.setLang(lang);
     }
 
+    /**
+     *
+     * @param cityName
+     * @return
+     * @throws IOException
+     */
     public CurrentWeather currentWeatherByCityName(String cityName)
             throws IOException {
         String response = owmResponse.currentWeatherByCityName(cityName);
         return this.currentWeatherFromRawResponse(response);
     }
 
+    /**
+     *
+     * @param cityName
+     * @param countryCode
+     * @return
+     * @throws IOException
+     */
     public CurrentWeather currentWeatherByCityName(String cityName, String countryCode)
             throws IOException {
         String response = owmResponse.currentWeatherByCityName(cityName, countryCode);
         return this.currentWeatherFromRawResponse(response);
     }
 
+    /**
+     *
+     * @param cityCode
+     * @return
+     */
     public CurrentWeather currentWeatherByCityCode(long cityCode) {
         String response = owmResponse.currentWeatherByCityCode(cityCode);
         return this.currentWeatherFromRawResponse(response);
     }
 
+    /**
+     *
+     * @param latitude
+     * @param longitude
+     * @return
+     */
     public CurrentWeather currentWeatherByCoordinates(float latitude, float longitude) {
         String response = owmResponse.currentWeatherByCoordinates(latitude, longitude);
         return this.currentWeatherFromRawResponse(response);
     }
 
+    /**
+     *
+     * @param response
+     * @return
+     */
     public CurrentWeather currentWeatherFromRawResponse(String response) {
         JSONObject jsonObj = (response != null) ? new JSONObject(response) : null;
         return new CurrentWeather(jsonObj);
     }
 
+    /**
+     *
+     * @param cityName
+     * @return
+     * @throws IOException
+     */
     public HourlyForecast hourlyForecastByCityName(String cityName)
             throws IOException {
         String response = owmResponse.hourlyForecastByCityName(cityName);
         return this.hourlyForecastFromRawResponse(response);
     }
 
+    /**
+     *
+     * @param cityName
+     * @param countryCode
+     * @return
+     * @throws IOException
+     */
     public HourlyForecast hourlyForecastByCityName(String cityName, String countryCode)
             throws IOException {
         String response = owmResponse.hourlyForecastByCityName(cityName, countryCode);
         return this.hourlyForecastFromRawResponse(response);
     }
 
+    /**
+     *
+     * @param cityCode
+     * @return
+     */
     public HourlyForecast hourlyForecastByCityCode(long cityCode) {
         String response = owmResponse.hourlyForecastByCityCode(cityCode);
         return this.hourlyForecastFromRawResponse(response);
     }
 
+    /**
+     *
+     * @param latitude
+     * @param longitude
+     * @return
+     */
     public HourlyForecast hourlyForecastByCoordinates(float latitude, float longitude) {
         String response = owmResponse.hourlyForecastByCoordinates(latitude, longitude);
         return this.hourlyForecastFromRawResponse(response);
     }
 
+    /**
+     *
+     * @param response
+     * @return
+     */
     public HourlyForecast hourlyForecastFromRawResponse(String response) {
         JSONObject jsonObj = (response != null) ? new JSONObject(response) : null;
         return new HourlyForecast(jsonObj);
     }
 
+    /**
+     *
+     * @param cityName
+     * @param count
+     * @return
+     * @throws IOException
+     */
     public DailyForecast dailyForecastByCityName(String cityName, byte count)
             throws IOException {
         String response = owmResponse.dailyForecastByCityName(cityName, count);
         return this.dailyForecastFromRawResponse(response);
     }
 
+    /**
+     *
+     * @param cityName
+     * @param countryCode
+     * @param count
+     * @return
+     * @throws IOException
+     */
     public DailyForecast dailyForecastByCityName(String cityName, String countryCode, byte count)
             throws IOException {
         String response = owmResponse.dailyForecastByCityName(cityName, countryCode, count);
         return this.dailyForecastFromRawResponse(response);
     }
 
+    /**
+     *
+     * @param cityCode
+     * @param count
+     * @return
+     */
     public DailyForecast dailyForecastByCityCode(long cityCode, byte count) {
         String response = owmResponse.dailyForecastByCityCode(cityCode, count);
         return this.dailyForecastFromRawResponse(response);
     }
 
+    /**
+     *
+     * @param latitude
+     * @param longitude
+     * @param count
+     * @return
+     */
     public DailyForecast dailyForecastByCoordinates(float latitude, float longitude, byte count) {
         String response = owmResponse.dailyForecastByCoordinates(latitude, longitude, count);
         return this.dailyForecastFromRawResponse(response);
     }
 
+    /**
+     *
+     * @param response
+     * @return
+     */
     public DailyForecast dailyForecastFromRawResponse(String response) {
         JSONObject jsonObj = (response != null) ? new JSONObject(response) : null;
         return new DailyForecast(jsonObj);
@@ -267,7 +379,14 @@ public class OpenWeatherMap {
      */
     public static enum Units {
 
+        /**
+         *
+         */
         METRIC("metric"),
+
+        /**
+         *
+         */
         IMPERIAL("imperial");
 
         private final String unit;
@@ -284,24 +403,99 @@ public class OpenWeatherMap {
      */
     public static enum Language {
 
+        /**
+         *
+         */
         ENGLISH("en"),
+
+        /**
+         *
+         */
         RUSSIAN("ru"),
+
+        /**
+         *
+         */
         ITALIAN("it"),
+
+        /**
+         *
+         */
         SPANISH("es"),
+
+        /**
+         *
+         */
         UKRAINIAN("uk"),
+
+        /**
+         *
+         */
         GERMAN("de"),
+
+        /**
+         *
+         */
         PORTUGUESE("pt"),
+
+        /**
+         *
+         */
         ROMANIAN("ro"),
+
+        /**
+         *
+         */
         POLISH("pl"),
+
+        /**
+         *
+         */
         FINNISH("fi"),
+
+        /**
+         *
+         */
         DUTCH("nl"),
+
+        /**
+         *
+         */
         FRENCH("FR"),
+
+        /**
+         *
+         */
         BULGARIAN("bg"),
+
+        /**
+         *
+         */
         SWEDISH("sv"),
+
+        /**
+         *
+         */
         CHINESE_TRADITIONAL("zh_tw"),
+
+        /**
+         *
+         */
         CHINESE_SIMPLIFIED("zh"),
+
+        /**
+         *
+         */
         TURKISH("tr"),
+
+        /**
+         *
+         */
         CROATIAN("hr"),
+
+        /**
+         *
+         */
         CATALAN("ca");
 
         private final String lang;
@@ -381,6 +575,14 @@ public class OpenWeatherMap {
         /*
          Addresses for current weather
          */
+
+        /**
+         *
+         * @param cityName
+         * @return
+         * @throws UnsupportedEncodingException
+         */
+        
         public String currentWeatherByCityName(String cityName) throws UnsupportedEncodingException {
             return new StringBuilder()
                     .append(URL_API).append(URL_CURRENT)
@@ -392,12 +594,24 @@ public class OpenWeatherMap {
                     .toString();
         }
 
+        /**
+         *
+         * @param cityName
+         * @param countryCode
+         * @return
+         * @throws UnsupportedEncodingException
+         */
         public String currentWeatherByCityName(String cityName, String countryCode) throws UnsupportedEncodingException {
             return currentWeatherByCityName(new StringBuilder()
                     .append(cityName).append(",").append(countryCode)
                     .toString());
         }
 
+        /**
+         *
+         * @param cityCode
+         * @return
+         */
         public String currentWeatherByCityCode(long cityCode) {
             return new StringBuilder()
                     .append(URL_API).append(URL_CURRENT)
@@ -409,6 +623,12 @@ public class OpenWeatherMap {
                     .toString();
         }
 
+        /**
+         *
+         * @param latitude
+         * @param longitude
+         * @return
+         */
         public String currentWeatherByCoordinates(float latitude, float longitude) {
             return new StringBuilder()
                     .append(URL_API).append(URL_CURRENT)
@@ -423,6 +643,14 @@ public class OpenWeatherMap {
         /*
          Addresses for hourly forecasts
          */
+
+        /**
+         *
+         * @param cityName
+         * @return
+         * @throws UnsupportedEncodingException
+         */
+        
         public String hourlyForecastByCityName(String cityName) throws UnsupportedEncodingException {
             return new StringBuilder()
                     .append(URL_API).append(URL_HOURLY_FORECAST)
@@ -434,12 +662,24 @@ public class OpenWeatherMap {
                     .toString();
         }
 
+        /**
+         *
+         * @param cityName
+         * @param countryCode
+         * @return
+         * @throws UnsupportedEncodingException
+         */
         public String hourlyForecastByCityName(String cityName, String countryCode) throws UnsupportedEncodingException {
             return hourlyForecastByCityName(new StringBuilder()
                     .append(cityName).append(",").append(countryCode)
                     .toString());
         }
 
+        /**
+         *
+         * @param cityCode
+         * @return
+         */
         public String hourlyForecastByCityCode(long cityCode) {
             return new StringBuilder()
                     .append(URL_API).append(URL_HOURLY_FORECAST)
@@ -451,6 +691,12 @@ public class OpenWeatherMap {
                     .toString();
         }
 
+        /**
+         *
+         * @param latitude
+         * @param longitude
+         * @return
+         */
         public String hourlyForecastByCoordinates(float latitude, float longitude) {
             return new StringBuilder()
                     .append(URL_API).append(URL_HOURLY_FORECAST)
@@ -466,6 +712,15 @@ public class OpenWeatherMap {
         /*
          Addresses for daily forecasts
          */
+
+        /**
+         *
+         * @param cityName
+         * @param count
+         * @return
+         * @throws UnsupportedEncodingException
+         */
+        
         public String dailyForecastByCityName(String cityName, byte count) throws UnsupportedEncodingException {
             return new StringBuilder()
                     .append(URL_API).append(URL_DAILY_FORECAST)
@@ -478,12 +733,26 @@ public class OpenWeatherMap {
                     .toString();
         }
 
+        /**
+         *
+         * @param cityName
+         * @param countryCode
+         * @param count
+         * @return
+         * @throws UnsupportedEncodingException
+         */
         public String dailyForecastByCityName(String cityName, String countryCode, byte count) throws UnsupportedEncodingException {
             return dailyForecastByCityName(new StringBuilder()
                     .append(cityName).append(",").append(countryCode)
                     .toString(), count);
         }
 
+        /**
+         *
+         * @param cityCode
+         * @param count
+         * @return
+         */
         public String dailyForecastByCityCode(long cityCode, byte count) {
             return new StringBuilder()
                     .append(URL_API).append(URL_DAILY_FORECAST)
@@ -496,6 +765,13 @@ public class OpenWeatherMap {
                     .toString();
         }
 
+        /**
+         *
+         * @param latitude
+         * @param longitude
+         * @param count
+         * @return
+         */
         public String dailyForecastByCoordinates(float latitude, float longitude, byte count) {
             return new StringBuilder()
                     .append(URL_API).append(URL_DAILY_FORECAST)

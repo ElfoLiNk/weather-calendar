@@ -31,8 +31,9 @@ public class User {
     public static final String AUTH_KEY = "USER";
 
     /**
-     * Constructor wirh id
-     * @param userID the user id logged 
+     * Constructor with id
+     *
+     * @param userID the user id logged
      */
     public User(Long userID) {
         this.userID = userID;

@@ -46,7 +46,6 @@ public abstract class AbstractForecast extends AbstractResponse {
      Instance variables
      */
     private final double message;
-
     private final City city;
     private final int forecastCount;
 
@@ -161,18 +160,34 @@ public abstract class AbstractForecast extends AbstractResponse {
             this.coord = (jsonObjCoord != null) ? new Coord(jsonObjCoord) : null;
         }
 
+        /**
+         *
+         * @return
+         */
         public boolean hasCityCode() {
             return this.cityID != Long.MIN_VALUE;
         }
 
+        /**
+         *
+         * @return
+         */
         public boolean hasCityName() {
             return this.cityName != null;
         }
 
+        /**
+         *
+         * @return
+         */
         public boolean hasCountryCode() {
             return this.countryCode != null;
         }
 
+        /**
+         *
+         * @return
+         */
         public boolean hasCityPopulation() {
             return this.population != Long.MIN_VALUE;
         }
@@ -185,18 +200,34 @@ public abstract class AbstractForecast extends AbstractResponse {
             return coord != null;
         }
 
+        /**
+         *
+         * @return
+         */
         public long getCityCode() {
             return this.cityID;
         }
 
+        /**
+         *
+         * @return
+         */
         public String getCityName() {
             return this.cityName;
         }
 
+        /**
+         *
+         * @return
+         */
         public String getCountryCode() {
             return this.countryCode;
         }
 
+        /**
+         *
+         * @return
+         */
         public long getCityPopulation() {
             return this.population;
         }
@@ -208,6 +239,9 @@ public abstract class AbstractForecast extends AbstractResponse {
             return this.coord;
         }
 
+        /**
+         * 
+         */
         public static class Coord extends AbstractWeather.Coord {
 
             Coord() {

@@ -136,6 +136,10 @@ public class HourlyForecast extends AbstractForecast {
             this.wind = (jsonObjWind != null) ? new Wind(jsonObjWind) : null;
         }
 
+        /**
+         *
+         * @return
+         */
         public boolean hasDateTimeText() {
             return this.dateTimeText != null;
         }
@@ -172,6 +176,10 @@ public class HourlyForecast extends AbstractForecast {
             return wind != null;
         }
 
+        /**
+         *
+         * @return
+         */
         public String getDateTimeText() {
             return this.dateTimeText;
         }
@@ -281,26 +289,50 @@ public class HourlyForecast extends AbstractForecast {
                 this.tempKF = (jsonObj != null) ? (float) jsonObj.optDouble(Main.JSON_MAIN_TMP_KF, Float.NaN) : Float.NaN;
             }
 
+            /**
+             *
+             * @return
+             */
             public boolean hasSeaLevel() {
                 return !Float.isNaN(this.seaLevel);
             }
 
+            /**
+             *
+             * @return
+             */
             public boolean hasGroundLevel() {
                 return !Float.isNaN(this.groundLevel);
             }
 
+            /**
+             *
+             * @return
+             */
             public boolean hasTempKF() {
                 return !Float.isNaN(this.tempKF);
             }
 
+            /**
+             *
+             * @return
+             */
             public float getSeaLevel() {
                 return this.seaLevel;
             }
 
+            /**
+             *
+             * @return
+             */
             public float getGroundLevel() {
                 return this.groundLevel;
             }
 
+            /**
+             *
+             * @return
+             */
             public float getTempKF() {
                 return this.tempKF;
             }
@@ -339,10 +371,18 @@ public class HourlyForecast extends AbstractForecast {
                 this.pod = (jsonObj != null) ? jsonObj.optString(Sys.JSON_SYS_POD, null) : null;
             }
 
+            /**
+             *
+             * @return
+             */
             public boolean hasPod() {
                 return this.pod != null && !this.pod.isEmpty();
             }
 
+            /**
+             *
+             * @return
+             */
             public String getPod() {
                 return this.pod;
             }

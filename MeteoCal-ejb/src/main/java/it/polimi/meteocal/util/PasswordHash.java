@@ -39,6 +39,12 @@ import javax.crypto.spec.PBEKeySpec;
  * Author: havoc AT defuse.ca
  * www: http://crackstation.net/hashing-security.htm
  */
+
+/**
+ *
+ * @author Matteo
+ */
+
 public class PasswordHash {
 
     /**

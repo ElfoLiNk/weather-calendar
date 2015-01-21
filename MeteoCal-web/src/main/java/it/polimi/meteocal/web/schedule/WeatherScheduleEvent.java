@@ -258,11 +258,19 @@ public class WeatherScheduleEvent extends DefaultScheduleEvent {
         this.eventParticipants = eventParticipants;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return "WeatherScheduleEvent{" + "location=" + location + ", eoId=" + eoId + ", listParticipantAndInvitedUsers=" + listParticipantAndInvitedUsers + ", eventParticipants=" + eventParticipants + ", invitedUsers=" + invitedUsers + ", weather=" + weather + ", site=" + site + ", visibility=" + visibility + '}' + " SUPER: " + super.getDescription() + " " + super.getTitle() + " " + super.getStartDate().toString() + " " + super.getEndDate().toString();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int hashCode() {
         int hash = 7;
@@ -277,6 +285,11 @@ public class WeatherScheduleEvent extends DefaultScheduleEvent {
         return hash;
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {

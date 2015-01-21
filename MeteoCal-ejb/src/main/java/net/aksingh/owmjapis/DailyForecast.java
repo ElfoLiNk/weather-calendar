@@ -101,6 +101,11 @@ public class DailyForecast extends AbstractForecast {
          JSON Keys
          */
 
+        /**
+         *
+         */
+        
+
         public static final String JSON_TEMP = "temp";
 
         private static final String JSON_FORECAST_PRESSURE = "pressure";
@@ -156,62 +161,122 @@ public class DailyForecast extends AbstractForecast {
             this.snow = (jsonObj != null) ? (float) jsonObj.optDouble(Forecast.JSON_FORECAST_SNOW, Double.NaN) : Float.NaN;
         }
 
+        /**
+         *
+         * @return
+         */
         public boolean hasHumidity() {
             return !Float.isNaN(this.humidity);
         }
 
+        /**
+         *
+         * @return
+         */
         public boolean hasPressure() {
             return !Float.isNaN(this.pressure);
         }
 
+        /**
+         *
+         * @return
+         */
         public boolean hasWindSpeed() {
             return !Float.isNaN(this.windSpeed);
         }
 
+        /**
+         *
+         * @return
+         */
         public boolean hasWindDegree() {
             return !Float.isNaN(this.windDegree);
         }
 
+        /**
+         *
+         * @return
+         */
         public boolean hasPercentageOfClouds() {
             return !Float.isNaN(this.cloudsPercent);
         }
 
+        /**
+         *
+         * @return
+         */
         public boolean hasRain() {
             return !Float.isNaN(this.rain);
         }
 
+        /**
+         *
+         * @return
+         */
         public boolean hasSnow() {
             return !Float.isNaN(this.snow);
         }
 
+        /**
+         *
+         * @return
+         */
         public float getHumidity() {
             return this.humidity;
         }
 
+        /**
+         *
+         * @return
+         */
         public float getPressure() {
             return this.pressure;
         }
 
+        /**
+         *
+         * @return
+         */
         public float getWindSpeed() {
             return this.windSpeed;
         }
 
+        /**
+         *
+         * @return
+         */
         public float getWindDegree() {
             return this.windDegree;
         }
 
+        /**
+         *
+         * @return
+         */
         public float getPercentageOfClouds() {
             return this.cloudsPercent;
         }
 
+        /**
+         *
+         * @return
+         */
         public float getRain() {
             return this.rain;
         }
 
+        /**
+         *
+         * @return
+         */
         public float getSnow() {
             return this.snow;
         }
 
+        /**
+         *
+         * @return
+         */
         public Temperature getTemperatureInstance() {
             return this.temp;
         }
@@ -234,11 +299,34 @@ public class DailyForecast extends AbstractForecast {
          */
         public static class Temperature {
 
+            /**
+             *
+             */
             public static final String JSON_TEMP_DAY = "day";
+
+            /**
+             *
+             */
             public static final String JSON_TEMP_MIN = "min";
+
+            /**
+             *
+             */
             public static final String JSON_TEMP_MAX = "max";
+
+            /**
+             *
+             */
             public static final String JSON_TEMP_NIGHT = "night";
+
+            /**
+             *
+             */
             public static final String JSON_TEMP_EVENING = "eve";
+
+            /**
+             *
+             */
             public static final String JSON_TEMP_MORNING = "morn";
 
             private final float dayTemp;
@@ -266,50 +354,98 @@ public class DailyForecast extends AbstractForecast {
                 this.mornTemp = (jsonObj != null) ? (float) jsonObj.optDouble(Temperature.JSON_TEMP_MORNING, Double.NaN) : Float.NaN;
             }
 
+            /**
+             *
+             * @return
+             */
             public boolean hasDayTemperature() {
                 return !Float.isNaN(this.dayTemp);
             }
 
+            /**
+             *
+             * @return
+             */
             public boolean hasMinimumTemperature() {
                 return !Float.isNaN(this.minTemp);
             }
 
+            /**
+             *
+             * @return
+             */
             public boolean hasMaximumTemperature() {
                 return !Float.isNaN(this.maxTemp);
             }
 
+            /**
+             *
+             * @return
+             */
             public boolean hasNightTemperature() {
                 return !Float.isNaN(this.nightTemp);
             }
 
+            /**
+             *
+             * @return
+             */
             public boolean hasEveningTemperature() {
                 return !Float.isNaN(this.eveTemp);
             }
 
+            /**
+             *
+             * @return
+             */
             public boolean hasMorningTemperature() {
                 return !Float.isNaN(this.mornTemp);
             }
 
+            /**
+             *
+             * @return
+             */
             public float getDayTemperature() {
                 return this.dayTemp;
             }
 
+            /**
+             *
+             * @return
+             */
             public float getMinimumTemperature() {
                 return this.minTemp;
             }
 
+            /**
+             *
+             * @return
+             */
             public float getMaximumTemperature() {
                 return this.maxTemp;
             }
 
+            /**
+             *
+             * @return
+             */
             public float getNightTemperature() {
                 return this.nightTemp;
             }
 
+            /**
+             *
+             * @return
+             */
             public float getEveningTemperature() {
                 return this.eveTemp;
             }
 
+            /**
+             *
+             * @return
+             */
             public float getMorningTemperature() {
                 return this.mornTemp;
             }
