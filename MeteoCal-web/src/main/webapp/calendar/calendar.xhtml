@@ -174,7 +174,7 @@
                                 </p:column>
                                 <p:ajax event="itemSelect" listener="#{calendarBean.handleSelect}" />
                             </p:autoComplete>
-                            <p:commandButton id="addParticipantButton"  value="Add" update="messages,:scheduleForm:eventDetails" 
+                            <p:commandButton id="addParticipantButton"  value="Add" update="messages,searchBarParticipant,:scheduleForm:eventDetails" 
                                              actionListener="#{calendarBean.addParticipant}"
                                              oncomplete="PF('addParticipantDialog').hide();" />
                         </h:panelGrid>
