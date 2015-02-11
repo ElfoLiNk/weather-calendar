@@ -14,14 +14,14 @@
                     <p:growl id="msgs" showDetail="true" />
                     <h:panelGrid columns="3" cellpadding="5" >
                         <p:outputLabel value="FirstName:"/>
-                        <p:inputText id="firstName"
+                        <p:inputText id="firstName" maxlength="255"
                                      value="#{settingBean.loggedUser.firstName}"
                                      label="FirstName"
                                      required="true"  />
                         <p:message for="firstName" />
 
                         <p:outputLabel value="LastName:" />
-                        <p:inputText id="lastName"
+                        <p:inputText id="lastName" maxlength="255"
                                      value="#{settingBean.loggedUser.lastName}" label="LastName" 
                                      required="true"/>
                         <p:message for="lastName" />
@@ -38,7 +38,7 @@
                         <p:message for="dateBirth" />
 
                         <p:outputLabel value="Email:"/>
-                        <p:inputText id ="email"
+                        <p:inputText id ="email" maxlength="255"
                                      value="#{settingBean.loggedUser.email}"
                                      required="true" label="EmailId">
                             <f:validateRegex pattern="[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[A-Z]{2}|it|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)\b" />
@@ -46,7 +46,7 @@
                         <p:message for="email" />
 
                         <p:outputLabel value="Old Password:*"/>
-                        <p:password id="oldpassword"
+                        <p:password id="oldpassword" maxlength="255"
                                     value="#{settingBean.loggedUser.password}"
                                     required="true" label="Password" validatorMessage="Password need at least one digit, one uppercase letter and 8 lenght">
                             <f:validateRegex pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" />
@@ -54,7 +54,7 @@
                         <p:message for="oldpassword" />
 
                         <p:outputLabel value="New Password"/>
-                        <p:password id="newpassword" feedback="true"
+                        <p:password id="newpassword" feedback="true" maxlength="255"
                                     value="#{settingBean.newpassword}" match="renewpassword"
                                     label="New Password" validatorMessage="Password need at least one digit, one uppercase letter and 8 lenght">
                             <f:validateRegex pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" />
@@ -62,7 +62,7 @@
                         <p:message for="newpassword" />
 
                         <p:outputLabel value="Confirm New Password"/>
-                        <p:password id="renewpassword"
+                        <p:password id="renewpassword" maxlength="255"
                                     value="#{settingBean.renewpassword}" 
                                     label="New Password" validatorMessage="Password need at least one digit, one uppercase letter and 8 lenght">
                             <f:validateRegex pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" />
@@ -87,8 +87,8 @@
                         <p:message for="visibility" />
 
                         <h:outputLabel for="timezone" value="TimeZone:" />
-                        <p:selectOneMenu id="timezone" value="#{settingBean.loggedUser.setting.timeZone.ID}" filter="true" filterMatchMode="startsWith">
-                            <f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+                        <p:selectOneMenu id="timezone"   value="#{settingBean.loggedUser.setting.timeZone.ID}" filter="true" filterMatchMode="startsWith">
+                            <f:selectItem itemLabel="#{settingBean.loggedUser.setting.timeZone.ID}" itemValue="#{settingBean.loggedUser.setting.timeZone.ID}" />
                             <f:selectItems value="#{settingBean.loggedUser.setting.timeZone.getAvailableIDs()}" />
                         </p:selectOneMenu>
                         <p:message for="timezone" />
@@ -114,7 +114,7 @@
                     <p:commandButton value="Reset" type="reset"  />
                     <p:commandButton value="Save" ajax="false"
                                      actionListener="#{settingBean.changeSetting()}"
-                                     update="@form" 
+                                     update="@form,:userInfoForm" 
                                      icon="ui-icon-check" />
 
                 </h:form>

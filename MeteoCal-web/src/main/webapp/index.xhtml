@@ -126,13 +126,13 @@
                             <h:panelGrid columns="3" cellpadding="5">
 
                                 <h:outputLabel for="emailLogin" value="Email:" />
-                                <p:inputText id="emailLogin" value="#{loginBean.loginUser.email}" required="true" label="email" >
+                                <p:inputText id="emailLogin" maxlength="255" value="#{loginBean.loginUser.email}" required="true" label="email" >
                                     <f:validateRegex pattern="[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[A-Z]{2}|it|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)\b" />
                                 </p:inputText>
                                 <p:message for="emailLogin" />
 
                                 <h:outputLabel for="passwordLogin" value="Password:" />
-                                <p:password id="passwordLogin"  value="#{loginBean.loginUser.password}" required="true" label="password" >
+                                <p:password id="passwordLogin"  maxlength="255"  value="#{loginBean.loginUser.password}" required="true" label="password" >
                                     <f:validateRegex pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" />
                                 </p:password>
                                 <p:message for="passwordLogin" />
@@ -157,7 +157,7 @@
                             <h:panelGrid columns="3" cellpadding="5">
 
                                 <p:outputLabel for="emailRegistration" value="Email:"/>
-                                <p:inputText id ="emailRegistration"
+                                <p:inputText id ="emailRegistration" maxlength="255"
                                              value="#{registrationBean.registerUser.email}"
                                              required="true" label="Email"  validatorMessage="Please insert a valid email">
                                     <f:validateRegex pattern="[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[A-Z]{2}|it|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)\b" />
@@ -165,7 +165,7 @@
                                 <p:message for="emailRegistration" />
 
                                 <p:outputLabel for="passwordRegistration" value="Password:"/>
-                                <p:password  id="passwordRegistration" feedback="true" inline="true" 
+                                <p:password  id="passwordRegistration" feedback="true" inline="true"  maxlength="255"
                                              value="#{registrationBean.registerUser.password}"
                                              required="true" label="Password"  match="passwordCheck"
                                              validatorMessage="Password need at least one digit, one uppercase letter and 8 lenght">
@@ -173,7 +173,7 @@
                                 </p:password>
                                 <p:message for="passwordCheck" />
                                 <p:outputLabel for="passwordCheck" value="Confirm Password:"/>
-                                <p:password  id="passwordCheck" feedback="true" inline="true" 
+                                <p:password  id="passwordCheck" feedback="true" inline="true"  maxlength="255"
                                              value="#{registrationBean.passwordCheck}"
                                              required="true" label="Password"
                                              validatorMessage="Password need at least one digit, one uppercase letter and 8 lenght">
@@ -184,12 +184,12 @@
                                 <p:outputLabel value="First Name: *"/>
                                 <p:inputText id="firstName"
                                              value="#{registrationBean.registerUser.firstName}"
-                                             label="FirstName"
+                                             label="FirstName" maxlength="255"
                                              required="true"/>
                                 <p:message for="firstName" />
 
                                 <p:outputLabel value="Last Name: *" />
-                                <p:inputText id="lastName"
+                                <p:inputText id="lastName" maxlength="255"
                                              value="#{registrationBean.registerUser.lastName}" label="LastName" 
                                              required="true"/>
                                 <p:message for="lastName" />

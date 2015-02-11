@@ -349,9 +349,13 @@ public class HandleUserImpl implements HandleUser {
 
     @Override
     public Visibility getCalendarVisibility(String calendarId) throws ErrorRequestException {
-        Calendar calendar = em.find(Calendar.class, Long.valueOf(calendarId));
-        if (calendar != null) {
-            return calendar.getVisibility();
+        if (calendarId != null) {
+            Calendar calendar = em.find(Calendar.class, Long.valueOf(calendarId));
+            if (calendar != null) {
+                return calendar.getVisibility();
+            } else {
+                throw new ErrorRequestException("no valid calendar id", false);
+            }
         } else {
             throw new ErrorRequestException("no valid calendar id", false);
         }
@@ -657,7 +661,7 @@ public class HandleUserImpl implements HandleUser {
         queryResch.setParameter("now", java.util.Calendar.getInstance());
         for (RescheduleNotification reschNotif : queryResch.getResultList()) {
             Event suggestedEvent = em.find(Event.class, reschNotif.getSuggestedEvent().getId());
-            if(suggestedEvent != null){
+            if (suggestedEvent != null) {
                 // REMOVE THE UNUSED SUGGESTED EVENT
                 em.remove(suggestedEvent);
             }

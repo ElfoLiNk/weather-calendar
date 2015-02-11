@@ -91,7 +91,7 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
     @PersistenceContext
     EntityManager em;
 
-    private final Twitter twitter;
+    private Twitter twitter;
     private RequestToken requestToken;
     private AccessToken accessToken;
     private int cont;
@@ -114,10 +114,16 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
         String urlLogin = "error.xhtml";
 
         try {
-            if (requestToken == null) {
-                requestToken = twitter.getOAuthRequestToken(URL_BASE
-                        + "/MeteoCal-web/loginTwitter.xhtml");
-            }
+            ConfigurationBuilder builder = new ConfigurationBuilder();
+            builder.setOAuthConsumerKey(CLIENT_ID);
+            builder.setOAuthConsumerSecret(CLIENT_SECRET);
+            Configuration configuration = builder.build();
+            TwitterFactory factory = new TwitterFactory(configuration);
+            twitter = factory.getInstance();
+            //if (requestToken == null) {
+            requestToken = twitter.getOAuthRequestToken(URL_BASE
+                    + "/MeteoCal-web/loginTwitter.xhtml");
+            //}
             urlLogin = requestToken.getAuthenticationURL();
         } catch (TwitterException e) {
             LOGGER.log(Level.ERROR, e);
@@ -149,10 +155,19 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
                     utente.setTwitterTokenSecret(accessToken.getTokenSecret());
                     StringTokenizer stok = new StringTokenizer(user.getName());
                     utente.setFirstName(stok.nextToken());
-                    utente.setLastName(stok.nextToken());
+                    if (stok.hasMoreTokens()) {
+                        utente.setLastName(stok.nextToken());
+                    } else {
+                        utente.setLastName("");
+                    }
+                    while (stok.hasMoreTokens()) {
+                        utente.setLastName(utente.getLastName() + " " + stok.nextToken());
+
+                    };
+                    LOGGER.log(Level.INFO, utente.getLastName());
                     utente.setAvatar(user.getProfileImageURLHttps());
                     // MANCA EMAIL
-                    utente.setEmail(utente.getFirstName().toLowerCase() + "." + utente.getLastName().toLowerCase() + "@twitter.com");
+                    utente.setEmail(utente.getFirstName().toLowerCase() + "." + utente.getLastName().toLowerCase().replaceAll("\\s", ".") + "@twitter.com");
                     // MANCA BIRTH DATE
                     try {
                         utente.setPassword(PasswordHash.createHash(utente.getFirstName() + "." + utente.getLastName()));

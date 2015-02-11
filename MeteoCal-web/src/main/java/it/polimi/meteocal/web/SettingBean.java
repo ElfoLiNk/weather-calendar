@@ -22,7 +22,6 @@ import it.polimi.meteocal.ejb.HandleUser;
 import it.polimi.meteocal.exception.ErrorRequestException;
 import it.polimi.meteocal.util.Visibility;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -232,23 +231,13 @@ public class SettingBean {
             String filename = FilenameUtils.getName(uploadedFile.getFileName());
             try {
                 InputStream input = uploadedFile.getInputstream();
-                final String operatingSystem = System.getProperty("os.name").toLowerCase();
-                File file = null;
-                if (operatingSystem.contains("win")) {
-                    file = new File(System.getProperty("com.sun.aas.instanceRoot") + "/var/webapp/images", filename);
-                } else if (operatingSystem.contains("nix") || operatingSystem.contains("nux") || operatingSystem.indexOf("aix") > 0) {
-                    file = new File(System.getProperty("com.sun.aas.instanceRoot") + "/var/webapp/images", filename);
-                }
-                if (file != null) {
-                    OutputStream output = new FileOutputStream(file);
-                    LOGGER.log(Level.INFO, file.getAbsolutePath());
-                    loggedUser.setAvatar("/images/" + file.getName());
-                    IOUtils.copy(input, output);
-                    IOUtils.closeQuietly(input);
-                    IOUtils.closeQuietly(output);
-                }
-            } catch (FileNotFoundException ex) {
-                LOGGER.log(Level.ERROR, ex);
+                File file = new File(System.getProperty("com.sun.aas.instanceRoot") + "/var/webapp/images", filename);
+                OutputStream output = new FileOutputStream(file);
+                LOGGER.log(Level.INFO, file.getAbsolutePath());
+                loggedUser.setAvatar("/images/" + file.getName());
+                IOUtils.copy(input, output);
+                IOUtils.closeQuietly(input);
+                IOUtils.closeQuietly(output);
             } catch (IOException ex) {
                 LOGGER.log(Level.ERROR, ex);
             }

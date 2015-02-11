@@ -27,12 +27,14 @@ import it.polimi.meteocal.ejb.HandleForecast;
 import it.polimi.meteocal.ejb.HandleUser;
 import it.polimi.meteocal.exception.ErrorRequestException;
 import it.polimi.meteocal.util.AuthUtil;
+import it.polimi.meteocal.util.DateFormat;
 import it.polimi.meteocal.util.Site;
 import it.polimi.meteocal.util.Status;
 import it.polimi.meteocal.util.Visibility;
 import it.polimi.meteocal.web.schedule.DefaultWeatherScheduleModel;
 import it.polimi.meteocal.web.schedule.WeatherScheduleEvent;
 import it.polimi.meteocal.web.schedule.WeatherScheduleModel;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -69,7 +71,7 @@ public class CalendarBean implements Serializable {
 
     /**
      * Method that add days and minutes to the given date
-     * 
+     *
      * @param date the date to modify
      * @param days the days delta to add to the date
      * @param minutes the minutes delta to add to the date
@@ -108,7 +110,7 @@ public class CalendarBean implements Serializable {
 
     /**
      *
-     * @return the logged user 
+     * @return the logged user
      */
     public UserDTO getLoggedUser() {
         return loggedUser;
@@ -197,7 +199,7 @@ public class CalendarBean implements Serializable {
 
     /**
      * Method that retrieve the user's calendar name
-     * 
+     *
      * @param calendarId the calendar id to set
      * @return the name of the owner of the calendar
      */
@@ -309,7 +311,7 @@ public class CalendarBean implements Serializable {
             authUtente = (User) session.getAttribute(User.AUTH_KEY);
         } else {
             LOGGER.log(Level.ERROR, "no active user session");
-            redirect("index");
+            redirect("../index.xhtml");
             currentUser = new UserDTO();
         }
 
@@ -326,11 +328,11 @@ public class CalendarBean implements Serializable {
                 LOGGER.log(Level.ERROR, e);
             } catch (NullPointerException e) {
                 LOGGER.log(Level.WARN, e);
-                redirect("http://www.meteocal.tk/MeteoCal-web/index.xhtml");
+                redirect("../index.xhtml");
             }
         } else {
             LOGGER.log(Level.ERROR, "no user authUser == null");
-            redirect("index");
+            redirect("../index.xhtml");
             currentUser = new UserDTO();
 
         }
@@ -365,8 +367,8 @@ public class CalendarBean implements Serializable {
     }
 
     /**
-     * Initialize the event on SelectEvent 
-     * 
+     * Initialize the event on SelectEvent
+     *
      * @param selectEvent the event on the calendar
      */
     public void onDateSelect(SelectEvent selectEvent) {
@@ -378,7 +380,7 @@ public class CalendarBean implements Serializable {
 
     /**
      * Method that move the event based on the deltas
-     * 
+     *
      * @param event the event to move with deltas
      */
     public void onEventMove(ScheduleEntryMoveEvent event) {
@@ -388,6 +390,18 @@ public class CalendarBean implements Serializable {
             } catch (ErrorRequestException ex) {
                 LOGGER.log(Level.ERROR, ex);
             }
+            // UPDATE VIEW EVENT
+            EventDTO updatedEvent = null;
+            try {
+                updatedEvent = handleEvent.getEvent(AuthUtil.getUserID(), event.getScheduleEvent().getId());
+            } catch (ErrorRequestException ex) {
+                LOGGER.log(Level.ERROR, ex);
+            }
+            if (updatedEvent != null) {
+                eventModel.updateEvent(mapEventDTOtoWeatherScheduleEvent(updatedEvent));
+            }
+            // RESET BEAN EVENT
+            this.event = new WeatherScheduleEvent();
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
                     "Event moved", "Day delta:" + event.getDayDelta()
                     + ", Minute delta:" + event.getMinuteDelta());
@@ -401,7 +415,7 @@ public class CalendarBean implements Serializable {
 
     /**
      * Method that resize the event based on the deltas
-     * 
+     *
      * @param event the event to resize with deltas
      */
     public void onEventResize(ScheduleEntryResizeEvent event) {
@@ -425,7 +439,7 @@ public class CalendarBean implements Serializable {
 
     /**
      * Method that load the selected event in the calendar by the user
-     * 
+     *
      * @param selectEvent the selected event
      */
     public void onEventSelect(SelectEvent selectEvent) {
@@ -453,8 +467,8 @@ public class CalendarBean implements Serializable {
     }
 
     /**
-     * Method that remove the event from the model and from the system
-     * and send visual notification to the user
+     * Method that remove the event from the model and from the system and send
+     * visual notification to the user
      */
     public void removeEvent() {
         if (event.getId() == null) {
@@ -487,9 +501,9 @@ public class CalendarBean implements Serializable {
         event = new WeatherScheduleEvent();
     }
 
-     /**
-     * Method that cancel the user from the partecipated users and the event from the model
-     * and send visual notification to the user
+    /**
+     * Method that cancel the user from the partecipated users and the event
+     * from the model and send visual notification to the user
      */
     public void cancelEvent() {
         if (event.getId() == null) {
@@ -547,7 +561,7 @@ public class CalendarBean implements Serializable {
 
     /**
      * Method that handle the user selection in the search bar
-     * 
+     *
      * @param event the select event of the user
      */
     public void handleSelect(SelectEvent event) {
@@ -573,12 +587,18 @@ public class CalendarBean implements Serializable {
 
     /**
      * Redirect Method
-     * 
+     *
      * @param outcome the outcome to reach
      */
     public void redirect(String outcome) {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        facesContext.getApplication().getNavigationHandler().handleNavigation(facesContext, null, outcome);
+         try {
+            FacesContext.getCurrentInstance().getExternalContext()
+                    .redirect(outcome);
+        } catch (IOException ex) {
+            LOGGER.log(Level.ERROR, ex);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Logout Error", "Redirect Failed"));
+
+        }
     }
 
     /**
@@ -741,6 +761,7 @@ public class CalendarBean implements Serializable {
                 eventWeather.getInvitedUsers().clear();
                 eventWeather.getListParticipantAndInvitedUsers().clear();
                 eventWeather.setLocation("");
+                eventWeather.setWeather(null);
 
             }
 
@@ -749,7 +770,7 @@ public class CalendarBean implements Serializable {
 
     /**
      * Method that handle the link to shows the user his prefered calendar
-     * 
+     *
      * @param preferedCalendarId the id of the preferred calendar
      */
     public void handlePreferedCalendar(String preferedCalendarId) {
@@ -768,5 +789,22 @@ public class CalendarBean implements Serializable {
         WeatherScheduleEvent weatherEvent = new WeatherScheduleEvent(evento.getId(), evento.getTitle(), evento.getDescription(), evento.getStartDate(), evento.getEndDate(), allDay, evento.getLocation(), evento.getSite(), evento.getVisibility(), evento.getEoId(), listParticipantAndInvitedUser, evento.getEventParticipants(), evento.getInvitedUsers(), evento.getWeather());
         weatherEvent.setEditable(evento.isEditable());
         return weatherEvent;
+    }
+
+    /**
+     * Method that return the correct columnformat setting for the primefaces
+     * schedule component based on the user settings
+     *
+     * @return primefaces columnformat setting
+     */
+    public String getColumnFormat() {
+        if (loggedUser != null) {
+            if (loggedUser.getSetting().getDateFormat().name().equals(DateFormat.DMY.name())) {
+                return "month: 'ddd',week: 'dddd dd/MM',day: 'dddd d/M'";
+            } else {
+                return "month: 'ddd',week: 'dddd MM/dd',day: 'dddd d/M'";
+            }
+        }
+        return "month: 'ddd',week: 'dddd dd/MM',day: 'dddd d/M'";
     }
 }

@@ -112,7 +112,7 @@ public class LoginBean implements Serializable {
     public String logout() {
         LOGGER.log(Level.INFO, "LOGOUT");
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
-        return "http://www.meteocal.tk/MeteoCal-web/index.xhtml?faces-redirect=true";
+        return "index.xhtml?faces-redirect=true";
     }
 
     /**
@@ -121,7 +121,7 @@ public class LoginBean implements Serializable {
      * @param outcome where redirects
      */
     public void redirect(String outcome) {
-        try {
+         try {
             FacesContext.getCurrentInstance().getExternalContext()
                     .redirect(outcome);
         } catch (IOException ex) {
