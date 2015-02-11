@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>it.polimi</groupId>
     <artifactId>MeteoCal</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.1</version>
     <packaging>pom</packaging>
     <name>MeteoCal</name>
     <ciManagement>
@@ -17,44 +17,44 @@
         <module>MeteoCal-ear</module>
     </modules>
     <build>
-    <plugins>
-      <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.10.1</version>
-            <inherited>false</inherited>
-            <configuration>
-                <source>1.8</source>
-                <encoding>utf8</encoding>
-                <quiet>true</quiet>
-                <links>
-                    <link>http://docs.oracle.com/javase/8/docs/api/</link>
-                </links>
-            </configuration>
-            <executions>
-                <execution>
-                    <id>create-javadoc</id>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>aggregate-jar</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
-        <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <version>2.4</version>
-            <executions>
-                <execution>
-                    <id>attach-sources</id>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>aggregate</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
-    </plugins>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.1</version>
+                <inherited>false</inherited>
+                <configuration>
+                    <source>1.8</source>
+                    <encoding>utf8</encoding>
+                    <quiet>true</quiet>
+                    <links>
+                        <link>http://docs.oracle.com/javase/8/docs/api/</link>
+                    </links>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>create-javadoc</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>aggregate-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.4</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>aggregate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 </project>
