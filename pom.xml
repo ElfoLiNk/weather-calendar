@@ -3,9 +3,15 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>it.polimi</groupId>
     <artifactId>MeteoCal</artifactId>
-    <version>1.1</version>
+    <version>1.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>MeteoCal</name>
+    <scm>
+        <connection>scm:git:https://code.google.com/p/weather-calendar/</connection>
+        <developerConnection>scm:git:https://code.google.com/p/weather-calendar/</developerConnection>
+        <url>http://code.google.com/p/weather-calendar/source/browse</url>
+    <tag>HEAD</tag>
+  </scm>
     <ciManagement>
         <system>hudson</system>
         <url>http://212.18.227.70:8080/job/MeteoCal/</url>
