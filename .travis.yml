@@ -14,7 +14,7 @@ addons:
     # GitHub project metadata
     # ** specific to your project **
     project:
-      name: ElfoLiNk/weather-calendar
+      name: ElfoLiNk%2Fweather-calendar
       version: 1.2-SNAPSHOT
       description: A university project for Software Engineering 2 on Weather based social Calendar
 
