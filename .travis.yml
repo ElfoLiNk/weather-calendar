@@ -6,7 +6,7 @@ env:
   global:
     # COVERITY_SCAN_TOKEN
     # ** specific to your project **
-    - secure: "FgUnVgXS2MU_fx_eyHpLqQ"
+    - secure: FgUnVgXS2MU_fx_eyHpLqQ
 
 addons:
   coverity_scan:
