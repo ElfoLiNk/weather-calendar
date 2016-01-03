@@ -2,7 +2,7 @@ language: java
 jdk:
   - oraclejdk8
 
- env:
+env:
   global:
     # COVERITY_SCAN_TOKEN
     # ** specific to your project **
