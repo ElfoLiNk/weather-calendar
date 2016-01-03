@@ -6,7 +6,7 @@ env:
   global:
     # COVERITY_SCAN_TOKEN
     # ** specific to your project **
-    - secure: FgUnVgXS2MU_fx_eyHpLqQ
+    - secure: "IYts+ofyDwO/1XKXvE9DUCiQLRn7jOpUgsA8qv+Rp2IFvovU1+VIoTnO8bp02QLDg1GuZcGnUqPGSSB5snPZ/H5tRe6RGExlzZkrTlOyy5P38LdFKh37H+cuDhEz1y8+0IITqoKnZikn+ourgI74l6IqzoJIJ1IytCmiBIo0BxA="
 
 addons:
   coverity_scan:
@@ -14,7 +14,7 @@ addons:
     # GitHub project metadata
     # ** specific to your project **
     project:
-      name: ElfoLiNk%2Fweather-calendar
+      name: ElfoLiNk/weather-calendar
       version: 1.2-SNAPSHOT
       description: A university project for Software Engineering 2 on Weather based social Calendar
 
