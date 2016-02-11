@@ -1,35 +1,17 @@
 language: java
 jdk:
-  - oraclejdk8
-
+- oraclejdk8
 env:
   global:
-    # COVERITY_SCAN_TOKEN
-    # ** specific to your project **
-    - secure: "IYts+ofyDwO/1XKXvE9DUCiQLRn7jOpUgsA8qv+Rp2IFvovU1+VIoTnO8bp02QLDg1GuZcGnUqPGSSB5snPZ/H5tRe6RGExlzZkrTlOyy5P38LdFKh37H+cuDhEz1y8+0IITqoKnZikn+ourgI74l6IqzoJIJ1IytCmiBIo0BxA="
-
+    secure: dDk7l8qEPLqqkoVlUfBSMbEoWKOhlsJOwseE7EFx3VQQcw7KbGZZLAA6FU+IbRD/zpQZbelz2jMNwSwqhdrY5fokhWQAZcRtoqOUY2w+2+1JdiC/G2CFm1dexO0NUIajdQzU36INSdfKOkMjWxp5Akmuw4KCHG25PEizphyV2vI=
 addons:
   coverity_scan:
-
-    # GitHub project metadata
-    # ** specific to your project **
     project:
       name: ElfoLiNk/weather-calendar
       version: 1.2-SNAPSHOT
-      description: A university project for Software Engineering 2 on Weather based social Calendar
-
-    # Where email notification of build analysis results will be sent
+      description: A university project for Software Engineering 2 on Weather based
+        social Calendar
     notification_email: matteo_gazzetta@hotmail.it
-
-    # Commands to prepare for build_command
-    # ** likely specific to your build **
-    #build_command_prepend: ./configure
-
-    # The command that will be added as an argument to "cov-build" to compile your project for analysis,
-    # ** likely specific to your build **
-    build_command: mvn -Dmaven.test.skip=true -DskipTests -Dmaven.compiler.fork=true install 
-
-    # Pattern to match selecting branches that will run analysis. We recommend leaving this set to 'coverity_scan'.
-    # Take care in resource usage, and consider the build frequency allowances per
-    #   https://scan.coverity.com/faq#frequency
+    build_command: mvn -Dmaven.test.skip=true -DskipTests -Dmaven.compiler.fork=true
+      install
     branch_pattern: master
