@@ -30,6 +30,7 @@ import org.primefaces.model.ScheduleEvent;
 public class DefaultWeatherScheduleModel implements WeatherScheduleModel, Serializable {
 
     private List<WeatherScheduleEvent> events;
+    private boolean eventLimit = false;
 
     /**
      * Defaulf Constructor
@@ -118,6 +119,11 @@ public class DefaultWeatherScheduleModel implements WeatherScheduleModel, Serial
     @Override
     public void clear() {
         events = new ArrayList<>();
+    }
+
+    @Override
+    public boolean isEventLimit() {
+        return this.eventLimit;
     }
 
     /**

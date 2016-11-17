@@ -139,41 +139,28 @@ public class WeatherDTO {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 67 * hash + Objects.hashCode(this.id);
-        hash = 67 * hash + Objects.hashCode(this.weatherConditionCode);
-        hash = 67 * hash + Objects.hashCode(this.description);
-        hash = 67 * hash + Objects.hashCode(this.temperature);
-        hash = 67 * hash + Objects.hashCode(this.icon);
-        return hash;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        WeatherDTO that = (WeatherDTO) o;
+
+        if (!id.equals(that.id)) return false;
+        if (!weatherConditionCode.equals(that.weatherConditionCode)) return false;
+        if (!description.equals(that.description)) return false;
+        if (temperature != null ? !temperature.equals(that.temperature) : that.temperature != null) return false;
+        return icon != null ? icon.equals(that.icon) : that.icon == null;
+
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final WeatherDTO other = (WeatherDTO) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        if (!Objects.equals(this.weatherConditionCode, other.weatherConditionCode)) {
-            return false;
-        }
-        if (!Objects.equals(this.description, other.description)) {
-            return false;
-        }
-        if (!Objects.equals(this.temperature, other.temperature)) {
-            return false;
-        }
-        if (!Objects.equals(this.icon, other.icon)) {
-            return false;
-        }
-        return true;
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + weatherConditionCode.hashCode();
+        result = 31 * result + description.hashCode();
+        result = 31 * result + (temperature != null ? temperature.hashCode() : 0);
+        result = 31 * result + (icon != null ? icon.hashCode() : 0);
+        return result;
     }
 
     @Override

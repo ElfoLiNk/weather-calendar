@@ -179,49 +179,32 @@ public class ForecastDTO {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 17 * hash + Objects.hashCode(this.id);
-        hash = 17 * hash + Objects.hashCode(this.location);
-        hash = 17 * hash + Objects.hashCode(this.latitude);
-        hash = 17 * hash + Objects.hashCode(this.longitude);
-        hash = 17 * hash + Objects.hashCode(this.date);
-        hash = 17 * hash + Objects.hashCode(this.creationDate);
-        hash = 17 * hash + Objects.hashCode(this.weather);
-        return hash;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ForecastDTO that = (ForecastDTO) o;
+
+        if (!id.equals(that.id)) return false;
+        if (!location.equals(that.location)) return false;
+        if (latitude != null ? !latitude.equals(that.latitude) : that.latitude != null) return false;
+        if (longitude != null ? !longitude.equals(that.longitude) : that.longitude != null) return false;
+        if (!date.equals(that.date)) return false;
+        if (!creationDate.equals(that.creationDate)) return false;
+        return weather.equals(that.weather);
+
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ForecastDTO other = (ForecastDTO) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        if (!Objects.equals(this.location, other.location)) {
-            return false;
-        }
-        if (!Objects.equals(this.latitude, other.latitude)) {
-            return false;
-        }
-        if (!Objects.equals(this.longitude, other.longitude)) {
-            return false;
-        }
-        if (!Objects.equals(this.date, other.date)) {
-            return false;
-        }
-        if (!Objects.equals(this.creationDate, other.creationDate)) {
-            return false;
-        }
-        if (!Objects.equals(this.weather, other.weather)) {
-            return false;
-        }
-        return true;
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + location.hashCode();
+        result = 31 * result + (latitude != null ? latitude.hashCode() : 0);
+        result = 31 * result + (longitude != null ? longitude.hashCode() : 0);
+        result = 31 * result + date.hashCode();
+        result = 31 * result + creationDate.hashCode();
+        result = 31 * result + weather.hashCode();
+        return result;
     }
 
     @Override
