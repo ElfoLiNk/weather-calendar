@@ -1,4 +1,7 @@
 # MeteoCal #
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f982c6962c8841e4a86eacf346d02ade)](https://www.codacy.com/app/matteo_gazzetta/weather-calendar?utm_source=github.com&utm_medium=referral&utm_content=ElfoLiNk/weather-calendar&utm_campaign=badger)
+
 A university project for Software Engineering 2 on Weather based social Calendar
 
 ### Deliveries ###
