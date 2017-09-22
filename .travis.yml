@@ -9,9 +9,7 @@ addons:
     project:
       name: ElfoLiNk/weather-calendar
       version: 1.2-SNAPSHOT
-      description: A university project for Software Engineering 2 on Weather based
-        social Calendar
+      description: A university project for Software Engineering 2 on Weather based social Calendar
     notification_email: matteo_gazzetta@hotmail.it
-    build_command: mvn -Dmaven.test.skip=true -DskipTests -Dmaven.compiler.fork=true
-      install
+    build_command: mvn -Dmaven.test.skip=true -DskipTests -Dmaven.compiler.fork=true install
     branch_pattern: master

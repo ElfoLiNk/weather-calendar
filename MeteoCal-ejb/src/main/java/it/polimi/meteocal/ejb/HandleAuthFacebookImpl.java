@@ -18,6 +18,7 @@ package it.polimi.meteocal.ejb;
 
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
+import com.restfb.Version;
 import it.polimi.meteocal.entities.Calendar;
 import it.polimi.meteocal.entities.Setting;
 import it.polimi.meteocal.entities.User;
@@ -72,7 +73,7 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
         String accessToken;
         accessToken = user.getFacebookToken();
         FacebookClient facebookClient;
-        facebookClient = new DefaultFacebookClient(accessToken, APPSECRET);
+        facebookClient = new DefaultFacebookClient(accessToken, APPSECRET, Version.VERSION_2_3);
         return facebookClient;
     }
 
@@ -114,7 +115,7 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
                 LOGGER.log(Level.INFO, "AccessToken: " + accessToken);
 
                 facebookClient = new DefaultFacebookClient(accessToken,
-                        APPSECRET);
+                        APPSECRET, Version.VERSION_2_3);
                 com.restfb.types.User userFB = facebookClient.fetchObject("me", com.restfb.types.User.class);
 
                 if (!AuthUtil.isUserLogged()) {
