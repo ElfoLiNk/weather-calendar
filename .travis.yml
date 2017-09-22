@@ -11,5 +11,6 @@ addons:
       version: 1.2-SNAPSHOT
       description: A university project for Software Engineering 2 on Weather based social Calendar
     notification_email: matteo_gazzetta@hotmail.it
+    build_command_prepend: mvn clean
     build_command: mvn install
     branch_pattern: master
