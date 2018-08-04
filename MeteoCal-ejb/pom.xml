@@ -43,12 +43,12 @@
         <dependency>
             <groupId>com.google.apis</groupId>
             <artifactId>google-api-services-plus</artifactId>
-            <version>v1-rev531-1.23.0</version>
+            <version>v1-rev553-1.24.1</version>
         </dependency>
         <dependency>
             <groupId>com.google.apis</groupId>
             <artifactId>google-api-services-calendar</artifactId>
-            <version>v3-rev276-1.23.0</version>
+            <version>v3-rev331-1.24.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
