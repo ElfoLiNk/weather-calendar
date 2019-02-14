@@ -48,7 +48,7 @@
         <dependency>
             <groupId>com.google.apis</groupId>
             <artifactId>google-api-services-calendar</artifactId>
-            <version>v3-rev331-1.24.1</version>
+            <version>v3-rev20181125-1.28.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
