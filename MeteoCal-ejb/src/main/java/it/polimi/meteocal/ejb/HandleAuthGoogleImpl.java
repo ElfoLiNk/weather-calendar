@@ -32,6 +32,7 @@ import com.google.api.services.plus.Plus;
 import com.google.api.services.plus.model.Person;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonWriter;
 import it.polimi.meteocal.entities.Setting;
@@ -165,9 +166,8 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
 
             String tokenGoogle = tokenResponse.toString();
             LOGGER.log(Level.INFO, tokenGoogle);
-            JsonParser parser = new JsonParser();
-            JsonObject newToken = parser.parse(tokenGoogle).getAsJsonObject();
-            JsonObject oldToken = parser.parse(user.getGoogleToken())
+            JsonObject newToken = JsonParser.parseString(tokenGoogle).getAsJsonObject();
+            JsonObject oldToken = JsonParser.parseString(user.getGoogleToken())
                     .getAsJsonObject();
             newToken.add("refresh_token", oldToken.get("refresh_token"));
             StringWriter stringWriter = new StringWriter();
@@ -185,7 +185,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
                 em.joinTransaction();
                 em.flush();
             }
-        } catch (GeneralSecurityException | IOException e) {
+        } catch (GeneralSecurityException | IOException | JsonSyntaxException e) {
             LOGGER.log(Level.ERROR, e, e);
         }
         em.close();

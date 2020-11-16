@@ -273,37 +273,27 @@ public class UserDTO {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 73 * hash + Objects.hashCode(this.id);
-        hash = 73 * hash + Objects.hashCode(this.firstName);
-        hash = 73 * hash + Objects.hashCode(this.lastName);
-        hash = 73 * hash + Objects.hashCode(this.email);
-        return hash;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserDTO)) return false;
+        UserDTO userDTO = (UserDTO) o;
+        return Objects.equals(id, userDTO.id) &&
+                Objects.equals(firstName, userDTO.firstName) &&
+                Objects.equals(lastName, userDTO.lastName) &&
+                gender == userDTO.gender &&
+                Objects.equals(dateBirth, userDTO.dateBirth) &&
+                Objects.equals(email, userDTO.email) &&
+                Objects.equals(password, userDTO.password) &&
+                Objects.equals(avatar, userDTO.avatar) &&
+                Objects.equals(calendarId, userDTO.calendarId) &&
+                Objects.equals(setting, userDTO.setting) &&
+                Objects.equals(notifications, userDTO.notifications) &&
+                Objects.equals(preferedCalendarsIDs, userDTO.preferedCalendarsIDs);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final UserDTO other = (UserDTO) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        if (!Objects.equals(this.firstName, other.firstName)) {
-            return false;
-        }
-        if (!Objects.equals(this.lastName, other.lastName)) {
-            return false;
-        }
-        if (!Objects.equals(this.email, other.email)) {
-            return false;
-        }
-        return true;
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, gender, dateBirth, email, password, avatar, calendarId, setting, notifications, preferedCalendarsIDs);
     }
 
 }

@@ -358,25 +358,27 @@ public class Event implements Serializable {
 //        return "Event{" + "id=" + id + ", eo=" + eo + ", name=" + name + ", description=" + description + ", location=" + location + ", site=" + site + ", startDate=" + startDate.getTime() + ", endDate=" + endDate.getTime() + ", forecast=" + forecast + ", visibility=" + visibility + ", eventParticipants=" + eventParticipants + ", invitedUsers=" + invitedUsers + '}';
 //    }
     @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 89 * hash + Objects.hashCode(this.id);
-        return hash;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Event)) return false;
+        Event event = (Event) o;
+        return Objects.equals(id, event.id) &&
+                Objects.equals(eo, event.eo) &&
+                Objects.equals(name, event.name) &&
+                Objects.equals(description, event.description) &&
+                Objects.equals(location, event.location) &&
+                site == event.site &&
+                Objects.equals(startDate, event.startDate) &&
+                Objects.equals(endDate, event.endDate) &&
+                Objects.equals(forecast, event.forecast) &&
+                visibility == event.visibility &&
+                Objects.equals(eventParticipants, event.eventParticipants) &&
+                Objects.equals(invitedUsers, event.invitedUsers);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Event other = (Event) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+    public int hashCode() {
+        return Objects.hash(id, eo, name, description, location, site, startDate, endDate, forecast, visibility, eventParticipants, invitedUsers);
     }
 
     /**

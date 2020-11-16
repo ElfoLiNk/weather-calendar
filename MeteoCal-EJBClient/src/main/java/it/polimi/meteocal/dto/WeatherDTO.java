@@ -141,31 +141,28 @@ public class WeatherDTO {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof WeatherDTO)) return false;
         WeatherDTO that = (WeatherDTO) o;
-
-        if (!id.equals(that.id)) return false;
-        if (!weatherConditionCode.equals(that.weatherConditionCode)) return false;
-        if (!description.equals(that.description)) return false;
-        if (temperature != null ? !temperature.equals(that.temperature) : that.temperature != null) return false;
-        return icon != null ? icon.equals(that.icon) : that.icon == null;
-
+        return Objects.equals(id, that.id) &&
+                Objects.equals(weatherConditionCode, that.weatherConditionCode) &&
+                Objects.equals(description, that.description) &&
+                Objects.equals(temperature, that.temperature) &&
+                Objects.equals(icon, that.icon);
     }
 
     @Override
     public int hashCode() {
-        int result = id.hashCode();
-        result = 31 * result + weatherConditionCode.hashCode();
-        result = 31 * result + description.hashCode();
-        result = 31 * result + (temperature != null ? temperature.hashCode() : 0);
-        result = 31 * result + (icon != null ? icon.hashCode() : 0);
-        return result;
+        return Objects.hash(id, weatherConditionCode, description, temperature, icon);
     }
 
     @Override
     public String toString() {
-        return "WeatherDTO{" + "id=" + id + ", weatherConditionCode=" + weatherConditionCode + ", description=" + description + ", temperature=" + temperature + ", icon=" + icon + '}';
+        return "WeatherDTO{" +
+                "id=" + id +
+                ", weatherConditionCode='" + weatherConditionCode + '\'' +
+                ", description='" + description + '\'' +
+                ", temperature=" + temperature +
+                ", icon='" + icon + '\'' +
+                '}';
     }
-
 }
