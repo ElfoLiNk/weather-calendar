@@ -17,6 +17,7 @@
 package it.polimi.meteocal.entities;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -147,24 +148,31 @@ public class Location implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Location)) return false;
+        Location location = (Location) o;
+        return Float.compare(location.latitude, latitude) == 0 &&
+                Float.compare(location.longitude, longitude) == 0 &&
+                Objects.equals(id, location.id) &&
+                Objects.equals(name, location.name) &&
+                Objects.equals(countryCode, location.countryCode);
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof Location)) {
-            return false;
-        }
-        Location other = (Location) object;
-        return !((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)));
+    public int hashCode() {
+        return Objects.hash(id, name, latitude, longitude, countryCode);
     }
 
     @Override
     public String toString() {
-        return "Location{" + "id=" + id + ", name=" + name + ", latitude=" + latitude + ", longitude=" + longitude + ", countryCode=" + countryCode + '}';
+        return "Location{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", countryCode='" + countryCode + '\'' +
+                '}';
     }
 
 }

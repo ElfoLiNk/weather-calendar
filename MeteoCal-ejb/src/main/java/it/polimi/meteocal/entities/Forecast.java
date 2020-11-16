@@ -17,6 +17,7 @@
 package it.polimi.meteocal.entities;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -32,15 +33,15 @@ import javax.persistence.Temporal;
 
 /**
  * Entity that rappresent the Forecast of the Event in MeteoCal
- * 
+ *
  * @author Matteo Gazzetta, Alessandro Fato
  */
-@Table(name="forecast",indexes = {
-    @Index(columnList = "LOCATION")})
+@Table(name = "forecast", indexes = {
+        @Index(columnList = "LOCATION")})
 @Entity
 @NamedQueries({
-    @NamedQuery(name = Forecast.FIND_BY_LOCATION, query = "SELECT f FROM Forecast f WHERE f.location LIKE :location"),
-    @NamedQuery(name = Forecast.FIND_OLD_FORECAST, query = "SELECT f FROM Forecast f WHERE f.creationDate < :today"),})
+        @NamedQuery(name = Forecast.FIND_BY_LOCATION, query = "SELECT f FROM Forecast f WHERE f.location LIKE :location"),
+        @NamedQuery(name = Forecast.FIND_OLD_FORECAST, query = "SELECT f FROM Forecast f WHERE f.creationDate < :today"),})
 public class Forecast implements Serializable {
 
     /**
@@ -75,7 +76,6 @@ public class Forecast implements Serializable {
     private Weather weather;
 
     /**
-     *
      * @return the location of the forcast
      */
     public String getLocation() {
@@ -83,7 +83,6 @@ public class Forecast implements Serializable {
     }
 
     /**
-     *
      * @param location the location to set
      */
     public void setLocation(String location) {
@@ -91,7 +90,6 @@ public class Forecast implements Serializable {
     }
 
     /**
-     *
      * @return the latitude of the forecast
      */
     public Float getLatitude() {
@@ -99,7 +97,6 @@ public class Forecast implements Serializable {
     }
 
     /**
-     *
      * @param latitude the latitute to set
      */
     public void setLatitude(Float latitude) {
@@ -107,7 +104,6 @@ public class Forecast implements Serializable {
     }
 
     /**
-     *
      * @return the longitude of the forecast
      */
     public Float getLongitude() {
@@ -115,7 +111,6 @@ public class Forecast implements Serializable {
     }
 
     /**
-     *
      * @param longitude the longitude to set
      */
     public void setLongitude(Float longitude) {
@@ -123,7 +118,6 @@ public class Forecast implements Serializable {
     }
 
     /**
-     *
      * @return the forecast date of the forecast
      */
     public java.util.Calendar getForecastDate() {
@@ -131,7 +125,6 @@ public class Forecast implements Serializable {
     }
 
     /**
-     *
      * @param forecastDate the date of the forecast to ser
      */
     public void setForecastDate(java.util.Calendar forecastDate) {
@@ -139,7 +132,6 @@ public class Forecast implements Serializable {
     }
 
     /**
-     *
      * @return the creation date of the forecast
      */
     public java.util.Calendar getCreationDate() {
@@ -147,7 +139,6 @@ public class Forecast implements Serializable {
     }
 
     /**
-     *
      * @param creationDate the creation date to set
      */
     public void setCreationDate(java.util.Calendar creationDate) {
@@ -155,7 +146,6 @@ public class Forecast implements Serializable {
     }
 
     /**
-     *
      * @return the weather of the forecast
      */
     public Weather getWeather() {
@@ -163,7 +153,6 @@ public class Forecast implements Serializable {
     }
 
     /**
-     *
      * @param weather the weather to set
      */
     public void setWeather(Weather weather) {
@@ -171,7 +160,6 @@ public class Forecast implements Serializable {
     }
 
     /**
-     *
      * @return the id of the forecast
      */
     public Long getId() {
@@ -179,7 +167,6 @@ public class Forecast implements Serializable {
     }
 
     /**
-     *
      * @param id the id to set
      */
     public void setId(Long id) {
@@ -187,24 +174,35 @@ public class Forecast implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Forecast)) return false;
+        Forecast forecast = (Forecast) o;
+        return Objects.equals(id, forecast.id) &&
+                Objects.equals(location, forecast.location) &&
+                Objects.equals(latitude, forecast.latitude) &&
+                Objects.equals(longitude, forecast.longitude) &&
+                Objects.equals(forecastDate, forecast.forecastDate) &&
+                Objects.equals(creationDate, forecast.creationDate) &&
+                Objects.equals(weather, forecast.weather);
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof Forecast)) {
-            return false;
-        }
-        Forecast other = (Forecast) object;
-        return !((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)));
+    public int hashCode() {
+        return Objects.hash(id, location, latitude, longitude, forecastDate, creationDate, weather);
     }
 
     @Override
     public String toString() {
-        return "Forecast{" + "id=" + id + ", location=" + location + ", latitude=" + latitude + ", longitude=" + longitude + ", date=" + forecastDate + ", creationDate=" + creationDate + ", weather=" + weather + '}';
+        return "Forecast{" +
+                "id=" + id +
+                ", location='" + location + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", forecastDate=" + forecastDate +
+                ", creationDate=" + creationDate +
+                ", weather=" + weather +
+                '}';
     }
 
 }

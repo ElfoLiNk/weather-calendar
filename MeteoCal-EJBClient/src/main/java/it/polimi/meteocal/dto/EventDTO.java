@@ -314,52 +314,46 @@ public class EventDTO {
     }
 
     @Override
-    public String toString() {
-        return "EventDTO{" + "id=" + id + ", eoId=" + eoId + ", title=" + title + ", startDate=" + startDate + ", endDate=" + endDate + ", allDay=" + allDay + ", editable=" + editable + ", site=" + site + ", visibility=" + visibility + ", description=" + description + ", location=" + location + ", eventParticipants=" + eventParticipants + ", invitedUsers=" + invitedUsers + ", weather=" + weather + '}';
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof EventDTO)) return false;
         EventDTO eventDTO = (EventDTO) o;
-
-        if (allDay != eventDTO.allDay) return false;
-        if (editable != eventDTO.editable) return false;
-        if (id != null ? !id.equals(eventDTO.id) : eventDTO.id != null) return false;
-        if (eoId != null ? !eoId.equals(eventDTO.eoId) : eventDTO.eoId != null) return false;
-        if (title != null ? !title.equals(eventDTO.title) : eventDTO.title != null) return false;
-        if (startDate != null ? !startDate.equals(eventDTO.startDate) : eventDTO.startDate != null) return false;
-        if (endDate != null ? !endDate.equals(eventDTO.endDate) : eventDTO.endDate != null) return false;
-        if (site != eventDTO.site) return false;
-        if (visibility != eventDTO.visibility) return false;
-        if (description != null ? !description.equals(eventDTO.description) : eventDTO.description != null)
-            return false;
-        if (location != null ? !location.equals(eventDTO.location) : eventDTO.location != null) return false;
-        if (eventParticipants != null ? !eventParticipants.equals(eventDTO.eventParticipants) : eventDTO.eventParticipants != null)
-            return false;
-        if (invitedUsers != null ? !invitedUsers.equals(eventDTO.invitedUsers) : eventDTO.invitedUsers != null)
-            return false;
-        return weather != null ? weather.equals(eventDTO.weather) : eventDTO.weather == null;
+        return allDay == eventDTO.allDay &&
+                editable == eventDTO.editable &&
+                Objects.equals(id, eventDTO.id) &&
+                Objects.equals(eoId, eventDTO.eoId) &&
+                Objects.equals(title, eventDTO.title) &&
+                site == eventDTO.site &&
+                visibility == eventDTO.visibility &&
+                Objects.equals(description, eventDTO.description) &&
+                Objects.equals(location, eventDTO.location) &&
+                Objects.equals(eventParticipants, eventDTO.eventParticipants) &&
+                Objects.equals(invitedUsers, eventDTO.invitedUsers) &&
+                Objects.equals(weather, eventDTO.weather);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (eoId != null ? eoId.hashCode() : 0);
-        result = 31 * result + (title != null ? title.hashCode() : 0);
-        result = 31 * result + (startDate != null ? startDate.hashCode() : 0);
-        result = 31 * result + (endDate != null ? endDate.hashCode() : 0);
-        result = 31 * result + (allDay ? 1 : 0);
-        result = 31 * result + (editable ? 1 : 0);
-        result = 31 * result + (site != null ? site.hashCode() : 0);
-        result = 31 * result + (visibility != null ? visibility.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (location != null ? location.hashCode() : 0);
-        result = 31 * result + (eventParticipants != null ? eventParticipants.hashCode() : 0);
-        result = 31 * result + (invitedUsers != null ? invitedUsers.hashCode() : 0);
-        result = 31 * result + (weather != null ? weather.hashCode() : 0);
-        return result;
+        return Objects.hash(id, eoId, title, startDate, endDate, allDay, editable, site, visibility, description, location, eventParticipants, invitedUsers, weather);
+    }
+
+    @Override
+    public String toString() {
+        return "EventDTO{" +
+                "id='" + id + '\'' +
+                ", eoId='" + eoId + '\'' +
+                ", title='" + title + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", allDay=" + allDay +
+                ", editable=" + editable +
+                ", site=" + site +
+                ", visibility=" + visibility +
+                ", description='" + description + '\'' +
+                ", location='" + location + '\'' +
+                ", eventParticipants=" + eventParticipants +
+                ", invitedUsers=" + invitedUsers +
+                ", weather=" + weather +
+                '}';
     }
 }

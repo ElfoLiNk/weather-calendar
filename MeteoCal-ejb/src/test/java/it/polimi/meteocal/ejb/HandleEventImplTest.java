@@ -50,7 +50,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.InjectMocks;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -92,6 +92,8 @@ public class HandleEventImplTest {
     private User ep;
     private TypedQuery<RescheduleNotification> queryReschNotify;
 
+    private AutoCloseable closeable;
+
     /**
      * HandleEventImplTest constructor
      */
@@ -117,7 +119,7 @@ public class HandleEventImplTest {
      */
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        closeable = MockitoAnnotations.openMocks(this);
         handleEvent = new HandleEventImpl();
         handleEvent.em = mock(EntityManager.class);
         handleEvent.handleForecast = mock(HandleForecastImpl.class);
@@ -213,7 +215,8 @@ public class HandleEventImplTest {
      * tearDown method
      */
     @After
-    public void tearDown() {
+    public void tearDown() throws Exception {
+        closeable.close();
     }
 
     /**

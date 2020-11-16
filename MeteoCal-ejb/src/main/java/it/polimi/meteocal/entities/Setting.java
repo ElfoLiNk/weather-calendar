@@ -19,6 +19,7 @@ package it.polimi.meteocal.entities;
 import it.polimi.meteocal.util.DateFormat;
 import it.polimi.meteocal.util.TimeFormat;
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.TimeZone;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -123,4 +124,19 @@ public class Setting implements Serializable {
         this.id = id;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Setting)) return false;
+        Setting setting = (Setting) o;
+        return Objects.equals(id, setting.id) &&
+                dateFormat == setting.dateFormat &&
+                timeFormat == setting.timeFormat &&
+                Objects.equals(timeZone, setting.timeZone);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, dateFormat, timeFormat, timeZone);
+    }
 }

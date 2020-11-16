@@ -25,6 +25,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 /**
  * Entity that rappresent the RescheduleNotification of the User in MeteoCal
@@ -107,4 +108,18 @@ public class RescheduleNotification extends Notification {
         this.event = event;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RescheduleNotification)) return false;
+        RescheduleNotification that = (RescheduleNotification) o;
+        return Objects.equals(event, that.event) &&
+                Objects.equals(suggestedEvent, that.suggestedEvent) &&
+                status == that.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(event, suggestedEvent, status);
+    }
 }

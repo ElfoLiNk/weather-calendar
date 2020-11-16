@@ -21,7 +21,7 @@ import java.util.Objects;
 
 /**
  * Class that maps the Forecast entity
- * 
+ *
  * @author Matteo Gazzetta, Alessandro Fato
  */
 public class ForecastDTO {
@@ -41,20 +41,19 @@ public class ForecastDTO {
     private WeatherDTO weather;
 
     /**
-     * Default construct 
+     * Default construct
      */
     public ForecastDTO() {
     }
 
     /**
-     *
-     * @param id the id of the forecast
-     * @param location the location of the forecast
-     * @param latitude the latitude of the forecast
-     * @param longitude the longitude of the forecast
-     * @param date the date of the forecast
+     * @param id           the id of the forecast
+     * @param location     the location of the forecast
+     * @param latitude     the latitude of the forecast
+     * @param longitude    the longitude of the forecast
+     * @param date         the date of the forecast
      * @param creationDate the creation date of the forecast
-     * @param weather the weather related to the forecast
+     * @param weather      the weather related to the forecast
      */
     public ForecastDTO(Long id, String location, Float latitude, Float longitude, Calendar date, Calendar creationDate, WeatherDTO weather) {
         this.id = id;
@@ -67,7 +66,6 @@ public class ForecastDTO {
     }
 
     /**
-     * 
      * @return the id of the forecast
      */
     public Long getId() {
@@ -75,7 +73,6 @@ public class ForecastDTO {
     }
 
     /**
-     *
      * @param id the id to set
      */
     public void setId(Long id) {
@@ -83,7 +80,6 @@ public class ForecastDTO {
     }
 
     /**
-     *
      * @return the location of the forecast
      */
     public String getLocation() {
@@ -91,7 +87,6 @@ public class ForecastDTO {
     }
 
     /**
-     *
      * @param location the location to set
      */
     public void setLocation(String location) {
@@ -99,7 +94,6 @@ public class ForecastDTO {
     }
 
     /**
-     *
      * @return the latitude of the forecast
      */
     public Float getLatitude() {
@@ -107,7 +101,6 @@ public class ForecastDTO {
     }
 
     /**
-     *
      * @param latitude the latitude to set
      */
     public void setLatitude(Float latitude) {
@@ -115,7 +108,6 @@ public class ForecastDTO {
     }
 
     /**
-     *
      * @return the longitude of the forecast
      */
     public Float getLongitude() {
@@ -123,7 +115,6 @@ public class ForecastDTO {
     }
 
     /**
-     *
      * @param longitude the longitude to set
      */
     public void setLongitude(Float longitude) {
@@ -131,7 +122,6 @@ public class ForecastDTO {
     }
 
     /**
-     *
      * @return the date of the forecast
      */
     public Calendar getDate() {
@@ -139,7 +129,6 @@ public class ForecastDTO {
     }
 
     /**
-     *
      * @param date the date to set
      */
     public void setDate(Calendar date) {
@@ -147,7 +136,6 @@ public class ForecastDTO {
     }
 
     /**
-     *
      * @return the creation date of the forecast
      */
     public Calendar getCreationDate() {
@@ -155,7 +143,6 @@ public class ForecastDTO {
     }
 
     /**
-     *
      * @param creationDate the creation date to set
      */
     public void setCreationDate(Calendar creationDate) {
@@ -163,7 +150,6 @@ public class ForecastDTO {
     }
 
     /**
-     *
      * @return the weather of the forecast
      */
     public WeatherDTO getWeather() {
@@ -171,7 +157,6 @@ public class ForecastDTO {
     }
 
     /**
-     *
      * @param weather the weather to set
      */
     public void setWeather(WeatherDTO weather) {
@@ -181,35 +166,33 @@ public class ForecastDTO {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof ForecastDTO)) return false;
         ForecastDTO that = (ForecastDTO) o;
-
-        if (!id.equals(that.id)) return false;
-        if (!location.equals(that.location)) return false;
-        if (latitude != null ? !latitude.equals(that.latitude) : that.latitude != null) return false;
-        if (longitude != null ? !longitude.equals(that.longitude) : that.longitude != null) return false;
-        if (!date.equals(that.date)) return false;
-        if (!creationDate.equals(that.creationDate)) return false;
-        return weather.equals(that.weather);
-
+        return Objects.equals(id, that.id) &&
+                Objects.equals(location, that.location) &&
+                Objects.equals(latitude, that.latitude) &&
+                Objects.equals(longitude, that.longitude) &&
+                Objects.equals(date, that.date) &&
+                Objects.equals(creationDate, that.creationDate) &&
+                Objects.equals(weather, that.weather);
     }
 
     @Override
     public int hashCode() {
-        int result = id.hashCode();
-        result = 31 * result + location.hashCode();
-        result = 31 * result + (latitude != null ? latitude.hashCode() : 0);
-        result = 31 * result + (longitude != null ? longitude.hashCode() : 0);
-        result = 31 * result + date.hashCode();
-        result = 31 * result + creationDate.hashCode();
-        result = 31 * result + weather.hashCode();
-        return result;
+        return Objects.hash(id, location, latitude, longitude, date, creationDate, weather);
     }
 
     @Override
     public String toString() {
-        return "ForecastDTO{" + "id=" + id + ", location=" + location + ", latitude=" + latitude + ", longitude=" + longitude + ", date=" + date.getTime() + ", creationDate=" + creationDate.getTime() + ", weather=" + weather + '}';
+        return "ForecastDTO{" +
+                "id=" + id +
+                ", location='" + location + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", date=" + date +
+                ", creationDate=" + creationDate +
+                ", weather=" + weather +
+                '}';
     }
 
 }

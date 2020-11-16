@@ -17,6 +17,7 @@
 package it.polimi.meteocal.entities;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -130,4 +131,20 @@ public class Weather implements Serializable {
         return "Weather{" + "id=" + id + ", weatherConditionCode=" + weatherConditionCode + ", description=" + description + ", temperature=" + temperature + ", icon=" + icon + '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Weather)) return false;
+        Weather weather = (Weather) o;
+        return Objects.equals(id, weather.id) &&
+                Objects.equals(weatherConditionCode, weather.weatherConditionCode) &&
+                Objects.equals(description, weather.description) &&
+                Objects.equals(temperature, weather.temperature) &&
+                Objects.equals(icon, weather.icon);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, weatherConditionCode, description, temperature, icon);
+    }
 }
