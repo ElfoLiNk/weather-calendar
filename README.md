@@ -1,6 +1,6 @@
 # MeteoCal # 
 [![Build Status](https://travis-ci.org/ElfoLiNk/weather-calendar.svg?branch=master)](https://travis-ci.org/ElfoLiNk/weather-calendar)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f982c6962c8841e4a86eacf346d02ade)](https://www.codacy.com/app/matteo_gazzetta/weather-calendar?utm_source=github.com&utm_medium=referral&utm_content=ElfoLiNk/weather-calendar&utm_campaign=badger)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/f982c6962c8841e4a86eacf346d02ade)](https://www.codacy.com/gh/ElfoLiNk/weather-calendar/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ElfoLiNk/weather-calendar&amp;utm_campaign=Badge_Grade)
 [![Coverity Scan Build Status](https://scan.coverity.com/projects/7463/badge.svg)](https://scan.coverity.com/projects/elfolink-weather-calendar)
 [![Coverage Status](https://coveralls.io/repos/github/ElfoLiNk/weather-calendar/badge.svg?branch=master)](https://coveralls.io/github/ElfoLiNk/weather-calendar?branch=master)
 
