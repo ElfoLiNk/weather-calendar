@@ -21,6 +21,7 @@ import it.polimi.meteocal.dto.UserDTO;
 import it.polimi.meteocal.ejb.HandleUser;
 import it.polimi.meteocal.exception.ErrorRequestException;
 import it.polimi.meteocal.util.Visibility;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -34,6 +35,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Level;
@@ -70,7 +72,6 @@ public class SettingBean {
     }
 
     /**
-     *
      * @return the user calendar visibility
      */
     public Visibility getCalendarVisibility() {
@@ -78,7 +79,6 @@ public class SettingBean {
     }
 
     /**
-     *
      * @param calendarVisibility the user calendar visibility to set
      */
     public void setCalendarVisibility(Visibility calendarVisibility) {
@@ -86,7 +86,6 @@ public class SettingBean {
     }
 
     /**
-     *
      * @return the new password of the user
      */
     public String getNewpassword() {
@@ -94,7 +93,6 @@ public class SettingBean {
     }
 
     /**
-     *
      * @param newpassword the newpassword to set
      */
     public void setNewpassword(String newpassword) {
@@ -102,7 +100,6 @@ public class SettingBean {
     }
 
     /**
-     *
      * @return the confirm password of the new password
      */
     public String getRenewpassword() {
@@ -110,7 +107,6 @@ public class SettingBean {
     }
 
     /**
-     *
      * @param renewpassword the confirm password to set
      */
     public void setRenewpassword(String renewpassword) {
@@ -118,7 +114,6 @@ public class SettingBean {
     }
 
     /**
-     *
      * @return the uploaded file of the user
      */
     public UploadedFile getUploadedFile() {
@@ -126,7 +121,6 @@ public class SettingBean {
     }
 
     /**
-     *
      * @param uploadedFile the uploaded file to set
      */
     public void setUploadedFile(UploadedFile uploadedFile) {
@@ -134,7 +128,6 @@ public class SettingBean {
     }
 
     /**
-     *
      * @return the logged user
      */
     public UserDTO getLoggedUser() {
@@ -142,7 +135,6 @@ public class SettingBean {
     }
 
     /**
-     *
      * @param loggedUser the logged user to set
      */
     public void setLoggedUser(UserDTO loggedUser) {
@@ -150,7 +142,6 @@ public class SettingBean {
     }
 
     /**
-     *
      * @return
      */
     public HandleUser getHandleUser() {
@@ -158,7 +149,6 @@ public class SettingBean {
     }
 
     /**
-     *
      * @param handleUser
      */
     public void setHandleUser(HandleUser handleUser) {
@@ -230,14 +220,13 @@ public class SettingBean {
         if (uploadedFile != null && id != 0 && uploadedFile.getSize() > 0) {
             String filename = FilenameUtils.getName(uploadedFile.getFileName());
             try {
-                InputStream input = uploadedFile.getInputstream();
                 File file = new File(System.getProperty("com.sun.aas.instanceRoot") + "/var/webapp/images", filename);
-                OutputStream output = new FileOutputStream(file);
-                LOGGER.log(Level.INFO, file.getAbsolutePath());
-                loggedUser.setAvatar("/images/" + file.getName());
-                IOUtils.copy(input, output);
-                IOUtils.closeQuietly(input);
-                IOUtils.closeQuietly(output);
+                try (InputStream input = uploadedFile.getInputstream();
+                     OutputStream output = new FileOutputStream(file);) {
+                    LOGGER.log(Level.INFO, file.getAbsolutePath());
+                    loggedUser.setAvatar("/images/" + file.getName());
+                    IOUtils.copy(input, output);
+                }
             } catch (IOException ex) {
                 LOGGER.log(Level.ERROR, ex);
             }

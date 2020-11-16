@@ -25,6 +25,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 /**
  * Entity that rappresent the EventNotification in MeteoCal
@@ -93,4 +94,17 @@ public class EventNotification extends Notification {
         this.event = event;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof EventNotification)) return false;
+        EventNotification that = (EventNotification) o;
+        return Objects.equals(event, that.event) &&
+                status == that.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(event, status);
+    }
 }

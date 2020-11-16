@@ -17,6 +17,7 @@
 package it.polimi.meteocal.entities;
 
 import it.polimi.meteocal.util.Visibility;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +44,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "calendar")
 @NamedQueries({
-    @NamedQuery(name = Calendar.FIND_BY_ORGANIZEDEVENT, query = "SELECT c FROM Calendar c WHERE :event MEMBER OF c.organizedEvents"),})
+        @NamedQuery(name = Calendar.FIND_BY_ORGANIZEDEVENT, query = "SELECT c FROM Calendar c WHERE :event MEMBER OF c.organizedEvents"),})
 public class Calendar implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -108,7 +109,6 @@ public class Calendar implements Serializable {
     }
 
     /**
-     *
      * @param organizedEvents the list of owned events to set
      */
     public void setOrganizedEvents(List<Event> organizedEvents) {
@@ -149,44 +149,15 @@ public class Calendar implements Serializable {
 
     }
 
-//    @Override
-//    public String toString() {
-//        return "Calendar{" + "id=" + id + ", participatedEvents=" + participatedEvents.size() + ", organizedEvents=" + organizedEvents.size() + ", visibility=" + visibility + '}';
-//    }
-
     @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 97 * hash + Objects.hashCode(this.id);
-        hash = 97 * hash + Objects.hashCode(this.participatedEvents);
-        hash = 97 * hash + Objects.hashCode(this.organizedEvents);
-        hash = 97 * hash + Objects.hashCode(this.visibility);
-        return hash;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Calendar)) return false;
+        Calendar calendar = (Calendar) o;
+        return Objects.equals(id, calendar.id) &&
+                Objects.equals(participatedEvents, calendar.participatedEvents) &&
+                Objects.equals(organizedEvents, calendar.organizedEvents) &&
+                visibility == calendar.visibility;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Calendar other = (Calendar) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        if (!Objects.equals(this.participatedEvents, other.participatedEvents)) {
-            return false;
-        }
-        if (!Objects.equals(this.organizedEvents, other.organizedEvents)) {
-            return false;
-        }
-        if (this.visibility != other.visibility) {
-            return false;
-        }
-        return true;
-    }
-
-    
 }

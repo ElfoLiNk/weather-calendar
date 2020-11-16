@@ -84,38 +84,26 @@ public class ResultDTO {
     }
 
     @Override
-    public String toString() {
-        return "ResultDTO{" + "type=" + type + ", id=" + id + ", name=" + name + '}';
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ResultDTO)) return false;
+        ResultDTO resultDTO = (ResultDTO) o;
+        return Objects.equals(type, resultDTO.type) &&
+                Objects.equals(id, resultDTO.id) &&
+                Objects.equals(name, resultDTO.name);
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 29 * hash + Objects.hashCode(this.type);
-        hash = 29 * hash + Objects.hashCode(this.id);
-        hash = 29 * hash + Objects.hashCode(this.name);
-        return hash;
+        return Objects.hash(type, id, name);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ResultDTO other = (ResultDTO) obj;
-        if (!Objects.equals(this.type, other.type)) {
-            return false;
-        }
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        return true;
+    public String toString() {
+        return "ResultDTO{" +
+                "type='" + type + '\'' +
+                ", id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                '}';
     }
-
 }
