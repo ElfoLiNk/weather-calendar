@@ -422,10 +422,8 @@ public class HandleEventImpl implements HandleEvent {
 
     @Override
     public void resizeEvent(String id, int dayDelta, int minuteDelta) throws ErrorRequestException {
-        System.out.println("find");
         Event event = em.find(Event.class, Long.valueOf(id));
         if (event != null) {
-            System.out.println("found");
             java.util.Calendar endDate = event.getEndDate();
 
             endDate.add(java.util.Calendar.DAY_OF_MONTH, dayDelta);
