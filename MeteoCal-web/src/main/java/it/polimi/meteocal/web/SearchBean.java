@@ -49,7 +49,7 @@ public class SearchBean implements Serializable {
     @EJB
     HandleForecast handleForecast;
 
-    private List<ResultDTO> result = null;
+    private List<ResultDTO> result;
     private String query = null;
     private String input = null;
 

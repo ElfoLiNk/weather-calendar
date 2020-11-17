@@ -31,5 +31,5 @@ package it.polimi.meteocal.util;
     /**
      * Female
      */
-    FEMALE;
-    }
+    FEMALE
+}

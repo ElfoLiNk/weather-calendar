@@ -29,7 +29,7 @@ import javax.inject.Named;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 
 /**
  * Class that handle the login and registration dialog in the index of the web
@@ -85,13 +85,13 @@ public class LoginBean implements Serializable {
      *
      */
     public void doLogin() {
-        RequestContext context = RequestContext.getCurrentInstance();
+        PrimeFaces.Ajax ajax = PrimeFaces.current().ajax();
         LOGGER.log(Level.INFO, "Login User " + loginUser);
         boolean loggedIn = handleUser.doLogin(loginUser);
         loginUser = new UserDTO();
         if (loggedIn) {
             try {
-                context.addCallbackParam("loggedIn", loggedIn);
+                ajax.addCallbackParam("loggedIn", loggedIn);
                 FacesContext.getCurrentInstance().getExternalContext()
                         .redirect("calendar/calendar.xhtml");
             } catch (IOException e) {
@@ -101,7 +101,7 @@ public class LoginBean implements Serializable {
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Loggin Error", "Invalid credentials"));
         }
-        context.addCallbackParam("loggedIn", loggedIn);
+        ajax.addCallbackParam("loggedIn", loggedIn);
     }
 
     /**

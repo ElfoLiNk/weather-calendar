@@ -38,5 +38,5 @@ public enum DateFormat {
     /**
      * YMD : Date format = "yyyy/MM/dd"; Output = 2005/02/20.
      */
-    YMD;
+    YMD
 }

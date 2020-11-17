@@ -39,7 +39,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
@@ -201,8 +200,6 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
 
                 }
 
-            } catch (ClientProtocolException e) {
-                LOGGER.log(Level.ERROR, e);
             } catch (IOException e) {
                 LOGGER.log(Level.ERROR, e);
             } finally {

@@ -45,7 +45,7 @@ public interface HandleUser {
      * @throws ErrorRequestException expection throw if errors in the
      * authentication phase
      */
-    public long checkAccessCredential(String username, String password)
+    long checkAccessCredential(String username, String password)
             throws ErrorRequestException;
 
     /**
@@ -56,7 +56,7 @@ public interface HandleUser {
      * @throws ErrorRequestException if there is a problem retriving the user
      * info
      */
-    public UserDTO getUser(long userID)
+    UserDTO getUser(long userID)
             throws ErrorRequestException;
 
     /**
@@ -65,7 +65,7 @@ public interface HandleUser {
      * @param newUser the new user to add in MeteoCal
      * @throws ErrorRequestException
      */
-    public void addUser(UserDTO newUser) throws ErrorRequestException;
+    void addUser(UserDTO newUser) throws ErrorRequestException;
 
     /**
      * Method that handle the login of the user in MeteoCal
@@ -73,7 +73,7 @@ public interface HandleUser {
      * @param loginUser the user that whant to login in MeteoCal
      * @return true if the login process was succesful; false otherwise.
      */
-    public boolean doLogin(UserDTO loginUser);
+    boolean doLogin(UserDTO loginUser);
 
     /**
      * Method that return the owner of a calendar
@@ -81,7 +81,7 @@ public interface HandleUser {
      * @param calendarId the calendar id of the user returned
      * @return the owner of the calendar; null otherwise;
      */
-    public UserDTO getOwner(String calendarId);
+    UserDTO getOwner(String calendarId);
 
     /**
      * Method that search the user with a PUBLIC Calendar that match the given
@@ -90,7 +90,7 @@ public interface HandleUser {
      * @param query
      * @return the list of the result that match the query
      */
-    public List<ResultDTO> search(String query);
+    List<ResultDTO> search(String query);
 
     /**
      * Method that search the user that match the given query
@@ -98,7 +98,7 @@ public interface HandleUser {
      * @param query
      * @return the list of the result that match the query
      */
-    public List<ResultDTO> searchUser(String query);
+    List<ResultDTO> searchUser(String query);
 
     /**
      * Method that change the user settings
@@ -106,7 +106,7 @@ public interface HandleUser {
      * @param loggedUser the user with the new settings
      * @throws ErrorRequestException
      */
-    public void changeSettings(UserDTO loggedUser) throws ErrorRequestException;
+    void changeSettings(UserDTO loggedUser) throws ErrorRequestException;
 
     /**
      * Method that return the visibility of the given calendar id
@@ -115,7 +115,7 @@ public interface HandleUser {
      * @return Visibility.PUBLIC or Visibility.PRIVATE for the given calendarId
      * @throws it.polimi.meteocal.exception.ErrorRequestException
      */
-    public Visibility getCalendarVisibility(String calendarId) throws ErrorRequestException;
+    Visibility getCalendarVisibility(String calendarId) throws ErrorRequestException;
 
     /**
      * Method that change the calendar visibility of the current logged user
@@ -124,7 +124,7 @@ public interface HandleUser {
      * user
      * @throws it.polimi.meteocal.exception.ErrorRequestException
      */
-    public void changeCalendarVisibility(Visibility visibility) throws ErrorRequestException;
+    void changeCalendarVisibility(Visibility visibility) throws ErrorRequestException;
 
     /**
      * Method that save the notification in the DB
@@ -132,40 +132,40 @@ public interface HandleUser {
      * @param notification the notification to save in the DB
      * @return true if the notification is added, false otherwise
      */
-    public boolean addNotification(EventNotificationDTO notification);
+    boolean addNotification(EventNotificationDTO notification);
 
     /**
      * Method that handle the user accepts to a notification
      *
      * @param selectedNotification the notification that the user have accepted
      */
-    public void acceptNotification(NotificationDTO selectedNotification);
+    void acceptNotification(NotificationDTO selectedNotification);
 
     /**
      * Method that handle the user declines to a notification
      *
      * @param selectedNotification the notification that the user have declined
      */
-    public void declineNotification(NotificationDTO selectedNotification);
+    void declineNotification(NotificationDTO selectedNotification);
 
     /**
      * Method that add the calendar to the logged user prefered
      *
      * @param calendarId the id of the prefered calendar to add
      */
-    public void addPreferedCalendar(String calendarId);
+    void addPreferedCalendar(String calendarId);
 
     /**
      * Method that remove the calendar from the logged user prefered
      *
      * @param calendarId the id of the prefered calendar to remove
      */
-    public void delPreferedCalendar(String calendarId);
+    void delPreferedCalendar(String calendarId);
 
     /**
      * Method that remove outdated notification from the user that refers to
      * passed event
      */
-    public void removeOldNotification();
+    void removeOldNotification();
 
 }

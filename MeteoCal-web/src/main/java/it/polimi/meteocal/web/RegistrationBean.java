@@ -29,7 +29,7 @@ import javax.inject.Named;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 
 /**
@@ -118,7 +118,7 @@ public class RegistrationBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(componentId,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, msg));
         }
-        RequestContext.getCurrentInstance().addCallbackParam("registered", registered);
+        PrimeFaces.current().ajax().addCallbackParam("registered", registered);
     }
 
     /**

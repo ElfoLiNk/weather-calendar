@@ -31,5 +31,5 @@ public enum Visibility {
     /**
      * Private
      */
-    PRIVATE;
+    PRIVATE
 }

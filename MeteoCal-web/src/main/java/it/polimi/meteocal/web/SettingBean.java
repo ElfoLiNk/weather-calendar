@@ -222,7 +222,7 @@ public class SettingBean {
             try {
                 File file = new File(System.getProperty("com.sun.aas.instanceRoot") + "/var/webapp/images", filename);
                 try (InputStream input = uploadedFile.getInputstream();
-                     OutputStream output = new FileOutputStream(file);) {
+                     OutputStream output = new FileOutputStream(file)) {
                     LOGGER.log(Level.INFO, file.getAbsolutePath());
                     loggedUser.setAvatar("/images/" + file.getName());
                     IOUtils.copy(input, output);

@@ -33,14 +33,14 @@ public interface HandleAuthGoogle {
      * @param code initial code for the OAuth authorization
      * @return true if the login is succesfull, false otherwise
      */
-    public boolean doLoginGoogle(String code);
+    boolean doLoginGoogle(String code);
 
     /**
      * Method that creates the Google login url for the user session
      *
      * @return the Google login url
      */
-    public String getUrlLoginGoogle();
+    String getUrlLoginGoogle();
 
     /**
      * Method that check if the user is connected by Google
@@ -48,7 +48,7 @@ public interface HandleAuthGoogle {
      * @return true if the user is connected by the Google login, false
      * otherwise
      */
-    public boolean isGoogleCollegato();
+    boolean isGoogleCollegato();
 
     /**
      * Method that check if the user identified by the userID is connected by
@@ -58,6 +58,6 @@ public interface HandleAuthGoogle {
      * @return true if the user is connected by the Google login, false
      * otherwise
      */
-    public boolean isGoogleCollegato(long userID);
+    boolean isGoogleCollegato(long userID);
 
 }

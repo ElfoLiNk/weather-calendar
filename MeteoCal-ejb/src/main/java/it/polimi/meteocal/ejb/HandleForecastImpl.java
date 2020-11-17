@@ -26,7 +26,6 @@ import it.polimi.meteocal.entities.Weather;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -319,8 +318,6 @@ public class HandleForecastImpl implements HandleForecast {
         InputStream inputStream = null;
         try {
             inputStream = new URL("http://openweathermap.org/help/city_list.txt").openStream();
-        } catch (MalformedURLException ex) {
-            LOGGER.log(Level.ERROR, ex);
         } catch (IOException ex) {
             LOGGER.log(Level.ERROR, ex);
         }
@@ -330,7 +327,7 @@ public class HandleForecastImpl implements HandleForecast {
         List<Map<String, String>> list = new ArrayList<>();
         Map<String, String> result;
         try {
-            while ((result = reader.read(new String[]{"id", "name", "lat", "lon", "countryCode"})) != null) {
+            while ((result = reader.read("id", "name", "lat", "lon", "countryCode")) != null) {
                 list.add(result);
             }
         } catch (IOException ex) {
@@ -344,8 +341,8 @@ public class HandleForecastImpl implements HandleForecast {
 
                 location.setId(Long.valueOf(elem.get("id")));
                 location.setName(elem.get("name"));
-                location.setLatitude(Float.valueOf(elem.get("lat")));
-                location.setLongitude(Float.valueOf(elem.get("lon")));
+                location.setLatitude(Float.parseFloat(elem.get("lat")));
+                location.setLongitude(Float.parseFloat(elem.get("lon")));
                 location.setCountryCode(elem.get("countryCode"));
             } catch (NumberFormatException e) {
                 LOGGER.log(Level.ERROR, e);
