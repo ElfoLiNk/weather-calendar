@@ -49,6 +49,12 @@
         </dependency>
         <dependency>
             <groupId>it.polimi</groupId>
+            <artifactId>MeteoCal-EJBClient</artifactId>
+            <version>1.2-SNAPSHOT</version>
+            <type>ejb</type>
+        </dependency>
+        <dependency>
+            <groupId>it.polimi</groupId>
             <artifactId>MeteoCal-web</artifactId>
             <version>1.2-SNAPSHOT</version>
             <type>war</type>
