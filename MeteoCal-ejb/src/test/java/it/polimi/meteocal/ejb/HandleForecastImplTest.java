@@ -112,7 +112,7 @@ public class HandleForecastImplTest {
         forecastDTO.setId(forecast.getId());
         forecastDTO.setLocation(forecast.getLocation());
         forecastDTO.setCreationDate(forecast.getCreationDate());
-        forecastDTO.setDate(forecast.getCreationDate());
+        forecastDTO.setDate(forecast.getForecastDate());
         // SETUP WEATHER DTO
         weatherDTO = new WeatherDTO(0L, weather.getWeatherConditionCode(), weather.getDescription(), weather.getTemperature(), weather.getIcon());
         forecastDTO.setWeather(weatherDTO);
