@@ -29,10 +29,10 @@ import it.polimi.meteocal.entities.Weather;
 import it.polimi.meteocal.exception.ErrorRequestException;
 import it.polimi.meteocal.util.ContextMocker;
 import it.polimi.meteocal.util.Site;
-import it.polimi.meteocal.util.Status;
 import it.polimi.meteocal.util.Visibility;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -42,7 +42,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -52,14 +51,13 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 /**
@@ -216,6 +214,7 @@ public class HandleEventImplTest {
      */
     @After
     public void tearDown() throws Exception {
+        reset(handleEvent.em);
         closeable.close();
     }
 
@@ -226,24 +225,23 @@ public class HandleEventImplTest {
      */
     @Test
     public void testAddEvent() throws ErrorRequestException {
-
-        System.out.println("addEvent");
-        doAnswer(new Answer<Event>() {
-            @Override
-            public Event answer(InvocationOnMock invocationOnMock) throws Throwable {
-                Object[] args = invocationOnMock.getArguments();
-                Event event = (Event) args[0];
-                event.setId((long) 0);
-                return null;
-            }
-
+        //Getting the current date
+        Date date = new Date();
+        //This method returns the time in millis
+        long timeMilli = date.getTime();
+        System.out.println("addEvent: " + timeMilli);
+        doAnswer((Answer<Event>) invocationOnMock -> {
+            Object[] args = invocationOnMock.getArguments();
+            Event event = (Event) args[0];
+            event.setId((long) 0);
+            return null;
         }).when(handleEvent.em).persist(any(Event.class));
         event.setForecast(null);
         event.setEventParticipants(new ArrayList<>());
+        event.setInvitedUsers(new ArrayList<>());
         long eventID = handleEvent.addEvent(user.getId(), eventDTO);
-        assertEquals(eventID, (long) 0);
+        assertEquals(eventID, 0L);
         verify(handleEvent.em, times(1)).persist(event);
-
     }
 
     /**
@@ -253,7 +251,11 @@ public class HandleEventImplTest {
      */
     @Test
     public void testGetEvents() throws ErrorRequestException {
-        System.out.println("getEvents");
+        //Getting the current date
+        Date date = new Date();
+        //This method returns the time in millis
+        long timeMilli = date.getTime();
+        System.out.println("getEvents: " + timeMilli);
         List<EventDTO> expResult = new ArrayList<>();
         expResult.add(eventDTO);
         when(handleEvent.handleForecast.getForecast(event.getForecast().getId())).thenReturn(forecastDTO);
@@ -268,7 +270,11 @@ public class HandleEventImplTest {
      */
     @Test
     public void testGetEvent() throws ErrorRequestException {
-        System.out.println("getEvent");
+        //Getting the current date
+        Date date = new Date();
+        //This method returns the time in millis
+        long timeMilli = date.getTime();
+        System.out.println("getEvent: " + timeMilli);
         when(handleEvent.handleForecast.getForecast(event.getForecast().getId())).thenReturn(forecastDTO);
         EventDTO result = handleEvent.getEvent(user.getId(), eventDTO.getId());
         assertEquals(eventDTO.getId(), result.getId());
@@ -282,7 +288,11 @@ public class HandleEventImplTest {
      */
     @Test
     public void testUpdateEvent() throws ErrorRequestException {
-        System.out.println("updateEvent");
+        //Getting the current date
+        Date date = new Date();
+        //This method returns the time in millis
+        long timeMilli = date.getTime();
+        System.out.println("updateEvent: " + timeMilli);
         long expResult = 0L;
         eventDTO.setDescription("MODIFIED EVENT");
         long result = handleEvent.updateEvent(user.getId(), eventDTO);
@@ -297,7 +307,11 @@ public class HandleEventImplTest {
      */
     @Test
     public void testRemoveEvent() throws ErrorRequestException {
-        System.out.println("removeEvent");
+        //Getting the current date
+        Date date = new Date();
+        //This method returns the time in millis
+        long timeMilli = date.getTime();
+        System.out.println("removeEvent: " + timeMilli);
         handleEvent.removeEvent(user.getId(), eventDTO);
         assertFalse(user.getCalendar().getOrganizedEvents().contains(event));
 
@@ -310,7 +324,11 @@ public class HandleEventImplTest {
      */
     @Test
     public void testCancelEvent() throws ErrorRequestException {
-        System.out.println("cancelEvent");
+        //Getting the current date
+        Date date = new Date();
+        //This method returns the time in millis
+        long timeMilli = date.getTime();
+        System.out.println("cancelEvent: " + timeMilli);
         handleEvent.cancelEvent(ep.getId(), eventDTO);
         assertFalse(ep.getCalendar().getParticipatedEvents().contains(event));
     }
@@ -320,7 +338,11 @@ public class HandleEventImplTest {
      */
     @Test
     public void testSearch() {
-        System.out.println("search");
+        //Getting the current date
+        Date date = new Date();
+        //This method returns the time in millis
+        long timeMilli = date.getTime();
+        System.out.println("search: " + timeMilli);
         List<Event> resultEvents = new ArrayList<>();
         resultEvents.add(event);
         when(query.getResultList()).thenReturn(resultEvents);
@@ -342,7 +364,11 @@ public class HandleEventImplTest {
      */
     @Test
     public void testMoveEvent() throws ErrorRequestException {
-        System.out.println("moveEvent");
+        //Getting the current date
+        Date date = new Date();
+        //This method returns the time in millis
+        long timeMilli = date.getTime();
+        System.out.println("moveEvent: " + timeMilli);
         int dayDelta = 1;
         int minuteDelta = 0;
         Calendar startDate = event.getStartDate();
@@ -361,7 +387,11 @@ public class HandleEventImplTest {
      */
     @Test
     public void testResizeEvent() throws ErrorRequestException {
-        System.out.println("resizeEvent");
+        //Getting the current date
+        Date date = new Date();
+        //This method returns the time in millis
+        long timeMilli = date.getTime();
+        System.out.println("resizeEvent: " + timeMilli);
         int dayDelta = 0;
         int minuteDelta = 25;
         Calendar startDate = event.getStartDate();

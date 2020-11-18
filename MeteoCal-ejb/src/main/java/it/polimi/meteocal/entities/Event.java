@@ -36,6 +36,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.validation.constraints.NotNull;
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.eclipse.persistence.annotations.ConversionValue;
 import org.eclipse.persistence.annotations.Convert;
 import org.eclipse.persistence.annotations.Mutable;
@@ -360,25 +363,14 @@ public class Event implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Event)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         Event event = (Event) o;
-        return Objects.equals(id, event.id) &&
-                Objects.equals(eo, event.eo) &&
-                Objects.equals(name, event.name) &&
-                Objects.equals(description, event.description) &&
-                Objects.equals(location, event.location) &&
-                site == event.site &&
-                Objects.equals(startDate, event.startDate) &&
-                Objects.equals(endDate, event.endDate) &&
-                Objects.equals(forecast, event.forecast) &&
-                visibility == event.visibility &&
-                Objects.equals(eventParticipants, event.eventParticipants) &&
-                Objects.equals(invitedUsers, event.invitedUsers);
+        return id.equals(event.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, eo, name, description, location, site, startDate, endDate, forecast, visibility, eventParticipants, invitedUsers);
+        return Objects.hash(id);
     }
 
     /**

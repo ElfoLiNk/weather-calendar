@@ -103,7 +103,7 @@ public class HandleForecastImplTest {
         // SETUP BAD WEATHER CONDITION
         weather.setWeatherConditionCode("500");
         forecast.setWeather(weather);
-        List<Forecast> forecasts = new ArrayList<Forecast>();
+        List<Forecast> forecasts = new ArrayList<>();
         forecasts.add(forecast);
         when(query.getResultList()).thenReturn(forecasts);
 
