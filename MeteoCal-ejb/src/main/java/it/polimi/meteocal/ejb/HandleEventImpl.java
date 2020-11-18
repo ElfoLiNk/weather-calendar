@@ -446,7 +446,7 @@ public class HandleEventImpl implements HandleEvent {
 
             throw new ErrorRequestException("Event need to be created before adding Participants", false);
         }
-        Event event = null;
+        Event event;
         try {
             event = em.find(Event.class, Long.valueOf(eventId));
         } catch (NumberFormatException e) {
@@ -499,7 +499,7 @@ public class HandleEventImpl implements HandleEvent {
             ForecastDTO forecast = handleForecast.getForecast(event.getLocation(), event.getStartDate().getTime());
             if (forecast != null && !queryCalendar.getResultList().isEmpty()) {
                 // RECOMENDER SYSTEM
-                if (Integer.valueOf(forecast.getWeather().getWeatherConditionCode()) < 800 || Integer.valueOf(forecast.getWeather().getWeatherConditionCode()) > 804) {
+                if (Integer.parseInt(forecast.getWeather().getWeatherConditionCode()) < 800 || Integer.parseInt(forecast.getWeather().getWeatherConditionCode()) > 804) {
                     // UPDATED FORECAST IS ALSO BAD
 
                     // NOTIFY TO EP IF 1 DAY BEFORE EVENT
@@ -583,7 +583,7 @@ public class HandleEventImpl implements HandleEvent {
             int i = 0;
             do {
                 ForecastDTO forecast = forecasts.get(i);
-                if (Integer.valueOf(forecast.getWeather().getWeatherConditionCode()) < 800 || Integer.valueOf(forecast.getWeather().getWeatherConditionCode()) > 804) {
+                if (Integer.parseInt(forecast.getWeather().getWeatherConditionCode()) < 800 || Integer.parseInt(forecast.getWeather().getWeatherConditionCode()) > 804) {
                     forecasts.remove(forecast);
                 } else {
                     i++;

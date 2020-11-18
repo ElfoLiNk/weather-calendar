@@ -38,7 +38,7 @@ public interface HandleForecast {
      * @return the forecast information for the given location and date if
      * present, null otherwise
      */
-    public ForecastDTO getForecast(String location, Date date);
+    ForecastDTO getForecast(String location, Date date);
 
     /**
      * Method that search and returns all the forecast information available for
@@ -47,7 +47,7 @@ public interface HandleForecast {
      * @param location the location to search the forecasts
      * @return the list of the forecasts for the location
      */
-    public List<ForecastDTO> getForecasts(String location);
+    List<ForecastDTO> getForecasts(String location);
 
     /**
      * Method that search in the DB and return the forecast of the given
@@ -56,7 +56,7 @@ public interface HandleForecast {
      * @param idForecast the id of the forecast in the db
      * @return the forecast if found or null
      */
-    public ForecastDTO getForecast(long idForecast);
+    ForecastDTO getForecast(long idForecast);
 
     /**
      * Method that user the OWM API to save in the DB the hourly forecast
@@ -64,7 +64,7 @@ public interface HandleForecast {
      *
      * @param location the location to get and save the forecast from OWM API
      */
-    public void addHourlyForecasts(String location);
+    void addHourlyForecasts(String location);
 
     /**
      * Method that user the OWM API to save in the DB the daily forecast
@@ -72,19 +72,19 @@ public interface HandleForecast {
      *
      * @param location the location to get and save the forecast from OWM API
      */
-    public void addDailyForecasts(String location);
+    void addDailyForecasts(String location);
 
     /**
      * Method usefull to clean the DB from the old forecast information 
      */
-    public void removeOldForecast();
+    void removeOldForecast();
 
     /**
      * Method that crawl the location of the OWM API and save it in the DB Used
      * only in the development phase to populate the DB with the location Very
      * Long Execution Not Enable In Production Phase
      */
-    public void setLocations();
+    void setLocations();
 
     /**
      * Method that query the DB find the locations that match the given query
@@ -92,6 +92,6 @@ public interface HandleForecast {
      * @param query the string query
      * @return the list of the location that match the query
      */
-    public List<String> searchLocation(String query);
+    List<String> searchLocation(String query);
 
 }

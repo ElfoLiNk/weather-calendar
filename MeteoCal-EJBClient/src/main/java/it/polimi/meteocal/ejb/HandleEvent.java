@@ -41,7 +41,7 @@ public interface HandleEvent {
      * @throws ErrorRequestException if the user dosen't exists or the invited
      * user to the event doesn't exist.
      */
-    public long addEvent(Long userID, EventDTO event) throws ErrorRequestException;
+    long addEvent(Long userID, EventDTO event) throws ErrorRequestException;
 
     /**
      * Method that updates the event of the user modifing the information of the
@@ -52,7 +52,7 @@ public interface HandleEvent {
      * @return the id of the updated event
      * @throws ErrorRequestException
      */
-    public long updateEvent(Long userID, EventDTO event) throws ErrorRequestException;
+    long updateEvent(Long userID, EventDTO event) throws ErrorRequestException;
 
     /**
      * Method that returns all the event of the user
@@ -61,7 +61,7 @@ public interface HandleEvent {
      * @return the list of the events organized or participated by the user
      * @throws ErrorRequestException
      */
-    public List<EventDTO> getEvents(Long userID) throws ErrorRequestException;
+    List<EventDTO> getEvents(Long userID) throws ErrorRequestException;
 
     /**
      * Method that return the event corrisponding the given event id
@@ -71,7 +71,7 @@ public interface HandleEvent {
      * @return EventDTO the event information
      * @throws ErrorRequestException if the event doesn't exist
      */
-    public EventDTO getEvent(Long userID, String eventId) throws ErrorRequestException;
+    EventDTO getEvent(Long userID, String eventId) throws ErrorRequestException;
 
     /**
      * Method that safetly remove the event from the DB
@@ -80,7 +80,7 @@ public interface HandleEvent {
      * @param event the event to be removed
      * @throws ErrorRequestException if there is error in the remove procedure
      */
-    public void removeEvent(Long userID, EventDTO event) throws ErrorRequestException;
+    void removeEvent(Long userID, EventDTO event) throws ErrorRequestException;
 
     /**
      * Method that cancel the user parteciaption to the event
@@ -89,7 +89,7 @@ public interface HandleEvent {
      * @param event the event to cancel the partecipation
      * @throws ErrorRequestException
      */
-    public void cancelEvent(Long userID, EventDTO event) throws ErrorRequestException;
+    void cancelEvent(Long userID, EventDTO event) throws ErrorRequestException;
 
     /**
      * Method that search the public event that match the given query on event's
@@ -98,7 +98,7 @@ public interface HandleEvent {
      * @param query
      * @return the list of the result that match the query
      */
-    public List<ResultDTO> search(String query);
+    List<ResultDTO> search(String query);
 
     /**
      * Method that move the event using the deltas
@@ -108,7 +108,7 @@ public interface HandleEvent {
      * @param minuteDelta the delta of the munute modification
      * @throws ErrorRequestException
      */
-    public void moveEvent(String id, int dayDelta, int minuteDelta) throws ErrorRequestException;
+    void moveEvent(String id, int dayDelta, int minuteDelta) throws ErrorRequestException;
 
     /**
      * Method that add the selected user to the invited user of the event
@@ -117,7 +117,7 @@ public interface HandleEvent {
      * @param selectedResult the user result of the selection of the logged user
      * @throws ErrorRequestException
      */
-    public void addParticipant(String eventId, ResultDTO selectedResult) throws ErrorRequestException;
+    void addParticipant(String eventId, ResultDTO selectedResult) throws ErrorRequestException;
 
     /**
      * Method that check all the event of the logged user from today to three
@@ -126,7 +126,7 @@ public interface HandleEvent {
      *
      * @param userId the id of the user to check the event
      */
-    public void checkEventWeatherCondition(long userId);
+    void checkEventWeatherCondition(long userId);
 
     /**
      * Method that resize the event using the deltas
@@ -136,5 +136,5 @@ public interface HandleEvent {
      * @param minuteDelta the delta of the munute modification
      * @throws ErrorRequestException
      */
-    public void resizeEvent(String id, int dayDelta, int minuteDelta) throws ErrorRequestException;
+    void resizeEvent(String id, int dayDelta, int minuteDelta) throws ErrorRequestException;
 }

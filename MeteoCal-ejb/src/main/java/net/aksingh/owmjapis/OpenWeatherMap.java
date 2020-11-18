@@ -406,7 +406,7 @@ public class OpenWeatherMap {
      *
      * @since 2.5.0.3
      */
-    public static enum Units {
+    public enum Units {
 
         /**
          *
@@ -430,7 +430,7 @@ public class OpenWeatherMap {
      *
      * @since 2.5.0.3
      */
-    public static enum Language {
+    public enum Language {
 
         /**
          *
@@ -612,14 +612,12 @@ public class OpenWeatherMap {
          */
         
         public String currentWeatherByCityName(String cityName) throws UnsupportedEncodingException {
-            return new StringBuilder()
-                    .append(URL_API).append(URL_CURRENT)
-                    .append(PARAM_CITY_NAME).append(URLEncoder.encode(cityName, ENCODING)).append("&")
-                    .append(PARAM_MODE).append(this.mode).append("&")
-                    .append(PARAM_UNITS).append(this.units).append("&")
-                    .append(PARAM_LANG).append(this.lang).append("&")
-                    .append(PARAM_APPID).append(this.appId)
-                    .toString();
+            return URL_API + URL_CURRENT +
+                    PARAM_CITY_NAME + URLEncoder.encode(cityName, ENCODING) + "&" +
+                    PARAM_MODE + this.mode + "&" +
+                    PARAM_UNITS + this.units + "&" +
+                    PARAM_LANG + this.lang + "&" +
+                    PARAM_APPID + this.appId;
         }
 
         /**
@@ -630,9 +628,7 @@ public class OpenWeatherMap {
          * @throws UnsupportedEncodingException
          */
         public String currentWeatherByCityName(String cityName, String countryCode) throws UnsupportedEncodingException {
-            return currentWeatherByCityName(new StringBuilder()
-                    .append(cityName).append(",").append(countryCode)
-                    .toString());
+            return currentWeatherByCityName(cityName + "," + countryCode);
         }
 
         /**
@@ -641,14 +637,12 @@ public class OpenWeatherMap {
          * @return
          */
         public String currentWeatherByCityCode(long cityCode) {
-            return new StringBuilder()
-                    .append(URL_API).append(URL_CURRENT)
-                    .append(PARAM_CITY_ID).append(Long.toString(cityCode)).append("&")
-                    .append(PARAM_MODE).append(this.mode).append("&")
-                    .append(PARAM_UNITS).append(this.units).append("&")
-                    .append(PARAM_LANG).append(this.lang).append("&")
-                    .append(PARAM_APPID).append(this.appId)
-                    .toString();
+            return URL_API + URL_CURRENT +
+                    PARAM_CITY_ID + cityCode + "&" +
+                    PARAM_MODE + this.mode + "&" +
+                    PARAM_UNITS + this.units + "&" +
+                    PARAM_LANG + this.lang + "&" +
+                    PARAM_APPID + this.appId;
         }
 
         /**
@@ -658,14 +652,12 @@ public class OpenWeatherMap {
          * @return
          */
         public String currentWeatherByCoordinates(float latitude, float longitude) {
-            return new StringBuilder()
-                    .append(URL_API).append(URL_CURRENT)
-                    .append(PARAM_LATITUDE).append(Float.toString(latitude)).append("&")
-                    .append(PARAM_LONGITUDE).append(Float.toString(longitude)).append("&")
-                    .append(PARAM_MODE).append(this.mode).append("&")
-                    .append(PARAM_UNITS).append(this.units).append("&")
-                    .append(PARAM_APPID).append(this.appId)
-                    .toString();
+            return URL_API + URL_CURRENT +
+                    PARAM_LATITUDE + latitude + "&" +
+                    PARAM_LONGITUDE + longitude + "&" +
+                    PARAM_MODE + this.mode + "&" +
+                    PARAM_UNITS + this.units + "&" +
+                    PARAM_APPID + this.appId;
         }
 
         /*
@@ -680,14 +672,12 @@ public class OpenWeatherMap {
          */
         
         public String hourlyForecastByCityName(String cityName) throws UnsupportedEncodingException {
-            return new StringBuilder()
-                    .append(URL_API).append(URL_HOURLY_FORECAST)
-                    .append(PARAM_CITY_NAME).append(URLEncoder.encode(cityName, ENCODING)).append("&")
-                    .append(PARAM_MODE).append(this.mode).append("&")
-                    .append(PARAM_UNITS).append(this.units).append("&")
-                    .append(PARAM_LANG).append(this.lang).append("&")
-                    .append(PARAM_APPID).append(this.appId)
-                    .toString();
+            return URL_API + URL_HOURLY_FORECAST +
+                    PARAM_CITY_NAME + URLEncoder.encode(cityName, ENCODING) + "&" +
+                    PARAM_MODE + this.mode + "&" +
+                    PARAM_UNITS + this.units + "&" +
+                    PARAM_LANG + this.lang + "&" +
+                    PARAM_APPID + this.appId;
         }
 
         /**
@@ -698,9 +688,7 @@ public class OpenWeatherMap {
          * @throws UnsupportedEncodingException
          */
         public String hourlyForecastByCityName(String cityName, String countryCode) throws UnsupportedEncodingException {
-            return hourlyForecastByCityName(new StringBuilder()
-                    .append(cityName).append(",").append(countryCode)
-                    .toString());
+            return hourlyForecastByCityName(cityName + "," + countryCode);
         }
 
         /**
@@ -709,14 +697,12 @@ public class OpenWeatherMap {
          * @return
          */
         public String hourlyForecastByCityCode(long cityCode) {
-            return new StringBuilder()
-                    .append(URL_API).append(URL_HOURLY_FORECAST)
-                    .append(PARAM_CITY_ID).append(Long.toString(cityCode)).append("&")
-                    .append(PARAM_MODE).append(this.mode).append("&")
-                    .append(PARAM_UNITS).append(this.units).append("&")
-                    .append(PARAM_LANG).append(this.lang).append("&")
-                    .append(PARAM_APPID).append(this.appId)
-                    .toString();
+            return URL_API + URL_HOURLY_FORECAST +
+                    PARAM_CITY_ID + cityCode + "&" +
+                    PARAM_MODE + this.mode + "&" +
+                    PARAM_UNITS + this.units + "&" +
+                    PARAM_LANG + this.lang + "&" +
+                    PARAM_APPID + this.appId;
         }
 
         /**
@@ -726,15 +712,13 @@ public class OpenWeatherMap {
          * @return
          */
         public String hourlyForecastByCoordinates(float latitude, float longitude) {
-            return new StringBuilder()
-                    .append(URL_API).append(URL_HOURLY_FORECAST)
-                    .append(PARAM_LATITUDE).append(Float.toString(latitude)).append("&")
-                    .append(PARAM_LONGITUDE).append(Float.toString(longitude)).append("&")
-                    .append(PARAM_MODE).append(this.mode).append("&")
-                    .append(PARAM_UNITS).append(this.units).append("&")
-                    .append(PARAM_LANG).append(this.lang).append("&")
-                    .append(PARAM_APPID).append(this.appId)
-                    .toString();
+            return URL_API + URL_HOURLY_FORECAST +
+                    PARAM_LATITUDE + latitude + "&" +
+                    PARAM_LONGITUDE + longitude + "&" +
+                    PARAM_MODE + this.mode + "&" +
+                    PARAM_UNITS + this.units + "&" +
+                    PARAM_LANG + this.lang + "&" +
+                    PARAM_APPID + this.appId;
         }
 
         /*
@@ -750,15 +734,13 @@ public class OpenWeatherMap {
          */
         
         public String dailyForecastByCityName(String cityName, byte count) throws UnsupportedEncodingException {
-            return new StringBuilder()
-                    .append(URL_API).append(URL_DAILY_FORECAST)
-                    .append(PARAM_CITY_NAME).append(URLEncoder.encode(cityName, ENCODING)).append("&")
-                    .append(PARAM_COUNT).append(Byte.toString(count)).append("&")
-                    .append(PARAM_MODE).append(this.mode).append("&")
-                    .append(PARAM_UNITS).append(this.units).append("&")
-                    .append(PARAM_LANG).append(this.lang).append("&")
-                    .append(PARAM_APPID).append(this.appId)
-                    .toString();
+            return URL_API + URL_DAILY_FORECAST +
+                    PARAM_CITY_NAME + URLEncoder.encode(cityName, ENCODING) + "&" +
+                    PARAM_COUNT + count + "&" +
+                    PARAM_MODE + this.mode + "&" +
+                    PARAM_UNITS + this.units + "&" +
+                    PARAM_LANG + this.lang + "&" +
+                    PARAM_APPID + this.appId;
         }
 
         /**
@@ -770,9 +752,7 @@ public class OpenWeatherMap {
          * @throws UnsupportedEncodingException
          */
         public String dailyForecastByCityName(String cityName, String countryCode, byte count) throws UnsupportedEncodingException {
-            return dailyForecastByCityName(new StringBuilder()
-                    .append(cityName).append(",").append(countryCode)
-                    .toString(), count);
+            return dailyForecastByCityName(cityName + "," + countryCode, count);
         }
 
         /**
@@ -782,15 +762,13 @@ public class OpenWeatherMap {
          * @return
          */
         public String dailyForecastByCityCode(long cityCode, byte count) {
-            return new StringBuilder()
-                    .append(URL_API).append(URL_DAILY_FORECAST)
-                    .append(PARAM_CITY_ID).append(Long.toString(cityCode)).append("&")
-                    .append(PARAM_COUNT).append(Byte.toString(count)).append("&")
-                    .append(PARAM_MODE).append(this.mode).append("&")
-                    .append(PARAM_UNITS).append(this.units).append("&")
-                    .append(PARAM_LANG).append(this.lang).append("&")
-                    .append(PARAM_APPID).append(this.appId)
-                    .toString();
+            return URL_API + URL_DAILY_FORECAST +
+                    PARAM_CITY_ID + cityCode + "&" +
+                    PARAM_COUNT + count + "&" +
+                    PARAM_MODE + this.mode + "&" +
+                    PARAM_UNITS + this.units + "&" +
+                    PARAM_LANG + this.lang + "&" +
+                    PARAM_APPID + this.appId;
         }
 
         /**
@@ -801,16 +779,14 @@ public class OpenWeatherMap {
          * @return
          */
         public String dailyForecastByCoordinates(float latitude, float longitude, byte count) {
-            return new StringBuilder()
-                    .append(URL_API).append(URL_DAILY_FORECAST)
-                    .append(PARAM_LATITUDE).append(Float.toString(latitude)).append("&")
-                    .append(PARAM_LONGITUDE).append(Float.toString(longitude)).append("&")
-                    .append(PARAM_COUNT).append(Byte.toString(count)).append("&")
-                    .append(PARAM_MODE).append(this.mode).append("&")
-                    .append(PARAM_UNITS).append(this.units).append("&")
-                    .append(PARAM_LANG).append(this.lang).append("&")
-                    .append(PARAM_APPID).append(this.appId)
-                    .toString();
+            return URL_API + URL_DAILY_FORECAST +
+                    PARAM_LATITUDE + latitude + "&" +
+                    PARAM_LONGITUDE + longitude + "&" +
+                    PARAM_COUNT + count + "&" +
+                    PARAM_MODE + this.mode + "&" +
+                    PARAM_UNITS + this.units + "&" +
+                    PARAM_LANG + this.lang + "&" +
+                    PARAM_APPID + this.appId;
         }
     }
 

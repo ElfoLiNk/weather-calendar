@@ -33,14 +33,14 @@ public interface HandleAuthTwitter {
      * @param verifier initial code for the OAuth authorization
      * @return true if the login is succesfull, false otherwise
      */
-    public boolean doLoginTwitter(String verifier);
+    boolean doLoginTwitter(String verifier);
 
     /**
      * Method that creates the Twitter login url for the user session
      *
      * @return the Twitter login url
      */
-    public String getUrlLoginTwitter();
+    String getUrlLoginTwitter();
 
     /**
      * Method that check if the user is connected by Twitter
@@ -48,7 +48,7 @@ public interface HandleAuthTwitter {
      * @return true if the user is connected by the Twitter login, false
      * otherwise
      */
-    public boolean isTwitterCollegato();
+    boolean isTwitterCollegato();
 
     /**
      * Method that check if the user identified by the userID is connected by
@@ -58,6 +58,6 @@ public interface HandleAuthTwitter {
      * @return true if the user is connected by the Twitter login, false
      * otherwise
      */
-    public boolean isTwitterCollegato(long userID);
+    boolean isTwitterCollegato(long userID);
 
 }

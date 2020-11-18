@@ -34,9 +34,7 @@ import org.apache.logging.log4j.Logger;
  * @author Matteo Gazzetta, Alessandro Fato
  */
 @FacesConverter("resultConverter")
-public class ResultConverter implements Converter {
-
-    ResultDTO resultDTO;
+public class ResultConverter implements Converter<ResultDTO> {
     
     @Inject
     SearchBean searchBean;
@@ -51,7 +49,7 @@ public class ResultConverter implements Converter {
      * @return the corresponding object of the id
      */
     @Override
-    public Object getAsObject(FacesContext fc, UIComponent uic, String value) {
+    public ResultDTO getAsObject(FacesContext fc, UIComponent uic, String value) {
         if (value != null && value.trim().length() > 0) {
             try {
                 LOGGER.log(Level.INFO, "CONVERTER VALUE TO GET OBJECT " + value);
@@ -79,9 +77,9 @@ public class ResultConverter implements Converter {
      * @return the name of the object
      */
     @Override
-    public String getAsString(FacesContext fc, UIComponent uic, Object object) {
+    public String getAsString(FacesContext fc, UIComponent uic, ResultDTO object) {
         if (object != null) {
-            return String.valueOf(((ResultDTO) object).getName());
+            return String.valueOf((object).getName());
         } else {
             return null;
         }

@@ -235,7 +235,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
 
             if (!AuthUtil.isUserLogged()) {
                 // Saves the new data of the user in the DB
-                User user = null;
+                User user;
                 TypedQuery<User> q = em.createNamedQuery(User.FIND_BY_GOOGLE_ID, User.class);
                 q.setParameter("googleId", mePerson.getId());
                 TypedQuery<User> q2 = em.createNamedQuery(User.FIND_BY_EMAIL, User.class);

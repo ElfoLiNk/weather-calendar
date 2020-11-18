@@ -33,14 +33,14 @@ public interface HandleAuthFacebook {
      * @param faceCode initial code for the OAuth authorization
      * @return true if the login is succesfull, false otherwise
      */
-    public boolean doLoginFacebook(String faceCode);
+    boolean doLoginFacebook(String faceCode);
 
     /**
      * Method that creates the Facebook login url for the user session
      *
      * @return the Facebook login url
      */
-    public String getUrlLoginFacebook();
+    String getUrlLoginFacebook();
 
     /**
      * Method that check if the user is connected by Facebook
@@ -48,7 +48,7 @@ public interface HandleAuthFacebook {
      * @return true if the user is connected by the Facebook login, false
      * otherwise
      */
-    public boolean isFacebookCollegato();
+    boolean isFacebookCollegato();
 
     /**
      * Method that check if the user identified by the userID is connected by
@@ -58,6 +58,6 @@ public interface HandleAuthFacebook {
      * @return true if the user is connected by the Facebook login, false
      * otherwise
      */
-    public boolean isFacebookCollegato(long userID);
+    boolean isFacebookCollegato(long userID);
 
 }

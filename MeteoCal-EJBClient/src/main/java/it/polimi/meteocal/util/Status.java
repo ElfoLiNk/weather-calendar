@@ -36,5 +36,5 @@ public enum Status {
     /**
      * Pending
      */
-    PENDING;
+    PENDING
 }

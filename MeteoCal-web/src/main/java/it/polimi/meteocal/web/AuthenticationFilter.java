@@ -67,10 +67,9 @@ public class AuthenticationFilter implements Filter {
      * Init of the filter
      *
      * @param config the config of the filter to set
-     * @throws ServletException
      */
     @Override
-    public void init(FilterConfig config) throws ServletException {
+    public void init(FilterConfig config) {
         this.config = config;
     }
 

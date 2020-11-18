@@ -30,20 +30,20 @@ public interface WeatherScheduleModel extends ScheduleModel {
      *
      * @param event the event to add to the model
      */
-    public void addEvent(WeatherScheduleEvent event);
+    void addEvent(WeatherScheduleEvent event);
 
     /**
      *
      * @param event the evnet to delete from the model
      * @return true if the model contains the list
      */
-    public boolean deleteEvent(WeatherScheduleEvent event);
+    boolean deleteEvent(WeatherScheduleEvent event);
 
     /**
      *
      * @return the list of the events in the model
      */
-    public List<WeatherScheduleEvent> getWeatherEvents();
+    List<WeatherScheduleEvent> getWeatherEvents();
 
     /**
      *
@@ -51,26 +51,26 @@ public interface WeatherScheduleModel extends ScheduleModel {
      * @return the event of the model with the param id
      */
     @Override
-    public WeatherScheduleEvent getEvent(String id);
+    WeatherScheduleEvent getEvent(String id);
 
     /**
      * Method that update the event in the model 
      * 
      * @param event  the event to update in the model
      */
-    public void updateEvent(WeatherScheduleEvent event);
+    void updateEvent(WeatherScheduleEvent event);
 
     /**
      *
      * @return the number of event in the model
      */
     @Override
-    public int getEventCount();
+    int getEventCount();
 
     /**
      * Reset the model with an empty list
      */
     @Override
-    public void clear();
+    void clear();
 
 }

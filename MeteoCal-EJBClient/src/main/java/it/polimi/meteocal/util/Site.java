@@ -31,5 +31,5 @@ public enum Site {
     /**
      * Outdoor
      */
-    OUTDOOR;
+    OUTDOOR
 }

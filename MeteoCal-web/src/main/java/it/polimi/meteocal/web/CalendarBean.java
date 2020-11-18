@@ -51,7 +51,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
 import org.primefaces.event.SelectEvent;
@@ -211,7 +211,7 @@ public class CalendarBean implements Serializable {
 
     private void changeUser() {
         try {
-            currentUser = handleUser.getUser(Long.valueOf(selectedResult.getId()));
+            currentUser = handleUser.getUser(Long.parseLong(selectedResult.getId()));
         } catch (ErrorRequestException ex) {
             LOGGER.log(Level.WARN, ex);
             FacesContext.getCurrentInstance().addMessage(
@@ -224,9 +224,9 @@ public class CalendarBean implements Serializable {
         eventPrivacyCheck();
 
         // UPDATE CONTEXT
-        RequestContext context = RequestContext.getCurrentInstance();
-        context.update("userInfoForm");
-        context.update("scheduleForm");
+        PrimeFaces.Ajax ajax = PrimeFaces.current().ajax();
+        ajax.update("userInfoForm");
+        ajax.update("scheduleForm");
 
         selectedResult = null;
 
@@ -489,11 +489,7 @@ public class CalendarBean implements Serializable {
             }
             eventModel.deleteEvent(event);
             // REMOVE NOTIFICATION RELATED TO EVENT
-            for (NotificationDTO notif : loggedUser.getNotifications()) {
-                if (((EventNotificationDTO) notif).getEventId().equals(event.getId())) {
-                    loggedUser.getNotifications().remove(notif);
-                }
-            }
+            loggedUser.getNotifications().removeIf(notif -> ((EventNotificationDTO) notif).getEventId().equals(event.getId()));
             addMessage(new FacesMessage(FacesMessage.SEVERITY_INFO,
                     "Event removed", "Successfully removed " + event.getTitle()));
         }
@@ -524,11 +520,7 @@ public class CalendarBean implements Serializable {
             }
             eventModel.deleteEvent(event);
             // REMOVE NOTIFICATION RELATED TO EVENT
-            for (NotificationDTO notif : loggedUser.getNotifications()) {
-                if (((EventNotificationDTO) notif).getEventId().equals(event.getId())) {
-                    loggedUser.getNotifications().remove(notif);
-                }
-            }
+            loggedUser.getNotifications().removeIf(notif -> ((EventNotificationDTO) notif).getEventId().equals(event.getId()));
             addMessage(new FacesMessage(FacesMessage.SEVERITY_INFO,
                     "Event canceled", "Not partecipating to " + event.getTitle()));
         }
@@ -621,7 +613,7 @@ public class CalendarBean implements Serializable {
     public void addParticipant() {
         if (selectedResult != null && event.getId() != null) {
             try {
-                UserDTO user = handleUser.getUser(Long.valueOf(selectedResult.getId()));
+                UserDTO user = handleUser.getUser(Long.parseLong(selectedResult.getId()));
                 // CHECK IF ALREADY ADDED
                 boolean alreadyAdded = true;
                 if (!event.getListParticipantAndInvitedUsers().isEmpty()) {
@@ -650,7 +642,7 @@ public class CalendarBean implements Serializable {
                 }
 
                 // ADD NOTIFICATION TO PARTICIPANT
-                String message = "This is an invite from " + handleUser.getUser(Long.valueOf(event.getEoId())).getFirstName() + " to " + event.getTitle() + " on " + event.getStartDate() + ". Do you want join the event?";
+                String message = "This is an invite from " + handleUser.getUser(Long.parseLong(event.getEoId())).getFirstName() + " to " + event.getTitle() + " on " + event.getStartDate() + ". Do you want join the event?";
                 if (handleUser.addNotification(new EventNotificationDTO(null, event.getId(), Status.PENDING, selectedResult.getId(), message))) {
 
                     addMessage(
@@ -721,9 +713,9 @@ public class CalendarBean implements Serializable {
         }
 
         // UPDATE CONTEXT
-        RequestContext context = RequestContext.getCurrentInstance();
-        context.update("scheduleForm");
-        context.execute("PF('eventDialog').show();");
+        PrimeFaces pf = PrimeFaces.current();
+        pf.ajax().update("scheduleForm");
+        pf.executeScript("PF('eventDialog').show();");
 
         selectedResult = null;
     }

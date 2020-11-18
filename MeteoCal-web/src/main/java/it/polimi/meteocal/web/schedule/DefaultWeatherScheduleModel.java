@@ -153,11 +153,7 @@ public class DefaultWeatherScheduleModel implements WeatherScheduleModel, Serial
      */
     @Override
     public List<ScheduleEvent> getEvents() {
-        List<ScheduleEvent> eventi = new ArrayList<>();
-        for (WeatherScheduleEvent evento : events) {
-            eventi.add((ScheduleEvent) evento);
-        }
-        return eventi;
+        return new ArrayList<>(events);
     }
 
     /**
