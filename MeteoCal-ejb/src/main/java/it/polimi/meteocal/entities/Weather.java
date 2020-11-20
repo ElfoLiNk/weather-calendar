@@ -136,8 +136,7 @@ public class Weather implements Serializable {
         if (this == o) return true;
         if (!(o instanceof Weather)) return false;
         Weather weather = (Weather) o;
-        return Objects.equals(id, weather.id) &&
-                Objects.equals(weatherConditionCode, weather.weatherConditionCode) &&
+        return Objects.equals(weatherConditionCode, weather.weatherConditionCode) &&
                 Objects.equals(description, weather.description) &&
                 Objects.equals(temperature, weather.temperature) &&
                 Objects.equals(icon, weather.icon);
@@ -145,6 +144,6 @@ public class Weather implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, weatherConditionCode, description, temperature, icon);
+        return Objects.hash(weatherConditionCode, description, temperature, icon);
     }
 }

@@ -320,10 +320,7 @@ public class WeatherScheduleEvent extends DefaultScheduleEvent {
         if (!Objects.equals(this.site, other.site)) {
             return false;
         }
-        if (!Objects.equals(this.visibility, other.visibility)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.visibility, other.visibility);
     }
 
 }

@@ -270,8 +270,7 @@ public class HandleEventImpl implements HandleEvent {
         Event event = em.find(Event.class, Long.valueOf(insertEvent.getId()));
         if (event != null) {
             // MODIFY EVENT
-            event = modifyEvent(event, insertEvent);
-            em.merge(event);
+            em.merge(modifyEvent(event, insertEvent));
             return event.getId();
         } else {
             throw new ErrorRequestException("no event", false);
@@ -668,12 +667,10 @@ public class HandleEventImpl implements HandleEvent {
     private java.util.Calendar getDateNearest(List<java.util.Calendar> dates, java.util.Calendar targetDate) {
         LOGGER.log(Level.INFO, "targetDate: " + targetDate.getTime());
         java.util.Calendar nearestDate = new TreeSet<>(dates).floor(targetDate);
-        if (nearestDate != null) {
-            return nearestDate;
-        } else {
+        if (nearestDate == null) {
             nearestDate = new TreeSet<>(dates).ceiling(targetDate);
-            return nearestDate;
         }
+        return nearestDate;
 
     }
 

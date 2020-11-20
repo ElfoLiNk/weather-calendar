@@ -901,9 +901,9 @@ public class OpenWeatherMap {
                     String encoding = connection.getContentEncoding();
 
                     try {
-                        if (encoding != null && "gzip".equalsIgnoreCase(encoding)) {
+                        if ("gzip".equalsIgnoreCase(encoding)) {
                             reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(connection.getInputStream())));
-                        } else if (encoding != null && "deflate".equalsIgnoreCase(encoding)) {
+                        } else if ("deflate".equalsIgnoreCase(encoding)) {
                             reader = new BufferedReader(new InputStreamReader(new InflaterInputStream(connection.getInputStream(), new Inflater(true))));
                         } else {
                             reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));

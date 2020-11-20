@@ -298,7 +298,9 @@ public class CalendarBean implements Serializable {
         handleForecast.removeOldForecast();
         handleEvent.checkEventWeatherCondition(AuthUtil.getUserID());
         loadEventsModel(AuthUtil.getUserID());
-        //handleForecast.setLocations();
+        if(handleForecast.countLocations() == 0) {
+            handleForecast.setLocations();
+        }
 
         // LOAD LOGGED USER 
         FacesContext context = FacesContext.getCurrentInstance();

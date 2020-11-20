@@ -25,28 +25,30 @@ import it.polimi.meteocal.entities.Location;
 import it.polimi.meteocal.entities.Weather;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.zip.GZIPInputStream;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+
 import net.aksingh.owmjapis.DailyForecast;
 import net.aksingh.owmjapis.HourlyForecast;
 import net.aksingh.owmjapis.OpenWeatherMap;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.supercsv.io.CsvMapReader;
-import org.supercsv.io.ICsvMapReader;
-import org.supercsv.prefs.CsvPreference;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 /**
  * Session Bean implementation class HandleForecastImpl
@@ -75,8 +77,9 @@ public class HandleForecastImpl implements HandleForecast {
                 } else {
                     addHourlyForecasts(location);
                 }
-                if (!query.getResultList().isEmpty()) {
-                    forecast = nearestForecast(date, query.getResultList());
+                List<Forecast> forecasts = query.getResultList();
+                if (!forecasts.isEmpty()) {
+                    forecast = nearestForecast(date, forecasts);
                 }
             }
             return forecast;
@@ -131,9 +134,7 @@ public class HandleForecastImpl implements HandleForecast {
                                     entityForecast.setLocation(hf.getCityInstance().getCityName() + ", " + hf.getCityInstance().getCountryCode());
                                 } else {
                                     String countryCode = CountryCode.findByName(hf.getCityInstance().getCountryCode()).get(0).name();
-                                    if (countryCode != null) {
-                                        entityForecast.setLocation(hf.getCityInstance().getCityName() + ", " + countryCode);
-                                    }
+                                    entityForecast.setLocation(hf.getCityInstance().getCityName() + ", " + countryCode);
                                 }
                                 entityForecast.setLatitude(hf.getCityInstance().getCoordInstance().getLatitude());
                                 entityForecast.setLongitude(hf.getCityInstance().getCoordInstance().getLongitude());
@@ -182,9 +183,7 @@ public class HandleForecastImpl implements HandleForecast {
                                     entityForecast.setLocation(df.getCityInstance().getCityName() + ", " + df.getCityInstance().getCountryCode());
                                 } else {
                                     String countryCode = CountryCode.findByName(df.getCityInstance().getCountryCode()).get(0).name();
-                                    if (countryCode != null) {
-                                        entityForecast.setLocation(df.getCityInstance().getCityName() + ", " + countryCode);
-                                    }
+                                    entityForecast.setLocation(df.getCityInstance().getCityName() + ", " + countryCode);
                                 }
                                 entityForecast.setLatitude(df.getCityInstance().getCoordInstance().getLatitude());
                                 entityForecast.setLongitude(df.getCityInstance().getCoordInstance().getLongitude());
@@ -314,43 +313,40 @@ public class HandleForecastImpl implements HandleForecast {
 
     @Override
     public void setLocations() {
-        List<String> locations = new ArrayList<>();
-        InputStream inputStream = null;
+        JSONArray cities = new JSONArray();
         try {
-            inputStream = new URL("http://openweathermap.org/help/city_list.txt").openStream();
-        } catch (IOException ex) {
-            LOGGER.log(Level.ERROR, ex);
-        }
-        CsvPreference pref = new CsvPreference.Builder('\"', '\t', "\n").build();
-        ICsvMapReader reader = new CsvMapReader(new InputStreamReader(inputStream), pref);
-
-        List<Map<String, String>> list = new ArrayList<>();
-        Map<String, String> result;
-        try {
-            while ((result = reader.read("id", "name", "lat", "lon", "countryCode")) != null) {
-                list.add(result);
-            }
+            InputStream inputStream = new URL("http://bulk.openweathermap.org/sample/city.list.json.gz").openStream();
+            GZIPInputStream gis = new GZIPInputStream(inputStream);
+            cities =  (JSONArray) new JSONTokener(gis).nextValue();
         } catch (IOException ex) {
             LOGGER.log(Level.ERROR, ex);
         }
 
-        for (Map<String, String> elem : list) {
+        cities.forEach(item -> {
+            JSONObject elem = (JSONObject) item;
             Location location = new Location();
             try {
-                locations.add(elem.get("name"));
-
-                location.setId(Long.valueOf(elem.get("id")));
-                location.setName(elem.get("name"));
-                location.setLatitude(Float.parseFloat(elem.get("lat")));
-                location.setLongitude(Float.parseFloat(elem.get("lon")));
-                location.setCountryCode(elem.get("countryCode"));
+                JSONObject coord = elem.getJSONObject("coord");
+                location.setId(elem.getLong("id"));
+                location.setName(elem.getString("name"));
+                location.setLatitude(coord.getFloat("lat"));
+                location.setLongitude(coord.getFloat("lon"));
+                location.setCountryCode(elem.getString("country"));
             } catch (NumberFormatException e) {
                 LOGGER.log(Level.ERROR, e);
             }
 
             em.persist(location);
-            em.flush();
-        }
+        });
+        em.flush();
+    }
+
+    @Override
+    public long countLocations() {
+        CriteriaBuilder qb = em.getCriteriaBuilder();
+        CriteriaQuery<Long> cq = qb.createQuery(Long.class);
+        cq.select(qb.count(cq.from(Location.class)));
+        return em.createQuery(cq).getSingleResult();
     }
 
     @Override
@@ -384,7 +380,7 @@ public class HandleForecastImpl implements HandleForecast {
         }
         ForecastDTO forecast = mapForecastToForecastDTO(forecastEntity);
         if (forecast != null) {
-            LOGGER.log(Level.INFO, forecast.toString());
+            LOGGER.log(Level.INFO, "FOUND FORECAST: " + forecast.toString());
         }
         return forecast;
     }

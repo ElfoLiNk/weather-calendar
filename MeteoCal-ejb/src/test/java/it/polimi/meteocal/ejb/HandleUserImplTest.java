@@ -283,7 +283,7 @@ public class HandleUserImplTest {
         when(query.getResultList()).thenReturn(userEmail);
 
         boolean result = handleUser.doLogin(userInsert);
-        assertEquals(true, result);
+        assertTrue(result);
     }
 
     /**
@@ -447,7 +447,7 @@ public class HandleUserImplTest {
     /**
      * Answer Class to set the User attributes
      */
-    public class UserAnswer implements Answer<Void> {
+    public static class UserAnswer implements Answer<Void> {
 
         private final Long id;
         private final Calendar calendar;
@@ -472,10 +472,9 @@ public class HandleUserImplTest {
          *
          * @param invocation
          * @return
-         * @throws Throwable
          */
         @Override
-        public Void answer(InvocationOnMock invocation) throws Throwable {
+        public Void answer(InvocationOnMock invocation) {
             User user = (User) invocation.getArguments()[0];
             user.setId(id);
             user.setCalendar(calendar);

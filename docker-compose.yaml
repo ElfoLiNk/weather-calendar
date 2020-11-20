@@ -1,0 +1,30 @@
+version: '2'
+services:
+  db:
+    image: mysql:5.7
+    cap_add:
+      - SYS_NICE
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./db/db_data:/var/lib/mysql
+      #- ./db/MeteoCalDB.sql:/docker-entrypoint-initdb.d/MeteoCalDB.sql
+    environment:
+      - MYSQL_USER=docker
+      - MYSQL_PASSWORD=docker
+      - MYSQL_DATABASE=meteocal
+      - MYSQL_ROOT_PASSWORD=docker
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+  ws:
+    image: payara/server-full
+    ports:
+      - "4848:4848"
+      - "80:8080"
+      - "8181:8181"
+    volumes:
+      - ./ws/apps:/opt/payara/deployments
+      - ./ws/lib:/opt/payara/appserver/glassfish/domains/production/lib/ext
+      - ./ws/webapp:/opt/payara/appserver/glassfish/domains/production/var/webapp
+      - ./ws/scripts:/opt/payara/scripts/init.d
+    links:
+      - db

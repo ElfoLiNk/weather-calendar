@@ -154,8 +154,7 @@ public class Calendar implements Serializable {
         if (this == o) return true;
         if (!(o instanceof Calendar)) return false;
         Calendar calendar = (Calendar) o;
-        return Objects.equals(id, calendar.id) &&
-                Objects.equals(participatedEvents, calendar.participatedEvents) &&
+        return Objects.equals(participatedEvents, calendar.participatedEvents) &&
                 Objects.equals(organizedEvents, calendar.organizedEvents) &&
                 visibility == calendar.visibility;
     }

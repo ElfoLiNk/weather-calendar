@@ -178,8 +178,7 @@ public class Forecast implements Serializable {
         if (this == o) return true;
         if (!(o instanceof Forecast)) return false;
         Forecast forecast = (Forecast) o;
-        return Objects.equals(id, forecast.id) &&
-                Objects.equals(location, forecast.location) &&
+        return Objects.equals(location, forecast.location) &&
                 Objects.equals(latitude, forecast.latitude) &&
                 Objects.equals(longitude, forecast.longitude) &&
                 Objects.equals(forecastDate, forecast.forecastDate) &&
@@ -189,7 +188,7 @@ public class Forecast implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, location, latitude, longitude, forecastDate, creationDate, weather);
+        return Objects.hash(location, latitude, longitude, forecastDate, creationDate, weather);
     }
 
     @Override
