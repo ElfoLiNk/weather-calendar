@@ -36,7 +36,7 @@ public abstract class ContextMocker extends FacesContext {
     private static class Release implements Answer<Void> {
 
         @Override
-        public Void answer(InvocationOnMock invocation) throws Throwable {
+        public Void answer(InvocationOnMock invocation) {
             setCurrentInstance(null);
             return null;
         }

@@ -20,13 +20,12 @@ import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 /**
  * Entity that rappresent valid Location in MeteoCal
@@ -54,10 +53,10 @@ public class Location implements Serializable {
     public static final String FIND_BY_LOCATION_AND_COUNTRYCODE = "Location.FIND_BY_LOCATION_AND_COUNTRYCODE";
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(length = 50)
+    @Column(length = 256)
+    @NotNull
     private String name;
 
     private float latitude;
@@ -65,6 +64,7 @@ public class Location implements Serializable {
     private float longitude;
 
     @Column(length = 2)
+    @NotNull
     private String countryCode;
 
     /**
@@ -154,14 +154,13 @@ public class Location implements Serializable {
         Location location = (Location) o;
         return Float.compare(location.latitude, latitude) == 0 &&
                 Float.compare(location.longitude, longitude) == 0 &&
-                Objects.equals(id, location.id) &&
                 Objects.equals(name, location.name) &&
                 Objects.equals(countryCode, location.countryCode);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, latitude, longitude, countryCode);
+        return Objects.hash(name, latitude, longitude, countryCode);
     }
 
     @Override

@@ -486,8 +486,7 @@ public class User implements Serializable {
         if (this == o) return true;
         if (!(o instanceof User)) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) &&
-                Objects.equals(firstName, user.firstName) &&
+        return Objects.equals(firstName, user.firstName) &&
                 Objects.equals(lastName, user.lastName) &&
                 Objects.equals(dateBirth, user.dateBirth) &&
                 Objects.equals(email, user.email) &&
@@ -510,7 +509,7 @@ public class User implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, dateBirth, email, password, avatar, calendar, listPreferedCalendars, setting, listNotifications, role, twitterId, twitterToken, twitterTokenSecret, googleId, googleToken, facebookId, facebookToken, gender);
+        return Objects.hash(firstName, lastName, dateBirth, email, password, avatar, calendar, listPreferedCalendars, setting, listNotifications, role, twitterId, twitterToken, twitterTokenSecret, googleId, googleToken, facebookId, facebookToken, gender);
     }
 
 //    @Override

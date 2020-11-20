@@ -81,10 +81,14 @@ public interface HandleForecast {
 
     /**
      * Method that crawl the location of the OWM API and save it in the DB Used
-     * only in the development phase to populate the DB with the location Very
-     * Long Execution Not Enable In Production Phase
+     * only in the development phase to populate the DB with the location
      */
     void setLocations();
+
+    /**
+     * How many locations are supported
+     */
+    long countLocations();
 
     /**
      * Method that query the DB find the locations that match the given query

@@ -129,14 +129,13 @@ public class Setting implements Serializable {
         if (this == o) return true;
         if (!(o instanceof Setting)) return false;
         Setting setting = (Setting) o;
-        return Objects.equals(id, setting.id) &&
-                dateFormat == setting.dateFormat &&
+        return dateFormat == setting.dateFormat &&
                 timeFormat == setting.timeFormat &&
                 Objects.equals(timeZone, setting.timeZone);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, dateFormat, timeFormat, timeZone);
+        return Objects.hash(dateFormat, timeFormat, timeZone);
     }
 }

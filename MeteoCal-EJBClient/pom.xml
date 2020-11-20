@@ -10,7 +10,7 @@
     <groupId>it.polimi</groupId>
     <artifactId>MeteoCal-EJBClient</artifactId>
     <version>1.2-SNAPSHOT</version>
-    <packaging>ejb</packaging>
+    <packaging>jar</packaging>
 
     <name>MeteoCal-EJBClient</name>
 

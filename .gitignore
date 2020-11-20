@@ -20,6 +20,7 @@
 *.tar
 *.zip
 *.war
+*.ear
 
 # Logs and databases #
 ######################
@@ -49,6 +50,7 @@ target
 *.iml
 .metadata
 bin
+db/db_data
 
 # config file managed by maven #
 ################################

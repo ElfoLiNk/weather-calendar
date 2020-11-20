@@ -492,14 +492,13 @@ public class HandleUserImpl implements HandleUser {
                             // SET EPs to PENDING
                             eventToAdd.getInvitedUsers().addAll(eventToAdd.getEventParticipants());
                             eventToAdd.getEventParticipants().clear();
-                            em.merge(eventToAdd);
                         } else {
                             // EP
                             user.getCalendar().addParticipatedEvent(eventToAdd);
                             eventToAdd.getInvitedUsers().remove(user);
                             eventToAdd.getEventParticipants().add(user);
-                            em.merge(eventToAdd);
                         }
+                        em.merge(eventToAdd);
                         em.merge(user);
 
                     }
@@ -593,12 +592,10 @@ public class HandleUserImpl implements HandleUser {
         if (user != null) {
             Calendar calendar = em.find(Calendar.class, Long.valueOf(calendarId));
             if (calendar != null) {
-                if (user.getListPreferedCalendars() != null) {
-                    user.getListPreferedCalendars().add(calendar);
-                } else {
+                if (user.getListPreferedCalendars() == null) {
                     user.setListPreferedCalendars(new ArrayList<>());
-                    user.getListPreferedCalendars().add(calendar);
                 }
+                user.getListPreferedCalendars().add(calendar);
                 em.merge(user);
                 em.flush();
             }
