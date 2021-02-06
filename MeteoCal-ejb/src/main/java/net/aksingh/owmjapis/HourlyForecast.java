@@ -284,9 +284,9 @@ public class HourlyForecast extends AbstractForecast {
             Main(JSONObject jsonObj) {
                 super(jsonObj);
 
-                this.seaLevel = (jsonObj != null) ? (float) jsonObj.optDouble(Main.JSON_MAIN_SEA_LEVEL, Float.NaN) : Float.NaN;
-                this.groundLevel = (jsonObj != null) ? (float) jsonObj.optDouble(Main.JSON_MAIN_GRND_LEVEL, Float.NaN) : Float.NaN;
-                this.tempKF = (jsonObj != null) ? (float) jsonObj.optDouble(Main.JSON_MAIN_TMP_KF, Float.NaN) : Float.NaN;
+                this.seaLevel = (float) jsonObj.optDouble(Main.JSON_MAIN_SEA_LEVEL, Float.NaN);
+                this.groundLevel = (float) jsonObj.optDouble(Main.JSON_MAIN_GRND_LEVEL, Float.NaN);
+                this.tempKF = (float) jsonObj.optDouble(Main.JSON_MAIN_TMP_KF, Float.NaN);
             }
 
             /**

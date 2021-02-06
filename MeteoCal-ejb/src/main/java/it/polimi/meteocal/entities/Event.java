@@ -19,22 +19,11 @@ package it.polimi.meteocal.entities;
 import it.polimi.meteocal.util.Site;
 import it.polimi.meteocal.util.Visibility;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinTable;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 import org.eclipse.persistence.annotations.ConversionValue;
@@ -51,8 +40,8 @@ import org.eclipse.persistence.annotations.ObjectTypeConverter;
 @Table(name = "event")
 @NamedQueries({
     @NamedQuery(name = Event.FIND_BY_SEARCHQUERY, query = "SELECT e FROM Event e WHERE e.visibility = it.polimi.meteocal.util.Visibility.PUBLIC AND (e.name LIKE :query)"),
-    @NamedQuery(name = Event.FIND_USER_OCCUPATION_RESCHEDULE, query = "SELECT e FROM Event e WHERE e.startDate >= :tomorrow AND e.startDate <= :lastforecastday"),
-    @NamedQuery(name = Event.FIND_NEAR_OUTDOOR, query = "SELECT e FROM Event e WHERE e.site = it.polimi.meteocal.util.Site.OUTDOOR AND e.startDate >= :today AND e.startDate <= :threeday"),
+    @NamedQuery(name = Event.FIND_USER_OCCUPATION_RESCHEDULE, query = "SELECT e FROM Event e WHERE e.startDateTime >= :tomorrow AND e.startDateTime <= :lastforecastday"),
+    @NamedQuery(name = Event.FIND_NEAR_OUTDOOR, query = "SELECT e FROM Event e WHERE e.site = it.polimi.meteocal.util.Site.OUTDOOR AND e.startDateTime >= :today AND e.startDateTime <= :threeday"),
     @NamedQuery(name = Event.FIND_BY_FORECAST, query = "SELECT e FROM Event e WHERE e.forecast = :forecast"),})
 public class Event implements Serializable {
 
@@ -99,15 +88,13 @@ public class Event implements Serializable {
     @NotNull
     private Site site;
 
-    @Temporal(value = javax.persistence.TemporalType.TIMESTAMP)
     @Mutable()
-    @NotNull
-    private java.util.Calendar startDate;
+    @Column(name = "start_date_time", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime startDateTime;
 
-    @Temporal(value = javax.persistence.TemporalType.TIMESTAMP)
     @Mutable()
-    @NotNull
-    private java.util.Calendar endDate;
+    @Column(name = "end_date_time", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime endDateTime;
 
     @OneToOne(cascade = CascadeType.PERSIST)
     private Forecast forecast;
@@ -131,8 +118,8 @@ public class Event implements Serializable {
      *
      * @param eo tthe owner of the event
      * @param name the name of the event
-     * @param startDate the start date of the event
-     * @param endDate the end date of the event
+     * @param startDateTime the start date of the event
+     * @param endDateTime the end date of the event
      * @param site the site of the event
      * @param visibility the visibility of the event
      * @param description the description of the evnet
@@ -141,14 +128,14 @@ public class Event implements Serializable {
      * @param invitedUsers the list of the invited users
      * @param forecast the forecast weather of the event
      */
-    public Event(User eo, String name, String description, String location, Site site, Calendar startDate, Calendar endDate, Forecast forecast, Visibility visibility, List<User> eventParticipants, List<User> invitedUsers) {
+    public Event(User eo, String name, String description, String location, Site site, LocalDateTime startDateTime, LocalDateTime endDateTime, Forecast forecast, Visibility visibility, List<User> eventParticipants, List<User> invitedUsers) {
         this.eo = eo;
         this.name = name;
         this.description = description;
         this.location = location;
         this.site = site;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
         this.forecast = forecast;
         this.visibility = visibility;
         this.eventParticipants = eventParticipants;
@@ -246,32 +233,32 @@ public class Event implements Serializable {
      *
      * @return the start date of the event
      */
-    public java.util.Calendar getStartDate() {
-        return startDate;
+    public LocalDateTime getStartDate() {
+        return startDateTime;
     }
 
     /**
      *
-     * @param startDate the start date to set
+     * @param startDateTime the start date to set
      */
-    public void setStartDate(java.util.Calendar startDate) {
-        this.startDate = startDate;
+    public void setStartDate(LocalDateTime startDateTime) {
+        this.startDateTime = startDateTime;
     }
 
     /**
      *
      * @return the end date of the event
      */
-    public java.util.Calendar getEndDate() {
-        return endDate;
+    public LocalDateTime getEndDate() {
+        return endDateTime;
     }
 
     /**
      *
-     * @param endDate the end date to set
+     * @param endDateTime the end date to set
      */
-    public void setEndDate(java.util.Calendar endDate) {
-        this.endDate = endDate;
+    public void setEndDate(LocalDateTime endDateTime) {
+        this.endDateTime = endDateTime;
     }
 
     /**
@@ -356,7 +343,7 @@ public class Event implements Serializable {
 
     @Override
     public String toString() {
-        return "Event{" + "id=" + id + ", eo=" + eo + ", name=" + name + ", description=" + description + ", location=" + location + ", site=" + site + ", startDate=" + startDate.getTime() + ", endDate=" + endDate.getTime() + ", forecast=" + forecast + ", visibility=" + visibility + ", eventParticipants=" + eventParticipants + ", invitedUsers=" + invitedUsers + '}';
+        return "Event{" + "id=" + id + ", eo=" + eo + ", name=" + name + ", description=" + description + ", location=" + location + ", site=" + site + ", startDateTime=" + startDateTime + ", endDateTime=" + endDateTime + ", forecast=" + forecast + ", visibility=" + visibility + ", eventParticipants=" + eventParticipants + ", invitedUsers=" + invitedUsers + '}';
     }
 
 
@@ -369,8 +356,8 @@ public class Event implements Serializable {
                 Objects.equals(description, event.description) &&
                 Objects.equals(location, event.location) &&
                 site == event.site &&
-                startDate.equals(event.startDate) &&
-                endDate.equals(event.endDate) &&
+                startDateTime.equals(event.startDateTime) &&
+                endDateTime.equals(event.endDateTime) &&
                 Objects.equals(forecast, event.forecast) &&
                 visibility == event.visibility &&
                 Objects.equals(eventParticipants, event.eventParticipants) &&
@@ -379,7 +366,7 @@ public class Event implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description, location, site, startDate, endDate, forecast, visibility, eventParticipants, invitedUsers);
+        return Objects.hash(name, description, location, site, startDateTime, endDateTime, forecast, visibility, eventParticipants, invitedUsers);
     }
 
     /**

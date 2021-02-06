@@ -323,7 +323,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
                     User oldUser = q.getResultList().get(0);
                     if (!Objects.equals(utente.getId(), oldUser.getId())) {
                         // Need to merge the two account
-                        utente = HandleUserImpl.mergeUserAccount(utente,
+                        HandleUserImpl.mergeUserAccount(utente,
                                 oldUser);
 
                         // set the new GooglePlus data

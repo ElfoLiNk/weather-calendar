@@ -26,9 +26,11 @@ import it.polimi.meteocal.entities.Weather;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -61,7 +63,7 @@ public class HandleForecastImpl implements HandleForecast {
             EntityManager em;
 
     @Override
-    public ForecastDTO getForecast(String location, Date date) {
+    public ForecastDTO getForecast(String location, LocalDateTime date) {
         if (location != null) {
             // CHECK DB INFORMATION AND FIND NEAREST FORECAST
             TypedQuery<Forecast> query = em.createNamedQuery(Forecast.FIND_BY_LOCATION,
@@ -70,9 +72,8 @@ public class HandleForecastImpl implements HandleForecast {
             ForecastDTO forecast = nearestForecast(date, query.getResultList());
             if (forecast == null) {
                 // ADD THE FORECAST INFORMATION FROM THE OWM API
-                Calendar fiveDays = Calendar.getInstance();
-                fiveDays.add(Calendar.DATE, 5);
-                if (date.after(fiveDays.getTime())) {
+                LocalDateTime fiveDays = LocalDateTime.now().plusDays(5);
+                if (date.isAfter(fiveDays)) {
                     addDailyForecasts(location);
                 } else {
                     addHourlyForecasts(location);
@@ -97,8 +98,10 @@ public class HandleForecastImpl implements HandleForecast {
         if (!query.getResultList().isEmpty()) {
             for (Forecast forecastEntity : query.getResultList()) {
                 ForecastDTO forecast = mapForecastToForecastDTO(forecastEntity);
-                LOGGER.log(Level.INFO, forecast.toString());
-                forecasts.add(forecast);
+                if (forecast != null) {
+                    LOGGER.log(Level.INFO, forecast.toString());
+                    forecasts.add(forecast);
+                }
             }
 
         } else {
@@ -107,8 +110,10 @@ public class HandleForecastImpl implements HandleForecast {
             if (!query.getResultList().isEmpty()) {
                 for (Forecast forecastEntity : query.getResultList()) {
                     ForecastDTO forecast = mapForecastToForecastDTO(forecastEntity);
-                    LOGGER.log(Level.INFO, forecast.toString());
-                    forecasts.add(forecast);
+                    if (forecast != null) {
+                        LOGGER.log(Level.INFO, forecast.toString());
+                        forecasts.add(forecast);
+                    }
                 }
 
             }
@@ -139,10 +144,9 @@ public class HandleForecastImpl implements HandleForecast {
                                 entityForecast.setLatitude(hf.getCityInstance().getCoordInstance().getLatitude());
                                 entityForecast.setLongitude(hf.getCityInstance().getCoordInstance().getLongitude());
                             }
-                            entityForecast.setCreationDate(java.util.Calendar.getInstance());
-                            java.util.Calendar date = Calendar.getInstance();
-                            date.setTime(forecast.getDateTime());
-                            entityForecast.setForecastDate(date);
+                            entityForecast.setCreationDate(LocalDateTime.now());
+                            entityForecast.setForecastDate(forecast.getDateTime().toInstant().atZone(ZoneId.systemDefault())
+                                    .toLocalDateTime());
                             Weather entityWeather = new Weather();
                             entityWeather.setWeatherConditionCode(String.valueOf(weather.getWeatherCode()));
                             entityWeather.setDescription(weather.getWeatherDescription());
@@ -188,10 +192,9 @@ public class HandleForecastImpl implements HandleForecast {
                                 entityForecast.setLatitude(df.getCityInstance().getCoordInstance().getLatitude());
                                 entityForecast.setLongitude(df.getCityInstance().getCoordInstance().getLongitude());
                             }
-                            entityForecast.setCreationDate(java.util.Calendar.getInstance());
-                            java.util.Calendar date = Calendar.getInstance();
-                            date.setTime(forecast.getDateTime());
-                            entityForecast.setForecastDate(date);
+                            entityForecast.setCreationDate(LocalDateTime.now());
+                            entityForecast.setForecastDate(forecast.getDateTime().toInstant().atZone(ZoneId.systemDefault())
+                                    .toLocalDateTime());
                             Weather entityWeather = new Weather();
                             entityWeather.setWeatherConditionCode(String.valueOf(weather.getWeatherCode()));
                             entityWeather.setDescription(weather.getWeatherDescription());
@@ -219,18 +222,16 @@ public class HandleForecastImpl implements HandleForecast {
         ForecastDTO forecast = null;
         if (forecastEntity != null) {
             forecast = mapForecastToForecastDTO(forecastEntity);
-            LOGGER.log(Level.INFO, forecast.toString());
+            if(forecast != null) {
+                LOGGER.log(Level.INFO, forecast.toString());
+            }
         }
         return forecast;
     }
 
     @Override
     public void removeOldForecast() {
-        java.util.Calendar today = Calendar.getInstance();
-        today.set(Calendar.HOUR_OF_DAY, 0);
-        today.set(Calendar.MINUTE, 0);
-        today.set(Calendar.SECOND, 0);
-        today.set(Calendar.MILLISECOND, 0);
+        LocalDateTime today = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
         TypedQuery<Forecast> query = em.createNamedQuery(Forecast.FIND_OLD_FORECAST,
                 Forecast.class);
         query.setParameter("today", today);
@@ -242,7 +243,7 @@ public class HandleForecastImpl implements HandleForecast {
             q.setParameter("forecast", oldForecast);
             oldForecastEvent = q.getResultList();
             for (Event event : oldForecastEvent) {
-                if (event.getStartDate().after(today)) {
+                if (event.getStartDate().isAfter(today)) {
                     // EVENT IN THE FUTURE SO FORECAST AVAILABLE
                     event.setForecast(null);
                     em.merge(event);
@@ -257,15 +258,14 @@ public class HandleForecastImpl implements HandleForecast {
         }
         // UPDATE EVENT FORECAST
         for (Event event : oldForecastEvent) {
-            ForecastDTO forecastDTO = getForecast(event.getLocation(), event.getStartDate().getTime());
+            ForecastDTO forecastDTO = getForecast(event.getLocation(), event.getStartDate());
             if (forecastDTO != null) {
                 event.setForecast(em.find(Forecast.class, forecastDTO.getId()));
             } else {
                 event.setForecast(null);
                 // FORCE CHECK OWM
-                Calendar fiveDays = Calendar.getInstance();
-                fiveDays.add(Calendar.DATE, 5);
-                if (event.getStartDate().after(fiveDays.getTime())) {
+                LocalDateTime fiveDays = LocalDateTime.now().plusDays(5);
+                if (event.getStartDate().isAfter(fiveDays)) {
                     addDailyForecasts(event.getLocation());
                 } else {
                     addHourlyForecasts(event.getLocation());
@@ -365,16 +365,14 @@ public class HandleForecastImpl implements HandleForecast {
         return new ArrayList<>(fooSet);
     }
 
-    private ForecastDTO nearestForecast(Date date, List<Forecast> availableForecasts) {
+    private ForecastDTO nearestForecast(LocalDateTime date, List<Forecast> availableForecasts) {
         // FORECAST INFORMATION FIND IN THE DB
         Forecast forecastEntity = null;
         int hourDay = 24;
         for (Forecast forecastNearest : availableForecasts) {
             // FIND THE NEAREST FORECAST INFORMATION
-            Calendar eventDate = Calendar.getInstance();
-            eventDate.setTime(date);
-            if (forecastNearest.getForecastDate().get(Calendar.DATE) == eventDate.get(Calendar.DATE) && Math.abs(forecastNearest.getForecastDate().get(Calendar.HOUR_OF_DAY) - eventDate.get(Calendar.HOUR_OF_DAY)) < hourDay) {
-                hourDay = Math.abs(forecastNearest.getForecastDate().get(Calendar.HOUR_OF_DAY) - eventDate.get(Calendar.HOUR_OF_DAY));
+            if (forecastNearest.getForecastDate().getDayOfYear() == date.getDayOfYear() && Math.abs(forecastNearest.getForecastDate().getHour() - date.getHour()) < hourDay) {
+                hourDay = Math.abs(forecastNearest.getForecastDate().getHour() - date.getHour());
                 forecastEntity = forecastNearest;
             }
         }

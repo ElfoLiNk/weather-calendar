@@ -17,19 +17,9 @@
 package it.polimi.meteocal.entities;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Objects;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
+import javax.persistence.*;
 
 /**
  * Entity that rappresent the Forecast of the Event in MeteoCal
@@ -65,12 +55,11 @@ public class Forecast implements Serializable {
 
     private Float longitude;
 
-    @Basic
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private java.util.Calendar forecastDate;
+    @Column(name = "forecast_date", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime forecastDate;
 
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private java.util.Calendar creationDate;
+    @Column(name = "creation_date", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime creationDate;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Weather weather;
@@ -120,28 +109,28 @@ public class Forecast implements Serializable {
     /**
      * @return the forecast date of the forecast
      */
-    public java.util.Calendar getForecastDate() {
+    public LocalDateTime getForecastDate() {
         return forecastDate;
     }
 
     /**
      * @param forecastDate the date of the forecast to ser
      */
-    public void setForecastDate(java.util.Calendar forecastDate) {
+    public void setForecastDate(LocalDateTime forecastDate) {
         this.forecastDate = forecastDate;
     }
 
     /**
      * @return the creation date of the forecast
      */
-    public java.util.Calendar getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
     /**
      * @param creationDate the creation date to set
      */
-    public void setCreationDate(java.util.Calendar creationDate) {
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 

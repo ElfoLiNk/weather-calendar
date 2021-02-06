@@ -22,9 +22,9 @@ import it.polimi.meteocal.entities.Event;
 import it.polimi.meteocal.entities.Forecast;
 import it.polimi.meteocal.entities.Location;
 import it.polimi.meteocal.entities.Weather;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -93,8 +93,8 @@ public class HandleForecastImplTest {
          // SETUP FORECAST
         forecast = new Forecast();
         forecast.setId(0L);
-        forecast.setCreationDate(Calendar.getInstance());
-        forecast.setForecastDate(Calendar.getInstance());
+        forecast.setCreationDate(LocalDateTime.now());
+        forecast.setForecastDate(LocalDateTime.now());
         forecast.setLocation("Milan, IT");
         // SETUP WEATHER
         weather = new Weather();
@@ -133,7 +133,7 @@ public class HandleForecastImplTest {
     public void testGetForecast_String_Date() {
         System.out.println("getForecast");
         String location = "Milan, IT";
-        Date date = new Date();
+        LocalDateTime date = LocalDateTime.now();
         ForecastDTO result = handleForecast.getForecast(location, date);
         assertEquals(forecastDTO, result);
     }
@@ -176,10 +176,8 @@ public class HandleForecastImplTest {
         forecastDTO.setId(0L);
         Forecast forecast = new Forecast();
         forecast.setId(0L);
-        Calendar yesterday = Calendar.getInstance();
-        yesterday.add(Calendar.DATE, -1);
-        Calendar tomorrow = Calendar.getInstance();
-        tomorrow.add(Calendar.DATE, 1);
+        LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
+        LocalDateTime tomorrow = LocalDateTime.now().plusDays(1);
         forecast.setCreationDate(yesterday);
         forecast.setForecastDate(tomorrow);
         forecasts.add(forecast);

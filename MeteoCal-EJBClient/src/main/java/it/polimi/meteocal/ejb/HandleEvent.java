@@ -19,6 +19,8 @@ package it.polimi.meteocal.ejb;
 import it.polimi.meteocal.dto.EventDTO;
 import it.polimi.meteocal.dto.ResultDTO;
 import it.polimi.meteocal.exception.ErrorRequestException;
+
+import java.time.Duration;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -132,9 +134,9 @@ public interface HandleEvent {
      * Method that resize the event using the deltas
      *
      * @param id the event id to be moved
-     * @param dayDelta the delta of the day modification
-     * @param minuteDelta the delta of the munute modification
+     * @param deltaStart the delta of the start modification
+     * @param deltaEnd the delta of the end modification
      * @throws ErrorRequestException
      */
-    void resizeEvent(String id, int dayDelta, int minuteDelta) throws ErrorRequestException;
+    void resizeEvent(String id, Duration deltaStart, Duration deltaEnd) throws ErrorRequestException;
 }

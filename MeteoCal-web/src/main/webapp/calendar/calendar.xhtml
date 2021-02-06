@@ -40,31 +40,31 @@
                               showEffect="clip" hideEffect="clip" resizable="false">
                         <h:panelGrid id="eventDetails" columns="2">
                             <h:outputLabel for="title" value="Title:" />
-                            <p:inputText maxlength="255" rendered="#{calendarBean.event.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.editable}" id="title" value="#{calendarBean.event.title}"
+                            <p:inputText maxlength="255" rendered="#{calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.editable}" id="title" value="#{calendarBean.event.title}"
                                          required="true" />
-                            <h:outputText rendered="#{not calendarBean.event.eoId.equals(calendarBean.loggedUser.id) or not calendarBean.event.editable}" id="titleLabel" value="#{calendarBean.event.title}" />
+                            <h:outputText rendered="#{not calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id) or not calendarBean.event.editable}" id="titleLabel" value="#{calendarBean.event.title}" />
 
                             <h:outputLabel for="description" value="Description:" />
-                            <p:inputText maxlength="255" rendered="#{calendarBean.event.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.editable}" id="description" value="#{calendarBean.event.description}"
+                            <p:inputText maxlength="255" rendered="#{calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.editable}" id="description" value="#{calendarBean.event.description}"
                                          />
-                            <h:outputText rendered="#{not calendarBean.event.eoId.equals(calendarBean.loggedUser.id) or not calendarBean.event.editable}" id="descriptionLabel" value="#{calendarBean.event.description}"
+                            <h:outputText rendered="#{not calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id) or not calendarBean.event.editable}" id="descriptionLabel" value="#{calendarBean.event.description}"
                                           />
 
                             <h:outputLabel for="location" value="Location:" />
-                            <p:autoComplete forceSelection="true" id="location" rendered="#{calendarBean.event.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.editable}" value="#{calendarBean.event.location}"  completeMethod="#{searchBean.completeLocations}" style="width:100%; top: auto;" />
-                            <h:outputText rendered="#{not calendarBean.event.eoId.equals(calendarBean.loggedUser.id) or not calendarBean.event.editable}" id="locationLabel" value="#{calendarBean.event.location}"
+                            <p:autoComplete forceSelection="true" id="location" rendered="#{calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.editable}" value="#{calendarBean.event.data.location}"  completeMethod="#{searchBean.completeLocations}" style="width:100%; top: auto;" />
+                            <h:outputText rendered="#{not calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id) or not calendarBean.event.editable}" id="locationLabel" value="#{calendarBean.event.data.location}"
                                           />
 
                             <h:outputLabel for="site" value="Site:" />
-                            <p:selectOneRadio rendered="#{calendarBean.event.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.editable}"  id="site" value="#{calendarBean.event.site}">
+                            <p:selectOneRadio rendered="#{calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.editable}"  id="site" value="#{calendarBean.event.data.site}">
                                 <f:selectItem itemLabel="Indoor" itemValue="INDOOR" />
                                 <f:selectItem itemLabel="Outdoor" itemValue="OUTDOOR" />
                             </p:selectOneRadio>
-                            <h:outputText rendered="#{not calendarBean.event.eoId.equals(calendarBean.loggedUser.id) or not calendarBean.event.editable}" id="siteText" value="#{(calendarBean.event.visibility == 'PUBLIC' or calendarBean.event.eventParticipants.contains(calendarBean.loggedUser)) ? calendarBean.event.site : ''}" />
+                            <h:outputText rendered="#{not calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id) or not calendarBean.event.editable}" id="siteText" value="#{(calendarBean.event.data.visibility == 'PUBLIC' or calendarBean.event.data.eventParticipants.contains(calendarBean.loggedUser)) ? calendarBean.event.data.site : ''}" />
 
 
                             <h:outputLabel for="from" value="From:" />
-                            <p:calendar rendered="#{calendarBean.event.eoId.equals(calendarBean.loggedUser.id)  and calendarBean.event.editable}"  id="from" 
+                            <p:calendar rendered="#{calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id)  and calendarBean.event.editable}"  id="from" 
                                         value="#{calendarBean.event.startDate}"  
                                         pattern="#{settingBean.loggedUser.setting.dateFormat == 'DMY' ? 'dd/MM/yyyy' :
                                                    settingBean.loggedUser.setting.dateFormat == 'MDY' ? 'MM/dd/yyyy' :
@@ -73,7 +73,7 @@
                                 <p:ajax event="change" listener="#{calendarBean.checkEventDate()}"   update="allDay,from,to" process="@this" />
                                 <p:ajax event="dateSelect" listener="#{calendarBean.checkEventDate()}"   update="allDay,from,to" process="@this" />
                             </p:calendar>
-                            <h:outputText rendered="#{not calendarBean.event.eoId.equals(calendarBean.loggedUser.id) or not calendarBean.event.editable}"
+                            <h:outputText rendered="#{not calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id) or not calendarBean.event.editable}"
                                           value="#{calendarBean.event.startDate}" >
                                 <f:convertDateTime pattern="#{settingBean.loggedUser.setting.dateFormat == 'DMY' ? 'dd/MM/yyyy' :
                                                               settingBean.loggedUser.setting.dateFormat == 'MDY' ? 'MM/dd/yyyy' :
@@ -82,7 +82,7 @@
                             </h:outputText>
 
                             <h:outputLabel for="to" value="To:" />
-                            <p:calendar rendered="#{calendarBean.event.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.editable}"  id="to" 
+                            <p:calendar rendered="#{calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.editable}"  id="to" 
                                         value="#{calendarBean.event.endDate}" 
                                         pattern="#{settingBean.loggedUser.setting.dateFormat == 'DMY' ? 'dd/MM/yyyy' :
                                                    settingBean.loggedUser.setting.dateFormat == 'MDY' ? 'MM/dd/yyyy' :
@@ -91,7 +91,7 @@
                                 <p:ajax event="change" listener="#{calendarBean.checkEventDate()}"   update="allDay,from,to" process="@this" />
                                 <p:ajax event="dateSelect" listener="#{calendarBean.checkEventDate()}"   update="allDay,from,to" process="@this" />
                             </p:calendar>
-                            <h:outputText rendered="#{not calendarBean.event.eoId.equals(calendarBean.loggedUser.id) or not calendarBean.event.editable}" value="#{calendarBean.event.endDate}" >
+                            <h:outputText rendered="#{not calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id) or not calendarBean.event.editable}" value="#{calendarBean.event.endDate}" >
                                 <f:convertDateTime pattern="#{settingBean.loggedUser.setting.dateFormat == 'DMY' ? 'dd/MM/yyyy' :
                                                               settingBean.loggedUser.setting.dateFormat == 'MDY' ? 'MM/dd/yyyy' :
                                                               'yyyy/MM/dd'} HH:mm"
@@ -99,43 +99,43 @@
                             </h:outputText>
 
                             <h:outputLabel for="allDay" value="All Day:" />
-                            <h:selectBooleanCheckbox rendered="#{calendarBean.event.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.editable}"  id="allDay"
+                            <h:selectBooleanCheckbox rendered="#{calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.editable}"  id="allDay"
                                                      value="#{calendarBean.event.allDay}" />
-                            <h:outputText rendered="#{(not calendarBean.event.eoId.equals(calendarBean.loggedUser.id) or not calendarBean.event.editable ) and calendarBean.event.allDay }"  value="Yes" />
-                            <h:outputText rendered="#{(not calendarBean.event.eoId.equals(calendarBean.loggedUser.id) or not calendarBean.event.editable ) and not calendarBean.event.allDay}"  value="No" />
+                            <h:outputText rendered="#{(not calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id) or not calendarBean.event.editable ) and calendarBean.event.allDay }"  value="Yes" />
+                            <h:outputText rendered="#{(not calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id) or not calendarBean.event.editable ) and not calendarBean.event.allDay}"  value="No" />
 
 
                             <h:outputLabel for="visibility" value="Visibility:" />
-                            <p:selectOneRadio rendered="#{calendarBean.event.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.editable}"  id="visibility" value="#{calendarBean.event.visibility}">
+                            <p:selectOneRadio rendered="#{calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.editable}"  id="visibility" value="#{calendarBean.event.data.visibility}">
                                 <f:selectItem itemLabel="Public" itemValue="PUBLIC" />
                                 <f:selectItem itemLabel="Private" itemValue="PRIVATE" />
                             </p:selectOneRadio>
-                            <h:outputText rendered="#{not calendarBean.event.eoId.equals(calendarBean.loggedUser.id)or not calendarBean.event.editable}" id="visibilityText" value="#{calendarBean.event.visibility}" />
+                            <h:outputText rendered="#{not calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id)or not calendarBean.event.editable}" id="visibilityText" value="#{calendarBean.event.data.visibility}" />
 
                             <h:outputLabel for="participants" value="Participants:" />   
 
-                            <p:dataScroller  id="participants" rendered="#{calendarBean.event.id != null and calendarBean.event.editable or calendarBean.event.visibility == 'PUBLIC' or calendarBean.event.eventParticipants.contains(calendarBean.loggedUser)}" value="#{calendarBean.event.listParticipantAndInvitedUsers}" var="user" chunkSize="10">
+                            <p:dataScroller  id="participants" rendered="#{calendarBean.event.id != null and calendarBean.event.editable or calendarBean.event.data.visibility == 'PUBLIC' or calendarBean.event.data.eventParticipants.contains(calendarBean.loggedUser)}" value="#{calendarBean.event.data.listParticipantAndInvitedUsers}" var="user" chunkSize="10">
                                 <h:panelGrid columns="2">
                                     <h:outputText value="#{user.firstName} #{user.lastName}" style="display:inline-block"/>
-                                    <p:graphicImage  library="images"  name="accept.svg" rendered="#{calendarBean.event.eventParticipants.contains(user)}" alt="Accepted" width="20" height="20"/>
-                                    <p:graphicImage  library="images"  name="pending.svg" rendered="#{calendarBean.event.invitedUsers.contains(user)}" alt="Pending"  width="20" height="20" />   
-                                    <p:graphicImage library="images"  name="declined.svg" rendered="#{not calendarBean.event.invitedUsers.contains(user) and not calendarBean.event.eventParticipants.contains(user)}" alt="Declined"   width="20" height="20" />
+                                    <p:graphicImage  library="images"  name="accept.svg" rendered="#{calendarBean.event.data.eventParticipants.contains(user)}" alt="Accepted" width="20" height="20"/>
+                                    <p:graphicImage  library="images"  name="pending.svg" rendered="#{calendarBean.event.data.invitedUsers.contains(user)}" alt="Pending"  width="20" height="20" />
+                                    <p:graphicImage library="images"  name="declined.svg" rendered="#{not calendarBean.event.data.invitedUsers.contains(user) and not calendarBean.event.data.eventParticipants.contains(user)}" alt="Declined"   width="20" height="20" />
 
                                 </h:panelGrid>
                             </p:dataScroller>
 
-                            <h:outputLabel for="addParticipantsButton" rendered="#{calendarBean.event.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.id != null and calendarBean.event.editable}" value="" />
-                            <p:commandButton id="addParticipantsButton" rendered="#{calendarBean.event.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.id != null and calendarBean.event.editable}" type="button" value="Add" onclick="PF('addParticipantDialog').show();" />
+                            <h:outputLabel for="addParticipantsButton" rendered="#{calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.id != null and calendarBean.event.editable}" value="" />
+                            <p:commandButton id="addParticipantsButton" rendered="#{calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.id != null and calendarBean.event.editable}" type="button" value="Add" onclick="PF('addParticipantDialog').show();" />
 
-                            <h:outputLabel for="weather" value="Weather:" rendered="#{calendarBean.event.weather != null}"/>
-                            <h:panelGrid id="weather" columns="2" rendered="#{calendarBean.event.weather != null}" style="text-align: center;">
+                            <h:outputLabel for="weather" value="Weather:" rendered="#{calendarBean.event.data.weather != null}"/>
+                            <h:panelGrid id="weather" columns="2" rendered="#{calendarBean.event.data.weather != null}" style="text-align: center;">
 
 
-                                <p:graphicImage value="http://openweathermap.org/img/w/#{calendarBean.event.weather.icon}.png"/>
-                                <h:outputText value="#{calendarBean.event.weather.description}"/>
+                                <p:graphicImage value="http://openweathermap.org/img/w/#{calendarBean.event.data.weather.icon}.png"/>
+                                <h:outputText value="#{calendarBean.event.data.weather.description}"/>
 
                                 <h:outputLabel value="Temperature: "/>
-                                <h:outputText value=" #{calendarBean.event.weather.temperature} °C"/>
+                                <h:outputText value=" #{calendarBean.event.data.weather.temperature} °C"/>
 
 
 
@@ -144,23 +144,23 @@
                             <p:spacer width="20" height="20" /> 
                             <p:spacer width="20" height="20" /> 
                             <p:spacer width="20" height="5" /> 
-                            <h:outputLabel rendered="#{calendarBean.event.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.id != null and calendarBean.event.editable}" for="removeButton" value="" />
-                            <p:commandButton rendered="#{calendarBean.event.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.id != null and calendarBean.event.editable}" 
+                            <h:outputLabel rendered="#{calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.id != null and calendarBean.event.editable}" for="removeButton" value="" />
+                            <p:commandButton rendered="#{calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.id != null and calendarBean.event.editable}" 
                                              id="removeButton" value="Delete Event  " update="messages,:notificationForm"
                                              actionListener="#{calendarBean.removeEvent}"
                                              oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
 
-                            <h:outputLabel rendered="#{calendarBean.event.eventParticipants.contains(calendarBean.loggedUser) and calendarBean.event.editable}" for="cancelButton" value="" />
-                            <p:commandButton rendered="#{calendarBean.event.eventParticipants.contains(calendarBean.loggedUser) and calendarBean.event.editable}"
+                            <h:outputLabel rendered="#{calendarBean.event.data.eventParticipants.contains(calendarBean.loggedUser) and calendarBean.event.editable}" for="cancelButton" value="" />
+                            <p:commandButton rendered="#{calendarBean.event.data.eventParticipants.contains(calendarBean.loggedUser) and calendarBean.event.editable}"
                                              id="cancelButton" value="Cancel Partecipation" update="messages,:notificationForm"
                                              actionListener="#{calendarBean.cancelEvent}"
                                              oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
 
                             <p:commandButton rendered="#{calendarBean.event.editable and calendarBean.event.id == null and calendarBean.event.editable} " type="reset" value="Reset" />
                             <p:commandButton id="addButton" value="Save" update="messages"
-                                             actionListener="#{calendarBean.addEvent}" rendered="#{calendarBean.event.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.editable}"
+                                             actionListener="#{calendarBean.addEvent}" rendered="#{calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.editable}"
                                              oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
-                            <p:commandButton id="okButton" type="button" value="Ok" rendered="#{not calendarBean.event.eoId.equals(calendarBean.loggedUser.id) or  not calendarBean.event.editable}"
+                            <p:commandButton id="okButton" type="button" value="Ok" rendered="#{not calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id) or  not calendarBean.event.editable}"
                                              onclick="PF('myschedule').update();
                                                      PF('eventDialog').hide();" />
                         </h:panelGrid>

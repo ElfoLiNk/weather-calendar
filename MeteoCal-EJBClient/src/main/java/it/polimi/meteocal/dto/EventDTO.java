@@ -18,7 +18,8 @@ package it.polimi.meteocal.dto;
 
 import it.polimi.meteocal.util.Site;
 import it.polimi.meteocal.util.Visibility;
-import java.util.Date;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,9 +36,9 @@ public class EventDTO {
 
     private String title;
 
-    private Date startDate;
+    private LocalDateTime startDate;
 
-    private Date endDate;
+    private LocalDateTime endDate;
 
     private boolean allDay = false;
 
@@ -73,7 +74,7 @@ public class EventDTO {
      * @param invitedUsers the list of the invited users
      * @param weather the weather of the event
      */
-    public EventDTO(String id, String eoId, String title, Date startDate, Date endDate, boolean editable, Site site, Visibility visibility, String description, String location, List<UserDTO> eventParticipants, List<UserDTO> invitedUsers, WeatherDTO weather) {
+    public EventDTO(String id, String eoId, String title, LocalDateTime startDate, LocalDateTime endDate, boolean editable, Site site, Visibility visibility, String description, String location, List<UserDTO> eventParticipants, List<UserDTO> invitedUsers, WeatherDTO weather) {
         this.id = id;
         this.eoId = eoId;
         this.title = title;
@@ -253,7 +254,7 @@ public class EventDTO {
      *
      * @return the start date of the event
      */
-    public Date getStartDate() {
+    public LocalDateTime getStartDate() {
         return startDate;
     }
 
@@ -261,7 +262,7 @@ public class EventDTO {
      *
      * @param startDate the start date to set
      */
-    public void setStartDate(Date startDate) {
+    public void setStartDate(LocalDateTime startDate) {
         this.startDate = startDate;
     }
 
@@ -269,7 +270,7 @@ public class EventDTO {
      *
      * @return the end date of the event
      */
-    public Date getEndDate() {
+    public LocalDateTime getEndDate() {
         return endDate;
     }
 
@@ -277,7 +278,7 @@ public class EventDTO {
      *
      * @param endDate the end date to set
      */
-    public void setEndDate(Date endDate) {
+    public void setEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
     }
 

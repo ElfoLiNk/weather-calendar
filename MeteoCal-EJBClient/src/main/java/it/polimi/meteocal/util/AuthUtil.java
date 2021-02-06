@@ -35,11 +35,13 @@ public class AuthUtil {
      */
     public static void makeUserSession(Long userID) {
         FacesContext context = FacesContext.getCurrentInstance();
-        HttpServletRequest request = (HttpServletRequest) context
-                .getExternalContext().getRequest();
-        HttpSession session = request.getSession(true);
-        User authUser = new User(userID);
-        session.setAttribute(User.AUTH_KEY, authUser);
+        if (context != null) {
+            HttpServletRequest request = (HttpServletRequest) context
+                    .getExternalContext().getRequest();
+            HttpSession session = request.getSession(true);
+            User authUser = new User(userID);
+            session.setAttribute(User.AUTH_KEY, authUser);
+        }
     }
 
     /**
@@ -50,11 +52,13 @@ public class AuthUtil {
     public static Long getUserID() {
         if (isUserLogged()) {
             FacesContext context = FacesContext.getCurrentInstance();
-            HttpServletRequest request = (HttpServletRequest) context
-                    .getExternalContext().getRequest();
-            HttpSession sessione = request.getSession();
-            User authUser = (User) sessione.getAttribute(User.AUTH_KEY);
-            return authUser.getUserID();
+            if (context != null) {
+                HttpServletRequest request = (HttpServletRequest) context
+                        .getExternalContext().getRequest();
+                HttpSession sessione = request.getSession();
+                User authUser = (User) sessione.getAttribute(User.AUTH_KEY);
+                return authUser.getUserID();
+            }
         }
         return (long) 0;
     }
@@ -67,17 +71,19 @@ public class AuthUtil {
      */
     public static boolean isUserLogged() {
         FacesContext context = FacesContext.getCurrentInstance();
+        if (context != null) {
+            HttpServletRequest request = (HttpServletRequest) context
+                    .getExternalContext().getRequest();
 
-        HttpServletRequest request = (HttpServletRequest) context
-                .getExternalContext().getRequest();
+            HttpSession session = request.getSession();
+            if (session == null) {
+                return false;
+            }
+            User authUser = (User) session.getAttribute(User.AUTH_KEY);
 
-        HttpSession session = request.getSession();
-        if (session == null) {
-            return false;
+            return authUser != null;
         }
-        User authUser = (User) session.getAttribute(User.AUTH_KEY);
-
-        return authUser != null;
+        return false;
     }
 
 }

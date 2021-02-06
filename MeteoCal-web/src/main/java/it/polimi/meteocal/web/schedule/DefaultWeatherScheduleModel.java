@@ -20,6 +20,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.ScheduleEvent;
 
 /**
@@ -29,7 +31,7 @@ import org.primefaces.model.ScheduleEvent;
  */
 public class DefaultWeatherScheduleModel implements WeatherScheduleModel, Serializable {
 
-    private List<WeatherScheduleEvent> events;
+    private List<DefaultScheduleEvent<WeatherScheduleEventData>> events;
     private boolean eventLimit = false;
 
     /**
@@ -43,7 +45,7 @@ public class DefaultWeatherScheduleModel implements WeatherScheduleModel, Serial
      * Constructor with events
      * @param events the events of the model to set
      */
-    public DefaultWeatherScheduleModel(List<WeatherScheduleEvent> events) {
+    public DefaultWeatherScheduleModel(List<DefaultScheduleEvent<WeatherScheduleEventData>> events) {
         this.events = events;
     }
 
@@ -52,23 +54,14 @@ public class DefaultWeatherScheduleModel implements WeatherScheduleModel, Serial
      * @param event
      */
     @Override
-    public void addEvent(WeatherScheduleEvent event) {
+    public void addEvent(DefaultScheduleEvent<WeatherScheduleEventData> event) {
         //event.setId(UUID.randomUUID().toString());
         events.add(event);
     }
 
     @Override
-    public boolean deleteEvent(WeatherScheduleEvent event) {
+    public boolean deleteEvent(DefaultScheduleEvent<WeatherScheduleEventData> event) {
         return events.remove(event);
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public List<WeatherScheduleEvent> getWeatherEvents() {
-        return events;
     }
 
     /**
@@ -77,8 +70,8 @@ public class DefaultWeatherScheduleModel implements WeatherScheduleModel, Serial
      * @return
      */
     @Override
-    public WeatherScheduleEvent getEvent(String id) {
-        for (WeatherScheduleEvent event : events) {
+    public DefaultScheduleEvent<WeatherScheduleEventData> getEvent(String id) {
+        for (DefaultScheduleEvent<WeatherScheduleEventData> event : events) {
             if (event.getId().equals(id)) {
                 return event;
             }
@@ -88,7 +81,7 @@ public class DefaultWeatherScheduleModel implements WeatherScheduleModel, Serial
     }
 
     @Override
-    public void updateEvent(WeatherScheduleEvent event) {
+    public void updateEvent(DefaultScheduleEvent<WeatherScheduleEventData> event) {
         int index = -1;
 
         for (int i = 0; i < events.size(); i++) {
@@ -134,7 +127,7 @@ public class DefaultWeatherScheduleModel implements WeatherScheduleModel, Serial
     public void addEvent(ScheduleEvent event) {
         event.setId(UUID.randomUUID().toString());
 
-        events.add((WeatherScheduleEvent) event);
+        events.add((DefaultScheduleEvent<WeatherScheduleEventData>) event);
     }
 
     /**
@@ -152,7 +145,7 @@ public class DefaultWeatherScheduleModel implements WeatherScheduleModel, Serial
      * @return
      */
     @Override
-    public List<ScheduleEvent> getEvents() {
+    public List<ScheduleEvent<?>> getEvents() {
         return new ArrayList<>(events);
     }
 
@@ -173,7 +166,7 @@ public class DefaultWeatherScheduleModel implements WeatherScheduleModel, Serial
         }
 
         if (index >= 0) {
-            events.set(index, (WeatherScheduleEvent) event);
+            events.set(index, (DefaultScheduleEvent<WeatherScheduleEventData>) event);
         }
     }
 

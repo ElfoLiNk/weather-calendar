@@ -17,7 +17,8 @@
 package it.polimi.meteocal.ejb;
 
 import it.polimi.meteocal.dto.ForecastDTO;
-import java.util.Date;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -38,7 +39,7 @@ public interface HandleForecast {
      * @return the forecast information for the given location and date if
      * present, null otherwise
      */
-    ForecastDTO getForecast(String location, Date date);
+    ForecastDTO getForecast(String location, LocalDateTime date);
 
     /**
      * Method that search and returns all the forecast information available for

@@ -36,7 +36,7 @@ import java.util.Objects;
 @Table(name = "reschedulenotification")
 @NamedQueries({
     @NamedQuery(name = RescheduleNotification.FIND_BY_EVENT, query = "SELECT n FROM RescheduleNotification n WHERE n.event = :event OR n.suggestedEvent = :event"),
-    @NamedQuery(name = RescheduleNotification.FIND_OLD_NOTIFICATION, query = "SELECT n FROM RescheduleNotification n WHERE n.event.startDate <= :now"),})
+    @NamedQuery(name = RescheduleNotification.FIND_OLD_NOTIFICATION, query = "SELECT n FROM RescheduleNotification n WHERE n.event.startDateTime <= :now"),})
 public class RescheduleNotification extends Notification {
 
     /**

@@ -17,10 +17,13 @@
 package it.polimi.meteocal.web.schedule;
 
 import java.util.List;
+
+import org.primefaces.model.DefaultScheduleEvent;
+import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
 
 /**
- * Class that extedens ScheduleModel to handle WeatherScheduleEvent
+ * Class that extends ScheduleModel to handle DefaultScheduleEvent<WeatherScheduleEventData>
  *
  * @author Matteo Gazzetta, Alessandro Fato
  */
@@ -30,20 +33,20 @@ public interface WeatherScheduleModel extends ScheduleModel {
      *
      * @param event the event to add to the model
      */
-    void addEvent(WeatherScheduleEvent event);
+    void addEvent(DefaultScheduleEvent<WeatherScheduleEventData> event);
 
     /**
      *
      * @param event the evnet to delete from the model
      * @return true if the model contains the list
      */
-    boolean deleteEvent(WeatherScheduleEvent event);
+    boolean deleteEvent(DefaultScheduleEvent<WeatherScheduleEventData> event);
 
     /**
      *
      * @return the list of the events in the model
      */
-    List<WeatherScheduleEvent> getWeatherEvents();
+    List<ScheduleEvent<?>> getEvents();
 
     /**
      *
@@ -51,14 +54,14 @@ public interface WeatherScheduleModel extends ScheduleModel {
      * @return the event of the model with the param id
      */
     @Override
-    WeatherScheduleEvent getEvent(String id);
+    DefaultScheduleEvent<WeatherScheduleEventData> getEvent(String id);
 
     /**
      * Method that update the event in the model 
      * 
      * @param event  the event to update in the model
      */
-    void updateEvent(WeatherScheduleEvent event);
+    void updateEvent(DefaultScheduleEvent<WeatherScheduleEventData> event);
 
     /**
      *

@@ -20,10 +20,9 @@ import it.polimi.meteocal.dto.UserDTO;
 import it.polimi.meteocal.dto.WeatherDTO;
 import it.polimi.meteocal.util.Site;
 import it.polimi.meteocal.util.Visibility;
-import java.util.Date;
+
 import java.util.List;
 import java.util.Objects;
-import org.primefaces.model.DefaultScheduleEvent;
 
 /**
  * Class that the extends the DefaultScheduleEvent adding the information needed
@@ -31,17 +30,11 @@ import org.primefaces.model.DefaultScheduleEvent;
  *
  * @author Matteo Gazzetta, Alessandro Fato
  */
-public class WeatherScheduleEvent extends DefaultScheduleEvent {
+public class WeatherScheduleEventData {
 
     /**
      * Full Constructor
-     * 
-     * @param id the id of the event
-     * @param title the title of the event
-     * @param description the description of the event
-     * @param start the start date of the event
-     * @param end the end date of the event
-     * @param allDay if the event is all day
+     *
      * @param location the location of the event
      * @param site the site of the event
      * @param visibility the visibility of the event
@@ -51,10 +44,7 @@ public class WeatherScheduleEvent extends DefaultScheduleEvent {
      * @param invitedUsers the list of the invited user
      * @param weather the weather of the event
      */
-    public WeatherScheduleEvent(String id, String title, String description, Date start, Date end, boolean allDay, String location, Site site, Visibility visibility, String eoId, List<UserDTO> listParticipantAndInvitedUsers, List<UserDTO> eventParticipants, List<UserDTO> invitedUsers, WeatherDTO weather) {
-        super(title, start, end, allDay);
-        super.setId(id);
-        super.setDescription(description);
+    public WeatherScheduleEventData(String location, Site site, Visibility visibility, String eoId, List<UserDTO> listParticipantAndInvitedUsers, List<UserDTO> eventParticipants, List<UserDTO> invitedUsers, WeatherDTO weather) {
         this.location = location;
         this.eoId = eoId;
         this.listParticipantAndInvitedUsers = listParticipantAndInvitedUsers;
@@ -69,51 +59,17 @@ public class WeatherScheduleEvent extends DefaultScheduleEvent {
     /**
      * Default Constructor
      */
-    public WeatherScheduleEvent() {
-    }
-
-    /**
-     * 
-     * @param title the title of the event
-     * @param start the start date of the event
-     * @param end the end date of the event
-     */
-    public WeatherScheduleEvent(String title, Date start, Date end) {
-        super(title, start, end);
+    public WeatherScheduleEventData() {
     }
 
     /**
      *
-     * @param title the title of the event
-     * @param start the start date of the event
-     * @param end the end date of the event
-     * @param allDay if the event is all day
+     * @param eoId the id of the owner of the event
      */
-    public WeatherScheduleEvent(String title, Date start, Date end, boolean allDay) {
-        super(title, start, end, allDay);
+    public WeatherScheduleEventData(String eoId) {
+        this.eoId = eoId;
     }
 
-    /**
-     *
-     * @param title the title of the event
-     * @param start the start date of the event
-     * @param end the end date of the event
-     * @param styleClass the style class of the event
-     */
-    public WeatherScheduleEvent(String title, Date start, Date end, String styleClass) {
-        super(title, start, end, styleClass);
-    }
-
-    /**
-     *
-     * @param title the title of the event
-     * @param start the start date of the event
-     * @param end the end date of the event
-     * @param data the data of the event
-     */
-    public WeatherScheduleEvent(String title, Date start, Date end, Object data) {
-        super(title, start, end, data);
-    }
     private String location;
 
     private String eoId;
@@ -126,9 +82,9 @@ public class WeatherScheduleEvent extends DefaultScheduleEvent {
 
     private WeatherDTO weather;
 
-    private String site = "INDOOR";
+    private String site;
 
-    private String visibility = "PRIVATE";
+    private String visibility;
 
     /**
      *
@@ -264,7 +220,7 @@ public class WeatherScheduleEvent extends DefaultScheduleEvent {
      */
     @Override
     public String toString() {
-        return "WeatherScheduleEvent{" + "location=" + location + ", eoId=" + eoId + ", listParticipantAndInvitedUsers=" + listParticipantAndInvitedUsers + ", eventParticipants=" + eventParticipants + ", invitedUsers=" + invitedUsers + ", weather=" + weather + ", site=" + site + ", visibility=" + visibility + '}' + " SUPER: " + super.getDescription() + " " + super.getTitle() + " " + super.getStartDate().toString() + " " + super.getEndDate().toString();
+        return "WeatherScheduleEvent{" + "location=" + location + ", eoId=" + eoId + ", listParticipantAndInvitedUsers=" + listParticipantAndInvitedUsers + ", eventParticipants=" + eventParticipants + ", invitedUsers=" + invitedUsers + ", weather=" + weather + ", site=" + site + ", visibility=" + visibility + '}';
     }
 
     /**
@@ -298,7 +254,7 @@ public class WeatherScheduleEvent extends DefaultScheduleEvent {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final WeatherScheduleEvent other = (WeatherScheduleEvent) obj;
+        final WeatherScheduleEventData other = (WeatherScheduleEventData) obj;
         if (!Objects.equals(this.location, other.location)) {
             return false;
         }

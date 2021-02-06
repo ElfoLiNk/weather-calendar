@@ -19,12 +19,14 @@ services:
     image: payara/server-full
     ports:
       - "4848:4848"
-      - "80:8080"
+      - "8080:8080"
       - "8181:8181"
     volumes:
       - ./ws/apps:/opt/payara/deployments
       - ./ws/lib:/opt/payara/appserver/glassfish/domains/production/lib/ext
+      - ./ws/lib:/opt/payara/appserver/glassfish/domains/domain1/lib/ext
       - ./ws/webapp:/opt/payara/appserver/glassfish/domains/production/var/webapp
+      - ./ws/webapp:/opt/payara/appserver/glassfish/domains/domain1/var/webapp
       - ./ws/scripts:/opt/payara/scripts/init.d
     links:
       - db

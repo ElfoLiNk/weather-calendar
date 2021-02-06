@@ -37,6 +37,7 @@ import it.polimi.meteocal.util.Status;
 import it.polimi.meteocal.util.Visibility;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
@@ -638,7 +639,7 @@ public class HandleUserImpl implements HandleUser {
                 notif.setEvent(event);
                 notif.setStatus(Status.PENDING);
                 notif.setUser(ep);
-                notif.setMessage("The event " + event.getName() + " is reschedule by the EO for bad weather condition to " + event.getStartDate().getTime() + ". Do you confirm your partecipation? ");
+                notif.setMessage("The event " + event.getName() + " is reschedule by the EO for bad weather condition to " + event.getStartDate() + ". Do you confirm your partecipation? ");
                 em.persist(notif);
                 em.flush();
 
@@ -649,13 +650,13 @@ public class HandleUserImpl implements HandleUser {
     @Override
     public void removeOldNotification() {
 //        TypedQuery<EventNotification> query = em.createNamedQuery(EventNotification.FIND_OLD_NOTIFICATION, EventNotification.class);
-//        query.setParameter("now", java.util.Calendar.getInstance());
+//        query.setParameter("now", LocalDateTime.now());
 //        for (EventNotification eventNotif : query.getResultList()) {
 //            eventNotif.getUser().getListNotifications().remove(eventNotif);
 //            em.remove(eventNotif);
 //        }
         TypedQuery<RescheduleNotification> queryResch = em.createNamedQuery(RescheduleNotification.FIND_OLD_NOTIFICATION, RescheduleNotification.class);
-        queryResch.setParameter("now", java.util.Calendar.getInstance());
+        queryResch.setParameter("now", LocalDateTime.now());
         for (RescheduleNotification reschNotif : queryResch.getResultList()) {
             Event suggestedEvent = em.find(Event.class, reschNotif.getSuggestedEvent().getId());
             if (suggestedEvent != null) {

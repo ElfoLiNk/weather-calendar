@@ -30,8 +30,13 @@ import it.polimi.meteocal.entities.Weather;
 import it.polimi.meteocal.exception.ErrorRequestException;
 import it.polimi.meteocal.util.AuthUtil;
 import it.polimi.meteocal.util.Status;
+
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
@@ -70,15 +75,12 @@ public class HandleEventImpl implements HandleEvent {
             throw new ErrorRequestException("no user", false);
 
         }
-        // NEW EVENT 
-        java.util.Calendar startCalendar = java.util.Calendar.getInstance();
-        startCalendar.setTime(insertEvent.getStartDate());
-        java.util.Calendar endCalendar = java.util.Calendar.getInstance();
-        endCalendar.setTime(insertEvent.getEndDate());
-        Event event = new Event(user, insertEvent.getTitle(), insertEvent.getDescription(), insertEvent.getLocation(), insertEvent.getSite(), startCalendar, endCalendar, null, insertEvent.getVisibility(), new ArrayList<>(), new ArrayList<>());
-
-        if (event.getStartDate().get(java.util.Calendar.DAY_OF_YEAR) >= java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_YEAR)
-                && event.getStartDate().get(java.util.Calendar.DAY_OF_YEAR) <= (java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_YEAR) + 15)
+        // NEW EVENT
+        Event event = new Event(user, insertEvent.getTitle(), insertEvent.getDescription(), insertEvent.getLocation(), insertEvent.getSite(), insertEvent.getStartDate(), insertEvent.getEndDate(), null, insertEvent.getVisibility(), new ArrayList<>(), new ArrayList<>());
+        LocalDateTime today = LocalDateTime.now();
+        
+        if (event.getStartDate().getDayOfYear() >= today.getDayOfYear()
+                && event.getStartDate().getDayOfYear() <= today.getDayOfYear() + 15
                 && insertEvent.getLocation() != null) {
             // ADD FORECAST INFORMATION IF AVAILABLE
             ForecastDTO forecastDTO = handleForecast.getForecast(insertEvent.getLocation(), insertEvent.getStartDate());
@@ -137,9 +139,9 @@ public class HandleEventImpl implements HandleEvent {
             }
             EventDTO eventDto;
             if (event.getForecast() != null) {
-                eventDto = new EventDTO(event.getId().toString(), event.getEo().getId().toString(), event.getName(), event.getStartDate().getTime(), event.getEndDate().getTime(), true, event.getSite(), event.getVisibility(), event.getDescription(), event.getLocation(), eventParticipants, invitedUsers, handleForecast.getForecast(event.getForecast().getId()).getWeather());
+                eventDto = new EventDTO(event.getId().toString(), event.getEo().getId().toString(), event.getName(), event.getStartDate(), event.getEndDate(), true, event.getSite(), event.getVisibility(), event.getDescription(), event.getLocation(), eventParticipants, invitedUsers, handleForecast.getForecast(event.getForecast().getId()).getWeather());
             } else {
-                eventDto = new EventDTO(event.getId().toString(), event.getEo().getId().toString(), event.getName(), event.getStartDate().getTime(), event.getEndDate().getTime(), true, event.getSite(), event.getVisibility(), event.getDescription(), event.getLocation(), eventParticipants, invitedUsers, null);
+                eventDto = new EventDTO(event.getId().toString(), event.getEo().getId().toString(), event.getName(), event.getStartDate(), event.getEndDate(), true, event.getSite(), event.getVisibility(), event.getDescription(), event.getLocation(), eventParticipants, invitedUsers, null);
             }
             events.add(eventDto);
         }
@@ -155,9 +157,9 @@ public class HandleEventImpl implements HandleEvent {
             }
             EventDTO eventDto;
             if (event.getForecast() != null) {
-                eventDto = new EventDTO(event.getId().toString(), event.getEo().getId().toString(), event.getName(), event.getStartDate().getTime(), event.getEndDate().getTime(), false, event.getSite(), event.getVisibility(), event.getDescription(), event.getLocation(), eventParticipants, invitedUsers, handleForecast.getForecast(event.getForecast().getId()).getWeather());
+                eventDto = new EventDTO(event.getId().toString(), event.getEo().getId().toString(), event.getName(), event.getStartDate(), event.getEndDate(), false, event.getSite(), event.getVisibility(), event.getDescription(), event.getLocation(), eventParticipants, invitedUsers, handleForecast.getForecast(event.getForecast().getId()).getWeather());
             } else {
-                eventDto = new EventDTO(event.getId().toString(), event.getEo().getId().toString(), event.getName(), event.getStartDate().getTime(), event.getEndDate().getTime(), false, event.getSite(), event.getVisibility(), event.getDescription(), event.getLocation(), eventParticipants, invitedUsers, null);
+                eventDto = new EventDTO(event.getId().toString(), event.getEo().getId().toString(), event.getName(), event.getStartDate(), event.getEndDate(), false, event.getSite(), event.getVisibility(), event.getDescription(), event.getLocation(), eventParticipants, invitedUsers, null);
             }
             events.add(eventDto);
         }
@@ -180,8 +182,8 @@ public class HandleEventImpl implements HandleEvent {
         for (User user : event.getInvitedUsers()) {
             invitedUsers.add(handleUser.getUser(user.getId()));
         }
-        EventDTO evento = new EventDTO(eventId, null, event.getName(), event.getStartDate().getTime(),
-                event.getEndDate().getTime(), true, event.getSite(), event.getVisibility(), event.getDescription(),
+        EventDTO evento = new EventDTO(eventId, null, event.getName(), event.getStartDate(),
+                event.getEndDate(), true, event.getSite(), event.getVisibility(), event.getDescription(),
                 event.getLocation(), eventParticipants, invitedUsers, null);
         if (Objects.equals(userId, event.getEo().getId())) {
             evento.setEoId(userId.toString());
@@ -195,7 +197,7 @@ public class HandleEventImpl implements HandleEvent {
                 evento.setWeather(forecast.getWeather());
             }
         } else {
-            ForecastDTO forecast = handleForecast.getForecast(event.getLocation(), event.getStartDate().getTime());
+            ForecastDTO forecast = handleForecast.getForecast(event.getLocation(), event.getStartDate());
             if (forecast != null) {
                 evento.setWeather(forecast.getWeather());
             }
@@ -213,16 +215,12 @@ public class HandleEventImpl implements HandleEvent {
      * @return Event the updated event
      */
     private Event modifyEvent(Event eventOld, EventDTO insertEvent) {
-        java.util.Calendar startCalendar = eventOld.getStartDate();
-        startCalendar.setTime(insertEvent.getStartDate());
-        java.util.Calendar endCalendar = eventOld.getEndDate();
-        endCalendar.setTime(insertEvent.getEndDate());
         eventOld.setName(insertEvent.getTitle());
         eventOld.setDescription(insertEvent.getDescription());
         eventOld.setLocation(insertEvent.getLocation());
         eventOld.setSite(insertEvent.getSite());
-        eventOld.setStartDate(startCalendar);
-        eventOld.setEndDate(endCalendar);
+        eventOld.setStartDate(insertEvent.getStartDate());
+        eventOld.setEndDate(insertEvent.getEndDate());
         eventOld.setVisibility(insertEvent.getVisibility());
 
         if (insertEvent.getEventParticipants() != null) {
@@ -387,23 +385,14 @@ public class HandleEventImpl implements HandleEvent {
     public void moveEvent(String id, int dayDelta, int minuteDelta) throws ErrorRequestException {
         Event event = em.find(Event.class, Long.valueOf(id));
         if (event != null) {
-            java.util.Calendar startDate = event.getStartDate();
-
-            startDate.add(java.util.Calendar.DAY_OF_MONTH, dayDelta);
-            startDate.add(java.util.Calendar.MINUTE, minuteDelta);
-
-            java.util.Calendar endDate = event.getEndDate();
-
-            endDate.add(java.util.Calendar.DAY_OF_MONTH, dayDelta);
+            event.setStartDate(event.getStartDate().plusDays(dayDelta).plus(minuteDelta, ChronoUnit.MINUTES));
+            event.setEndDate(event.getEndDate().plusDays(dayDelta));
             if (minuteDelta != 0) {
-                endDate.add(java.util.Calendar.MINUTE, minuteDelta + 120);
+                event.setEndDate(event.getEndDate().plus(minuteDelta + 120, ChronoUnit.MINUTES));
             }
 
-            event.setStartDate(startDate);
-            event.setEndDate(endDate);
-
             if (event.getLocation() != null) {
-                ForecastDTO forecast = handleForecast.getForecast(event.getLocation(), event.getStartDate().getTime());
+                ForecastDTO forecast = handleForecast.getForecast(event.getLocation(), event.getStartDate());
                 if (forecast != null) {
                     event.setForecast(em.find(Forecast.class, forecast.getId()));
                 } else {
@@ -420,15 +409,11 @@ public class HandleEventImpl implements HandleEvent {
     }
 
     @Override
-    public void resizeEvent(String id, int dayDelta, int minuteDelta) throws ErrorRequestException {
+    public void resizeEvent(String id, Duration startDelta, Duration endDelta) throws ErrorRequestException {
         Event event = em.find(Event.class, Long.valueOf(id));
         if (event != null) {
-            java.util.Calendar endDate = event.getEndDate();
-
-            endDate.add(java.util.Calendar.DAY_OF_MONTH, dayDelta);
-            endDate.add(java.util.Calendar.MINUTE, minuteDelta);
-
-            event.setEndDate(endDate);
+            event.setStartDate(event.getStartDate().plus(startDelta));
+            event.setEndDate(event.getEndDate().plus(endDelta));
             LOGGER.log(Level.INFO, event.toString());
 
             em.merge(event);
@@ -474,17 +459,8 @@ public class HandleEventImpl implements HandleEvent {
 
     @Override
     public void checkEventWeatherCondition(long userId) {
-        java.util.Calendar today = java.util.Calendar.getInstance();
-        today.set(java.util.Calendar.HOUR_OF_DAY, 0);
-        today.set(java.util.Calendar.MINUTE, 0);
-        today.set(java.util.Calendar.SECOND, 0);
-        today.set(java.util.Calendar.MILLISECOND, 1);
-        java.util.Calendar threeday = java.util.Calendar.getInstance();
-        threeday.set(java.util.Calendar.HOUR_OF_DAY, 23);
-        threeday.set(java.util.Calendar.MINUTE, 59);
-        threeday.set(java.util.Calendar.SECOND, 59);
-        threeday.set(java.util.Calendar.MILLISECOND, 999);
-        threeday.add(java.util.Calendar.DAY_OF_YEAR, 3);
+        LocalDateTime today = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
+        LocalDateTime threeday = today.plusDays(3);
         TypedQuery<Event> query = em.createNamedQuery(Event.FIND_NEAR_OUTDOOR,
                 Event.class);
         query.setParameter("today", today);
@@ -494,17 +470,16 @@ public class HandleEventImpl implements HandleEvent {
                     Calendar.class);
             queryCalendar.setParameter("event", event);
             // UPDATE FORECAST
-            LOGGER.log(Level.INFO, "CHECK EVENT WEATHER CONDITION DATE: " + event.getStartDate().getTime());
-            ForecastDTO forecast = handleForecast.getForecast(event.getLocation(), event.getStartDate().getTime());
+            LOGGER.log(Level.INFO, "CHECK EVENT WEATHER CONDITION DATE: " + event.getStartDate());
+            ForecastDTO forecast = handleForecast.getForecast(event.getLocation(), event.getStartDate());
             if (forecast != null && !queryCalendar.getResultList().isEmpty()) {
                 // RECOMENDER SYSTEM
                 if (Integer.parseInt(forecast.getWeather().getWeatherConditionCode()) < 800 || Integer.parseInt(forecast.getWeather().getWeatherConditionCode()) > 804) {
                     // UPDATED FORECAST IS ALSO BAD
 
                     // NOTIFY TO EP IF 1 DAY BEFORE EVENT
-                    java.util.Calendar daybefore = (java.util.Calendar) event.getStartDate().clone();
-                    daybefore.add(java.util.Calendar.DAY_OF_YEAR, -1);
-                    if (java.util.Calendar.getInstance().after(daybefore)) {
+                    LocalDateTime daybefore = LocalDateTime.from(event.getStartDate()).minusDays(1);
+                    if (LocalDateTime.now().isAfter(daybefore)) {
                         for (User ep : event.getEventParticipants()) {
                             if (ep.getCalendar().getParticipatedEvents().contains(event)) {
                                 TypedQuery<EventNotification> q = em.createNamedQuery(EventNotification.FIND_BY_EVENT_AND_USER,
@@ -536,7 +511,7 @@ public class HandleEventImpl implements HandleEvent {
                             notification.setEvent(event);
                             notification.setUser(event.getEo());
                             notification.setSuggestedEvent(suggestedEvent);
-                            notification.setMessage("For the event: " + event.getName() + " is forecasted bad weather do you want to reschedule the event on: " + suggestedEvent.getStartDate().getTime() + " ?");
+                            notification.setMessage("For the event: " + event.getName() + " is forecasted bad weather do you want to reschedule the event on: " + suggestedEvent.getStartDate() + " ?");
                             notification.setStatus(Status.PENDING);
                             suggestedEvent.setId(null);
                             em.persist(suggestedEvent);
@@ -574,7 +549,7 @@ public class HandleEventImpl implements HandleEvent {
      * @return the suggester rescheduled event or null if there isn't any
      */
     private Event checkBestAlternativeDay(Event event) {
-        LOGGER.log(Level.INFO, "CHECK BEST ALTERNATIVE EVENT DATE: " + event.getStartDate().getTime());
+        LOGGER.log(Level.INFO, "CHECK BEST ALTERNATIVE EVENT DATE: " + event.getStartDate());
         Event suggestedEvent = new Event(event.getEo(), event.getName(), event.getDescription(), event.getLocation(), event.getSite(), null, null, null, event.getVisibility(), event.getEventParticipants(), event.getInvitedUsers());
         // GET FORECASTS FOR THE LOCATION
         List<ForecastDTO> forecasts = handleForecast.getForecasts(event.getLocation());
@@ -595,19 +570,14 @@ public class HandleEventImpl implements HandleEvent {
             return null;
         }
         // FIND LAST FORECAST DAY
-        Date lastForecastDay = new Date();
+        LocalDateTime lastForecastDay = LocalDateTime.now();
         for (ForecastDTO forecast : forecasts) {
-            if (forecast.getDate().getTime().after(lastForecastDay)) {
-                lastForecastDay = forecast.getDate().getTime();
+            if (forecast.getDate().isAfter(lastForecastDay)) {
+                lastForecastDay = forecast.getDate();
             }
         }
         // FIND USER OCCUPATION FROM TOMORROW TO LAST FORECAST DAY
-        java.util.Calendar tomorrow = java.util.Calendar.getInstance();
-        tomorrow.set(java.util.Calendar.HOUR_OF_DAY, 0);
-        tomorrow.set(java.util.Calendar.MINUTE, 0);
-        tomorrow.set(java.util.Calendar.SECOND, 0);
-        tomorrow.set(java.util.Calendar.MILLISECOND, 1);
-        tomorrow.add(java.util.Calendar.DAY_OF_YEAR, 1);
+        LocalDateTime tomorrow = LocalDateTime.of(LocalDate.now(), LocalTime.MIN).plusDays(1);
         TypedQuery<Event> query = em.createNamedQuery(Event.FIND_USER_OCCUPATION_RESCHEDULE,
                 Event.class);
         query.setParameter("tomorrow", tomorrow);
@@ -618,7 +588,7 @@ public class HandleEventImpl implements HandleEvent {
                 int i = 0;
                 do {
                     ForecastDTO forecast = forecasts.get(i);
-                    if (eventOccuping.getStartDate().getTimeInMillis() <= forecast.getDate().getTimeInMillis() && forecast.getDate().getTimeInMillis() <= eventOccuping.getEndDate().getTimeInMillis()) {
+                    if (eventOccuping.getStartDate().isBefore(forecast.getDate()) && forecast.getDate().isBefore(eventOccuping.getEndDate())) {
                         forecasts.remove(forecast);
                     } else {
                         i++;
@@ -631,12 +601,12 @@ public class HandleEventImpl implements HandleEvent {
             return null;
         }
         // SELECT THE NEAREST FORECAST TO THE ORIGINAL EVENT
-        List<java.util.Calendar> forecastDates = new ArrayList<>();
+        List<LocalDateTime> forecastDates = new ArrayList<>();
         for (ForecastDTO forecast : forecasts) {
             forecastDates.add(forecast.getDate());
-            LOGGER.log(Level.INFO, "Date Forecast Rimaste: " + forecast.getDate().getTime().toString());
+            LOGGER.log(Level.INFO, "Date Forecast Rimaste: " + forecast.getDate().toString());
         }
-        java.util.Calendar nearestDate = getDateNearest(forecastDates, event.getStartDate());
+        LocalDateTime nearestDate = getDateNearest(forecastDates, event.getStartDate());
 
         long forecastId = -1;
         for (ForecastDTO forecast : forecasts) {
@@ -664,9 +634,9 @@ public class HandleEventImpl implements HandleEvent {
      * @param targetDate
      * @return nearest date to target date
      */
-    private java.util.Calendar getDateNearest(List<java.util.Calendar> dates, java.util.Calendar targetDate) {
-        LOGGER.log(Level.INFO, "targetDate: " + targetDate.getTime());
-        java.util.Calendar nearestDate = new TreeSet<>(dates).floor(targetDate);
+    private LocalDateTime getDateNearest(List<LocalDateTime> dates, LocalDateTime targetDate) {
+        LOGGER.log(Level.INFO, "targetDate: " + targetDate);
+        LocalDateTime nearestDate = new TreeSet<>(dates).floor(targetDate);
         if (nearestDate == null) {
             nearestDate = new TreeSet<>(dates).ceiling(targetDate);
         }

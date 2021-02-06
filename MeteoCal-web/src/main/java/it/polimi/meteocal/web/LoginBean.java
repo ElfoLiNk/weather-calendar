@@ -91,7 +91,7 @@ public class LoginBean implements Serializable {
         loginUser = new UserDTO();
         if (loggedIn) {
             try {
-                ajax.addCallbackParam("loggedIn", loggedIn);
+                ajax.addCallbackParam("loggedIn", true);
                 FacesContext.getCurrentInstance().getExternalContext()
                         .redirect("calendar/calendar.xhtml");
             } catch (IOException e) {

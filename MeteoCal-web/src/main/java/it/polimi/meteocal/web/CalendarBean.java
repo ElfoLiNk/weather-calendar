@@ -31,14 +31,11 @@ import it.polimi.meteocal.util.DateFormat;
 import it.polimi.meteocal.util.Site;
 import it.polimi.meteocal.util.Status;
 import it.polimi.meteocal.util.Visibility;
-import it.polimi.meteocal.web.schedule.DefaultWeatherScheduleModel;
-import it.polimi.meteocal.web.schedule.WeatherScheduleEvent;
-import it.polimi.meteocal.web.schedule.WeatherScheduleModel;
+
 import java.io.IOException;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -48,6 +45,10 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import it.polimi.meteocal.web.schedule.DefaultWeatherScheduleModel;
+import it.polimi.meteocal.web.schedule.WeatherScheduleEventData;
+import it.polimi.meteocal.web.schedule.WeatherScheduleModel;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -55,6 +56,8 @@ import org.primefaces.PrimeFaces;
 import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.DefaultScheduleEvent;
+import org.primefaces.model.ScheduleEvent;
 
 /**
  * Class that manage the calendar (schedule), the events, the notifications of
@@ -69,24 +72,8 @@ public class CalendarBean implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = LogManager.getLogger(CalendarBean.class.getName());
 
-    /**
-     * Method that add days and minutes to the given date
-     *
-     * @param date the date to modify
-     * @param days the days delta to add to the date
-     * @param minutes the minutes delta to add to the date
-     * @return the modified date
-     */
-    public static Date addDaysMinutes(Date date, int days, int minutes) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        cal.add(Calendar.DATE, days); //minus number would decrement the days
-        cal.add(Calendar.MINUTE, minutes);
-        return cal.getTime();
-    }
-
-    private WeatherScheduleEvent event = new WeatherScheduleEvent();
-
+    private DefaultScheduleEvent<WeatherScheduleEventData> event = new DefaultScheduleEvent<>();
+    
     private WeatherScheduleModel eventModel;
 
     @EJB
@@ -239,10 +226,10 @@ public class CalendarBean implements Serializable {
     public void addEvent() {
         long idEventDb = 0;
         if (event.getId() == null) {
-            event.setEoId(currentUser.getId());
+            event.getData().setEoId(currentUser.getId());
 
             // NEW EVENT
-            EventDTO evento = new EventDTO(null, event.getEoId(), event.getTitle(), event.getStartDate(), event.getEndDate(), true, Site.valueOf(event.getSite()), Visibility.valueOf(event.getVisibility()), event.getDescription(), event.getLocation(), event.getEventParticipants(), event.getInvitedUsers(), null);
+            EventDTO evento = new EventDTO(null, event.getData().getEoId(), event.getTitle(), event.getStartDate(), event.getEndDate(), true, Site.valueOf(event.getData().getSite()), Visibility.valueOf(event.getData().getVisibility()), event.getDescription(), event.getData().getLocation(), event.getData().getEventParticipants(), event.getData().getInvitedUsers(), null);
 
             try {
                 idEventDb = handleEvent.addEvent(AuthUtil.getUserID(), evento);
@@ -261,7 +248,7 @@ public class CalendarBean implements Serializable {
             // UPDATE EVENT
             try {
 
-                EventDTO evento = new EventDTO(event.getId(), event.getEoId(), event.getTitle(), event.getStartDate(), event.getEndDate(), event.isEditable(), Site.valueOf(event.getSite()), Visibility.valueOf(event.getVisibility()), event.getDescription(), event.getLocation(), event.getEventParticipants(), event.getInvitedUsers(), event.getWeather());
+                EventDTO evento = new EventDTO(event.getId(), event.getData().getEoId(), event.getTitle(), event.getStartDate(), event.getEndDate(), event.isEditable(), Site.valueOf(event.getData().getSite()), Visibility.valueOf(event.getData().getVisibility()), event.getDescription(), event.getData().getLocation(), event.getData().getEventParticipants(), event.getData().getInvitedUsers(), event.getData().getWeather());
                 idEventDb = handleEvent.updateEvent(AuthUtil.getUserID(), evento);
 
             } catch (ErrorRequestException e) {
@@ -286,7 +273,7 @@ public class CalendarBean implements Serializable {
                             "Event", "Updated Successfully"));
         }
         // RESET BEAN EVENT
-        event = new WeatherScheduleEvent();
+        event = new DefaultScheduleEvent<>();
     }
 
     /**
@@ -344,7 +331,7 @@ public class CalendarBean implements Serializable {
      *
      * @return the event of the calendar
      */
-    public WeatherScheduleEvent getEvent() {
+    public DefaultScheduleEvent<WeatherScheduleEventData> getEvent() {
         return event;
     }
 
@@ -357,27 +344,18 @@ public class CalendarBean implements Serializable {
     }
 
     /**
-     *
-     * @return the initial date
-     */
-    public Date getInitialDate() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(calendar.get(Calendar.YEAR), Calendar.FEBRUARY,
-                calendar.get(Calendar.DATE), 0, 0, 0);
-
-        return calendar.getTime();
-    }
-
-    /**
      * Initialize the event on SelectEvent
      *
      * @param selectEvent the event on the calendar
      */
-    public void onDateSelect(SelectEvent selectEvent) {
-        event = new WeatherScheduleEvent("", (Date) selectEvent.getObject(),
-                (Date) selectEvent.getObject(), true);
-        event.setEoId(currentUser.getId());
-
+    public void onDateSelect(SelectEvent<LocalDateTime> selectEvent) {
+        WeatherScheduleEventData data = new WeatherScheduleEventData(currentUser.getId());
+        event = DefaultScheduleEvent.<WeatherScheduleEventData>builder()
+                .title("")
+                .startDate(selectEvent.getObject())
+                .endDate(selectEvent.getObject())
+                .allDay(true)
+                .data(data).build();
     }
 
     /**
@@ -386,7 +364,7 @@ public class CalendarBean implements Serializable {
      * @param event the event to move with deltas
      */
     public void onEventMove(ScheduleEntryMoveEvent event) {
-        if (loggedUser.getId().equals(eventModel.getEvent(event.getScheduleEvent().getId()).getEoId())) {
+        if (loggedUser.getId().equals( eventModel.getEvent(event.getScheduleEvent().getId()).getData().getEoId())) {
             try {
                 handleEvent.moveEvent(event.getScheduleEvent().getId(), event.getDayDelta(), event.getMinuteDelta());
             } catch (ErrorRequestException ex) {
@@ -403,7 +381,7 @@ public class CalendarBean implements Serializable {
                 eventModel.updateEvent(mapEventDTOtoWeatherScheduleEvent(updatedEvent));
             }
             // RESET BEAN EVENT
-            this.event = new WeatherScheduleEvent();
+            this.event = new DefaultScheduleEvent<>();
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
                     "Event moved", "Day delta:" + event.getDayDelta()
                     + ", Minute delta:" + event.getMinuteDelta());
@@ -421,15 +399,15 @@ public class CalendarBean implements Serializable {
      * @param event the event to resize with deltas
      */
     public void onEventResize(ScheduleEntryResizeEvent event) {
-        if (loggedUser.getId().equals(eventModel.getEvent(event.getScheduleEvent().getId()).getEoId())) {
+        if (loggedUser.getId().equals( eventModel.getEvent(event.getScheduleEvent().getId()).getData().getEoId())) {
             try {
-                handleEvent.resizeEvent(event.getScheduleEvent().getId(), event.getDayDelta(), event.getMinuteDelta());
+                handleEvent.resizeEvent(event.getScheduleEvent().getId(), event.getDeltaStartAsDuration(), event.getDeltaEndAsDuration());
             } catch (ErrorRequestException ex) {
                 LOGGER.log(Level.ERROR, ex);
             }
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                    "Event resized", "Day delta:" + event.getDayDelta()
-                    + ", Minute delta:" + event.getMinuteDelta());
+                    "Event resized", "start delta:" +  event.getDeltaStartAsDuration()
+                    + ", end delta:" + event.getDeltaEndAsDuration());
             addMessage(message);
         } else {
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -444,15 +422,15 @@ public class CalendarBean implements Serializable {
      *
      * @param selectEvent the selected event
      */
-    public void onEventSelect(SelectEvent selectEvent) {
-        event = (WeatherScheduleEvent) selectEvent.getObject();
+    public void onEventSelect(SelectEvent<DefaultScheduleEvent<WeatherScheduleEventData>> selectEvent) {
+        event =  selectEvent.getObject();
     }
 
     /**
      *
      * @param event the event to set
      */
-    public void setEvent(WeatherScheduleEvent event) {
+    public void setEvent(DefaultScheduleEvent<WeatherScheduleEventData> event) {
         this.event = event;
     }
 
@@ -480,7 +458,7 @@ public class CalendarBean implements Serializable {
         } else {
             // REMOVE EVENT
             try {
-                EventDTO evento = new EventDTO(event.getId(), event.getEoId(), event.getTitle(), event.getStartDate(), event.getEndDate(), event.isEditable(), Site.valueOf(event.getSite()), Visibility.valueOf(event.getVisibility()), event.getDescription(), event.getLocation(), event.getEventParticipants(), event.getInvitedUsers(), event.getWeather());
+                EventDTO evento = new EventDTO(event.getId(), event.getData().getEoId(), event.getTitle(), event.getStartDate(), event.getEndDate(), event.isEditable(), Site.valueOf(event.getData().getSite()), Visibility.valueOf(event.getData().getVisibility()), event.getDescription(), event.getData().getLocation(), event.getData().getEventParticipants(), event.getData().getInvitedUsers(), event.getData().getWeather());
                 handleEvent.removeEvent(AuthUtil.getUserID(), evento);
             } catch (ErrorRequestException e) {
                 LOGGER.log(Level.ERROR, e);
@@ -496,7 +474,7 @@ public class CalendarBean implements Serializable {
                     "Event removed", "Successfully removed " + event.getTitle()));
         }
         // RESET BEAN EVENT
-        event = new WeatherScheduleEvent();
+        event = new DefaultScheduleEvent<>();
     }
 
     /**
@@ -511,7 +489,7 @@ public class CalendarBean implements Serializable {
         } else {
             // CANCEL EVENT
             try {
-                EventDTO evento = new EventDTO(event.getId(), event.getEoId(), event.getTitle(), event.getStartDate(), event.getEndDate(), event.isEditable(), Site.valueOf(event.getSite()), Visibility.valueOf(event.getVisibility()), event.getDescription(), event.getLocation(), event.getEventParticipants(), event.getInvitedUsers(), event.getWeather());
+                EventDTO evento = new EventDTO(event.getId(), event.getData().getEoId(), event.getTitle(), event.getStartDate(), event.getEndDate(), event.isEditable(), Site.valueOf(event.getData().getSite()), Visibility.valueOf(event.getData().getVisibility()), event.getDescription(), event.getData().getLocation(), event.getData().getEventParticipants(), event.getData().getInvitedUsers(), event.getData().getWeather());
                 handleEvent.cancelEvent(AuthUtil.getUserID(), evento);
             } catch (ErrorRequestException e) {
                 LOGGER.log(Level.ERROR, e);
@@ -527,7 +505,7 @@ public class CalendarBean implements Serializable {
                     "Event canceled", "Not partecipating to " + event.getTitle()));
         }
         // RESET BEAN EVENT
-        event = new WeatherScheduleEvent();
+        event = new DefaultScheduleEvent<>();
     }
 
     /**
@@ -558,9 +536,9 @@ public class CalendarBean implements Serializable {
      *
      * @param event the select event of the user
      */
-    public void handleSelect(SelectEvent event) {
+    public void handleSelect(SelectEvent<ResultDTO> event) {
         // SELECT SEARCH BAR
-        selectedResult = (ResultDTO) event.getObject();
+        selectedResult = event.getObject();
         LOGGER.log(Level.INFO, "Selected Result: " + selectedResult.toString());
         LOGGER.log(Level.INFO, "UIcomponent: " + event.getComponent().getId());
 
@@ -600,11 +578,11 @@ public class CalendarBean implements Serializable {
      */
     public void checkEventDate() {
         event.setAllDay(false);
-        if (event.getStartDate().after(event.getEndDate())) {
+        if (event.getStartDate().isAfter(event.getEndDate())) {
             event.setEndDate(event.getStartDate());
         }
 
-        if (event.getEndDate().before(event.getStartDate())) {
+        if (event.getEndDate().isBefore(event.getStartDate())) {
             event.setStartDate(event.getEndDate());
         }
     }
@@ -618,8 +596,8 @@ public class CalendarBean implements Serializable {
                 UserDTO user = handleUser.getUser(Long.parseLong(selectedResult.getId()));
                 // CHECK IF ALREADY ADDED
                 boolean alreadyAdded = true;
-                if (!event.getListParticipantAndInvitedUsers().isEmpty()) {
-                    for (UserDTO userList : event.getListParticipantAndInvitedUsers()) {
+                if (!event.getData().getListParticipantAndInvitedUsers().isEmpty()) {
+                    for (UserDTO userList : event.getData().getListParticipantAndInvitedUsers()) {
                         if (userList.equals(user)) {
                             addMessage(
                                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -629,14 +607,14 @@ public class CalendarBean implements Serializable {
                     }
                 }
                 if (alreadyAdded) {
-                    if (event.getInvitedUsers() == null) {
-                        event.setInvitedUsers(new ArrayList<>());
+                    if (event.getData().getInvitedUsers() == null) {
+                        event.getData().setInvitedUsers(new ArrayList<>());
                     }
-                    event.getInvitedUsers().add(user);
-                    if (event.getListParticipantAndInvitedUsers() == null) {
-                        event.setListParticipantAndInvitedUsers(new ArrayList<>());
+                    event.getData().getInvitedUsers().add(user);
+                    if (event.getData().getListParticipantAndInvitedUsers() == null) {
+                        event.getData().setListParticipantAndInvitedUsers(new ArrayList<>());
                     }
-                    event.getListParticipantAndInvitedUsers().add(user);
+                    event.getData().getListParticipantAndInvitedUsers().add(user);
 
                     // ADD PARTICIPANT
                     handleEvent.addParticipant(event.getId(), selectedResult);
@@ -644,7 +622,7 @@ public class CalendarBean implements Serializable {
                 }
 
                 // ADD NOTIFICATION TO PARTICIPANT
-                String message = "This is an invite from " + handleUser.getUser(Long.parseLong(event.getEoId())).getFirstName() + " to " + event.getTitle() + " on " + event.getStartDate() + ". Do you want join the event?";
+                String message = "This is an invite from " + handleUser.getUser(Long.parseLong(event.getData().getEoId())).getFirstName() + " to " + event.getTitle() + " on " + event.getStartDate() + ". Do you want join the event?";
                 if (handleUser.addNotification(new EventNotificationDTO(null, event.getId(), Status.PENDING, selectedResult.getId(), message))) {
 
                     addMessage(
@@ -705,7 +683,15 @@ public class CalendarBean implements Serializable {
             listParticipantAndInvitedUser.addAll(selectedEvent.getEventParticipants());
             listParticipantAndInvitedUser.addAll(selectedEvent.getInvitedUsers());
 
-            event = new WeatherScheduleEvent(selectedEvent.getId(), selectedEvent.getTitle(), selectedEvent.getDescription(), selectedEvent.getStartDate(), selectedEvent.getEndDate(), allDay, selectedEvent.getLocation(), selectedEvent.getSite(), selectedEvent.getVisibility(), selectedEvent.getEoId(), listParticipantAndInvitedUser, selectedEvent.getEventParticipants(), selectedEvent.getInvitedUsers(), selectedEvent.getWeather());
+            WeatherScheduleEventData data = new WeatherScheduleEventData(selectedEvent.getLocation(), selectedEvent.getSite(), selectedEvent.getVisibility(), selectedEvent.getEoId(), listParticipantAndInvitedUser, selectedEvent.getEventParticipants(), selectedEvent.getInvitedUsers(), selectedEvent.getWeather());
+            event = DefaultScheduleEvent.<WeatherScheduleEventData>builder()
+                    .id(selectedEvent.getId())
+                    .title(selectedEvent.getTitle())
+                    .description(selectedEvent.getDescription())
+                    .startDate(selectedEvent.getStartDate())
+                    .endDate(selectedEvent.getEndDate())
+                    .allDay(allDay)
+                    .data(data).build();
             LOGGER.log(Level.INFO, "Show Public Event: " + event.toString());
         } catch (ErrorRequestException ex) {
             LOGGER.log(Level.ERROR, ex);
@@ -737,7 +723,7 @@ public class CalendarBean implements Serializable {
                             "Error: ", e.getMessage()));
         }
         for (EventDTO evento : eventi) {
-            WeatherScheduleEvent weatherEvent = mapEventDTOtoWeatherScheduleEvent(evento);
+            DefaultScheduleEvent<WeatherScheduleEventData> weatherEvent = mapEventDTOtoWeatherScheduleEvent(evento);
             eventModel.addEvent(weatherEvent);
             LOGGER.log(Level.INFO, "LOAD EVENT EVENT: " + weatherEvent.toString());
         }
@@ -746,16 +732,17 @@ public class CalendarBean implements Serializable {
     }
 
     private void eventPrivacyCheck() {
-        for (WeatherScheduleEvent eventWeather : eventModel.getWeatherEvents()) {
+        for (ScheduleEvent<?> event : eventModel.getEvents()) {
+            DefaultScheduleEvent<WeatherScheduleEventData> eventWeather = (DefaultScheduleEvent<WeatherScheduleEventData>) event;
             eventWeather.setEditable(false);
-            if (eventWeather.getVisibility().equals(Visibility.PRIVATE.name())) {
+            if (eventWeather.getData().getVisibility().equals(Visibility.PRIVATE.name())) {
                 eventWeather.setDescription("");
                 eventWeather.setTitle(currentUser.getFirstName() + " " + currentUser.getLastName() + " Private Event");
-                eventWeather.getEventParticipants().clear();
-                eventWeather.getInvitedUsers().clear();
-                eventWeather.getListParticipantAndInvitedUsers().clear();
-                eventWeather.setLocation("");
-                eventWeather.setWeather(null);
+                eventWeather.getData().getEventParticipants().clear();
+                eventWeather.getData().getInvitedUsers().clear();
+                eventWeather.getData().getListParticipantAndInvitedUsers().clear();
+                eventWeather.getData().setLocation("");
+                eventWeather.getData().setWeather(null);
 
             }
 
@@ -775,12 +762,20 @@ public class CalendarBean implements Serializable {
         changeUser();
     }
 
-    private WeatherScheduleEvent mapEventDTOtoWeatherScheduleEvent(EventDTO evento) {
+    private DefaultScheduleEvent<WeatherScheduleEventData> mapEventDTOtoWeatherScheduleEvent(EventDTO evento) {
         boolean allDay = evento.getStartDate().equals(evento.getEndDate());
         List<UserDTO> listParticipantAndInvitedUser = new ArrayList<>();
         listParticipantAndInvitedUser.addAll(evento.getEventParticipants());
         listParticipantAndInvitedUser.addAll(evento.getInvitedUsers());
-        WeatherScheduleEvent weatherEvent = new WeatherScheduleEvent(evento.getId(), evento.getTitle(), evento.getDescription(), evento.getStartDate(), evento.getEndDate(), allDay, evento.getLocation(), evento.getSite(), evento.getVisibility(), evento.getEoId(), listParticipantAndInvitedUser, evento.getEventParticipants(), evento.getInvitedUsers(), evento.getWeather());
+        WeatherScheduleEventData data = new WeatherScheduleEventData(evento.getLocation(), evento.getSite(), evento.getVisibility(), evento.getEoId(), listParticipantAndInvitedUser, evento.getEventParticipants(), evento.getInvitedUsers(), evento.getWeather());
+        DefaultScheduleEvent<WeatherScheduleEventData> weatherEvent = DefaultScheduleEvent.<WeatherScheduleEventData>builder()
+                .id(evento.getId())
+                .title(evento.getTitle())
+                .description(evento.getDescription())
+                .startDate(evento.getStartDate())
+                .endDate(evento.getEndDate())
+                .allDay(allDay)
+                .data(data).build();
         weatherEvent.setEditable(evento.isEditable());
         return weatherEvent;
     }

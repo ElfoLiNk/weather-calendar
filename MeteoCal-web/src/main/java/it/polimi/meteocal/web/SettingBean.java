@@ -41,7 +41,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.primefaces.model.UploadedFile;
+import org.primefaces.model.file.UploadedFile;
 
 /**
  * Class that handle the settings page in the web site and the user settings
@@ -221,7 +221,7 @@ public class SettingBean {
             String filename = FilenameUtils.getName(uploadedFile.getFileName());
             try {
                 File file = new File(System.getProperty("com.sun.aas.instanceRoot") + "/var/webapp/images", filename);
-                try (InputStream input = uploadedFile.getInputstream();
+                try (InputStream input = uploadedFile.getInputStream();
                      OutputStream output = new FileOutputStream(file)) {
                     LOGGER.log(Level.INFO, file.getAbsolutePath());
                     loggedUser.setAvatar("/images/" + file.getName());

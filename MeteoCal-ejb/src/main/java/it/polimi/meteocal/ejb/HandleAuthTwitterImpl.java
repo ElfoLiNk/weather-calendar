@@ -232,7 +232,7 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
                     User utenteVecchio = q.getResultList().get(0);
                     if (!Objects.equals(utente.getId(), utenteVecchio.getId())) {
                         // Need to merge the two account
-                        utente = HandleUserImpl.mergeUserAccount(utente,
+                        HandleUserImpl.mergeUserAccount(utente,
                                 utenteVecchio);
 
                         // set the new Twitter data

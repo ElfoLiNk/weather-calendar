@@ -16,7 +16,7 @@
  */
 package it.polimi.meteocal.dto;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -34,9 +34,9 @@ public class ForecastDTO {
 
     private Float longitude;
 
-    private java.util.Calendar date;
+    private LocalDateTime date;
 
-    private java.util.Calendar creationDate;
+    private LocalDateTime creationDate;
 
     private WeatherDTO weather;
 
@@ -55,7 +55,7 @@ public class ForecastDTO {
      * @param creationDate the creation date of the forecast
      * @param weather      the weather related to the forecast
      */
-    public ForecastDTO(Long id, String location, Float latitude, Float longitude, Calendar date, Calendar creationDate, WeatherDTO weather) {
+    public ForecastDTO(Long id, String location, Float latitude, Float longitude, LocalDateTime date, LocalDateTime creationDate, WeatherDTO weather) {
         this.id = id;
         this.location = location;
         this.latitude = latitude;
@@ -124,28 +124,28 @@ public class ForecastDTO {
     /**
      * @return the date of the forecast
      */
-    public Calendar getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
     /**
      * @param date the date to set
      */
-    public void setDate(Calendar date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
     /**
      * @return the creation date of the forecast
      */
-    public Calendar getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
     /**
      * @param creationDate the creation date to set
      */
-    public void setCreationDate(Calendar creationDate) {
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 
