@@ -49,7 +49,7 @@
         <dependency>
             <groupId>org.ocpsoft.prettytime</groupId>
             <artifactId>prettytime-integration-jsf</artifactId>
-            <version>5.0.0.Final</version>
+            <version>5.0.1.Final</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
