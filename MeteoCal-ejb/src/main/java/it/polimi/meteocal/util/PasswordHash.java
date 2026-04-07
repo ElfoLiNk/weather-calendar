@@ -50,7 +50,7 @@ public class PasswordHash {
     /**
      *
      */
-    public static final String PBKDF2_ALGORITHM = "PBKDF2WithHmacSHA1";
+    public static final String PBKDF2_ALGORITHM = "PBKDF2WithHmacSHA256";
 
     // The following constants may be changed without breaking existing hashes.
 
@@ -62,12 +62,12 @@ public class PasswordHash {
     /**
      *
      */
-    public static final int HASH_BYTE_SIZE = 24;
+    public static final int HASH_BYTE_SIZE = 32;
 
     /**
      *
      */
-    public static final int PBKDF2_ITERATIONS = 1000;
+    public static final int PBKDF2_ITERATIONS = 600000;
 
     /**
      *
