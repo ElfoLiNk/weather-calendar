@@ -86,7 +86,7 @@ public class LoginBean implements Serializable {
      */
     public void doLogin() {
         PrimeFaces.Ajax ajax = PrimeFaces.current().ajax();
-        LOGGER.log(Level.INFO, "Login User " + loginUser);
+        LOGGER.log(Level.INFO, () -> "Login User " + loginUser);
         boolean loggedIn = handleUser.doLogin(loginUser);
         loginUser = new UserDTO();
         if (loggedIn) {

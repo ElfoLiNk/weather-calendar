@@ -245,7 +245,7 @@ public class CalendarBean implements Serializable {
             }
             event.setId(String.valueOf(idEventDb));
             eventModel.addEvent(event);
-            LOGGER.log(Level.INFO, "Evento aggiunto: " + evento.toString());
+            LOGGER.log(Level.INFO, () -> "Evento aggiunto: " + evento.toString());
             loadEventsModel(AuthUtil.getUserID());
         } else {
             // UPDATE EVENT
@@ -312,7 +312,7 @@ public class CalendarBean implements Serializable {
                 currentUser = handleUser.getUser(
                         authUtente.getUserID());
                 loggedUser = currentUser;
-                LOGGER.log(Level.INFO, "NotificationDTO SIZE: " + currentUser.getNotifications().size());
+                LOGGER.log(Level.INFO, () -> "NotificationDTO SIZE: " + currentUser.getNotifications().size());
 
             } catch (ErrorRequestException e) {
                 LOGGER.log(Level.ERROR, e);
@@ -456,7 +456,7 @@ public class CalendarBean implements Serializable {
         if (event.getId() == null) {
             addMessage(new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     ERROR_PREFIX, "Not Valid Event"));
-            LOGGER.log(Level.ERROR, "Event not removed: " + event.toString());
+            LOGGER.log(Level.ERROR, () -> "Event not removed: " + event.toString());
         } else {
             // REMOVE EVENT
             try {
@@ -491,7 +491,7 @@ public class CalendarBean implements Serializable {
         if (event.getId() == null) {
             addMessage(new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     ERROR_PREFIX, "No event selected"));
-            LOGGER.log(Level.ERROR, "Event not removed: " + event.toString());
+            LOGGER.log(Level.ERROR, () -> "Event not removed: " + event.toString());
         } else {
             // CANCEL EVENT
             try {
@@ -549,8 +549,8 @@ public class CalendarBean implements Serializable {
     public void handleSelect(SelectEvent<ResultDTO> event) {
         // SELECT SEARCH BAR
         selectedResult = event.getObject();
-        LOGGER.log(Level.INFO, "Selected Result: " + selectedResult.toString());
-        LOGGER.log(Level.INFO, "UIcomponent: " + event.getComponent().getId());
+        LOGGER.log(Level.INFO, () -> "Selected Result: " + selectedResult.toString());
+        LOGGER.log(Level.INFO, () -> "UIcomponent: " + event.getComponent().getId());
 
         if ("searchBar".equals(event.getComponent().getId())) {
             switch (selectedResult.getType()) {
@@ -665,10 +665,10 @@ public class CalendarBean implements Serializable {
      * Method that accept the notification
      */
     public void acceptNotification() {
-        LOGGER.log(Level.INFO, "Selected Notification: " + selectedNotification.toString());
+        LOGGER.log(Level.INFO, () -> "Selected Notification: " + selectedNotification.toString());
         handleUser.acceptNotification(selectedNotification);
         loggedUser.getNotifications().remove(selectedNotification);
-        LOGGER.log(Level.INFO, "Size Notifications: " + loggedUser.getNotifications().size());
+        LOGGER.log(Level.INFO, () -> "Size Notifications: " + loggedUser.getNotifications().size());
         selectedNotification = null;
         init();
 
@@ -678,10 +678,10 @@ public class CalendarBean implements Serializable {
      * Method that decline the notification
      */
     public void declineNotification() {
-        LOGGER.log(Level.INFO, "Selected Notification: " + selectedNotification.toString());
+        LOGGER.log(Level.INFO, () -> "Selected Notification: " + selectedNotification.toString());
         handleUser.declineNotification(selectedNotification);
         loggedUser.getNotifications().remove(selectedNotification);
-        LOGGER.log(Level.INFO, "Size Notifications: " + loggedUser.getNotifications().size());
+        LOGGER.log(Level.INFO, () -> "Size Notifications: " + loggedUser.getNotifications().size());
         selectedNotification = null;
     }
 
@@ -702,7 +702,7 @@ public class CalendarBean implements Serializable {
                     .endDate(selectedEvent.getEndDate())
                     .allDay(allDay)
                     .data(data).build();
-            LOGGER.log(Level.INFO, "Show Public Event: " + event.toString());
+            LOGGER.log(Level.INFO, () -> "Show Public Event: " + event.toString());
         } catch (ErrorRequestException ex) {
             LOGGER.log(Level.ERROR, ex);
             addMessage(
@@ -735,10 +735,11 @@ public class CalendarBean implements Serializable {
         for (EventDTO evento : eventi) {
             DefaultScheduleEvent<WeatherScheduleEventData> weatherEvent = mapEventDTOtoWeatherScheduleEvent(evento);
             eventModel.addEvent(weatherEvent);
-            LOGGER.log(Level.INFO, "LOAD EVENT EVENT: " + weatherEvent.toString());
+            LOGGER.log(Level.INFO, () -> "LOAD EVENT EVENT: " + weatherEvent.toString());
         }
 
-        LOGGER.log(Level.INFO, "SIZE EVENTI: " + eventi.size());
+        final int eventiSize = eventi.size();
+        LOGGER.log(Level.INFO, () -> "SIZE EVENTI: " + eventiSize);
     }
 
     private void eventPrivacyCheck() {

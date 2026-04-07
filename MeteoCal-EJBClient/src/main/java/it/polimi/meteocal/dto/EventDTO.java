@@ -74,6 +74,7 @@ public class EventDTO {
      * @param invitedUsers the list of the invited users
      * @param weather the weather of the event
      */
+    @SuppressWarnings("java:S107")
     public EventDTO(String id, String eoId, String title, LocalDateTime startDate, LocalDateTime endDate, boolean editable, Site site, Visibility visibility, String description, String location, List<UserDTO> eventParticipants, List<UserDTO> invitedUsers, WeatherDTO weather) {
         this.id = id;
         this.eoId = eoId;

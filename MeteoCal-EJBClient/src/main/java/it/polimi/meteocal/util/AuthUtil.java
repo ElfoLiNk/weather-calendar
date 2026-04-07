@@ -28,6 +28,10 @@ import jakarta.servlet.http.HttpSession;
  */
 public class AuthUtil {
 
+    private AuthUtil() {
+        throw new IllegalStateException("Utility class");
+    }
+
     /**
      * Method that create a user session in MeteoCal
      *

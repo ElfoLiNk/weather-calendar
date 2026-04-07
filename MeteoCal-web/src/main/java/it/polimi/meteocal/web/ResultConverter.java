@@ -33,13 +33,17 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Matteo Gazzetta, Alessandro Fato
  */
-@FacesConverter("resultConverter")
+@FacesConverter(value = "resultConverter", managed = true)
 public class ResultConverter implements Converter<ResultDTO> {
-    
-    @Inject
-    SearchBean searchBean;
-    
+
+    private final SearchBean searchBean;
+
     private static final Logger LOGGER = LogManager.getLogger(ResultConverter.class.getName());
+
+    @Inject
+    public ResultConverter(SearchBean searchBean) {
+        this.searchBean = searchBean;
+    }
 
     /**
      *
@@ -52,7 +56,7 @@ public class ResultConverter implements Converter<ResultDTO> {
     public ResultDTO getAsObject(FacesContext fc, UIComponent uic, String value) {
         if (value != null && value.trim().length() > 0) {
             try {
-                LOGGER.log(Level.INFO, "CONVERTER VALUE TO GET OBJECT " + value);
+                LOGGER.log(Level.INFO, () -> "CONVERTER VALUE TO GET OBJECT " + value);
                 if ("searchBar".equals(uic.getId())) {
                     return searchBean.search(value).get(0);
                 }

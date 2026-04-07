@@ -133,7 +133,7 @@ public class HandleUserImpl implements HandleUser {
             user.setSetting(new SettingDTO(account.getSetting().getDateFormat(), account.getSetting().getTimeFormat(), account.getSetting().getTimeZone()));
             user.setNotifications(getNotifications(account));
             user.setPreferedCalendarsIDs(getPreferedCalendarsID(account));
-            LOGGER.log(Level.INFO, "Notification SIZE: " + account.getListNotifications().size());
+            LOGGER.log(Level.INFO, () -> "Notification SIZE: " + account.getListNotifications().size());
             return user;
         } else {
             throw new ErrorRequestException("no user", false);
@@ -259,7 +259,7 @@ public class HandleUserImpl implements HandleUser {
                 AuthUtil.makeUserSession(query.getResultList().get(0).getId());
                 return true;
             } else {
-                LOGGER.log(Level.ERROR, "Not registered user with this email: " + loginUser.getEmail());
+                LOGGER.log(Level.ERROR, () -> "Not registered user with this email: " + loginUser.getEmail());
                 return false;
             }
         }
@@ -455,8 +455,8 @@ public class HandleUserImpl implements HandleUser {
                 em.remove(eventNotification);
                 em.flush();
 
-                LOGGER.log(Level.INFO, "ACCEPT PARTICEPITATION TO EVENT: " + eventNotification.getEvent().getId());
-                LOGGER.log(Level.INFO, "CHECK REMOVED INVITED " + event.getInvitedUsers().size());
+                LOGGER.log(Level.INFO, () -> "ACCEPT PARTICEPITATION TO EVENT: " + eventNotification.getEvent().getId());
+                LOGGER.log(Level.INFO, () -> "CHECK REMOVED INVITED " + event.getInvitedUsers().size());
             } else {
                 // ALERT MESSAGE
                 eventNotification.setStatus(Status.ACCEPTED);
@@ -536,7 +536,7 @@ public class HandleUserImpl implements HandleUser {
                 em.merge(notification);
                 em.remove(notification);
                 em.flush();
-                LOGGER.log(Level.INFO, "DECLINED PARTICEPITATION TO EVENT: " + notification.getEvent().getId());
+                LOGGER.log(Level.INFO, () -> "DECLINED PARTICEPITATION TO EVENT: " + notification.getEvent().getId());
             } else if (user != null && event != null) {
                 // USER DECLINE TO ALERT NOTIFICATION
                 event.getEventParticipants().remove(user);

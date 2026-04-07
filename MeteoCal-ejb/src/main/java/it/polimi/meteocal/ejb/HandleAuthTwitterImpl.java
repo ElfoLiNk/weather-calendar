@@ -126,24 +126,24 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
             Configuration configuration = builder.build();
             TwitterFactory factory = new TwitterFactory(configuration);
             twitter = factory.getInstance();
-            //if (requestToken == null) {
             requestToken = twitter.getOAuthRequestToken(URL_BASE
                     + "/MeteoCal-web/loginTwitter.xhtml");
-            //}
             urlLogin = requestToken.getAuthenticationURL();
         } catch (TwitterException e) {
             LOGGER.log(Level.ERROR, e);
         }
         cont++;
-        LOGGER.log(Level.INFO, "Conteggio: " + cont);
-        LOGGER.log(Level.INFO, "URL LOGIN " + urlLogin);
+        final int contSnapshot = cont;
+        final String urlLoginSnapshot = urlLogin;
+        LOGGER.log(Level.INFO, () -> "Conteggio: " + contSnapshot);
+        LOGGER.log(Level.INFO, () -> "URL LOGIN " + urlLoginSnapshot);
         return urlLogin;
     }
 
     @Override
     public boolean doLoginTwitter(String verifier) {
         try {
-            LOGGER.log(Level.INFO, "Verifier: " + verifier);
+            LOGGER.log(Level.INFO, () -> "Verifier: " + verifier);
 
             accessToken = twitter.getOAuthAccessToken(requestToken, verifier);
 

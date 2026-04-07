@@ -163,7 +163,7 @@ public class HandleForecastImpl implements HandleForecast {
                     }
                 }
             } else {
-                LOGGER.log(Level.WARN, "No Hourly Forecast Data Available for: " + location);
+                LOGGER.log(Level.WARN, () -> "No Hourly Forecast Data Available for: " + location);
             }
         } catch (IOException ex) {
             LOGGER.log(Level.ERROR, ex);
@@ -209,7 +209,7 @@ public class HandleForecastImpl implements HandleForecast {
                     }
                 }
             } else {
-                LOGGER.log(Level.WARN, "No Daily Forecast Data Available for: " + location);
+                LOGGER.log(Level.WARN, () -> "No Daily Forecast Data Available for: " + location);
             }
         } catch (IOException ex) {
             LOGGER.log(Level.ERROR, ex);
@@ -249,7 +249,7 @@ public class HandleForecastImpl implements HandleForecast {
                     em.merge(event);
                     em.remove(oldForecast);
                     em.flush();
-                    LOGGER.log(Level.INFO, "REMOVED: " + oldForecast.toString());
+                    LOGGER.log(Level.INFO, () -> "REMOVED: " + oldForecast.toString());
                     eventsToUpdate.add(event);
                 }
                 // past events: leave forecast as-is
@@ -391,7 +391,7 @@ public class HandleForecastImpl implements HandleForecast {
         }
         ForecastDTO forecast = mapForecastToForecastDTO(forecastEntity);
         if (forecast != null) {
-            LOGGER.log(Level.INFO, "FOUND FORECAST: " + forecast.toString());
+            LOGGER.log(Level.INFO, () -> "FOUND FORECAST: " + forecast.toString());
         }
         return forecast;
     }

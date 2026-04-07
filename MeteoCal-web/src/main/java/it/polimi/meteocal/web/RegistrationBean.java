@@ -105,7 +105,7 @@ public class RegistrationBean implements Serializable {
     public void doRegister() {
         boolean registered = false;
         try {
-            LOGGER.log(Level.INFO, "Register User " + registerUser);
+            LOGGER.log(Level.INFO, () -> "Register User " + registerUser);
             handleUser.addUser(registerUser);
             String msg = "User Registered successfully";
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, msg, msg));

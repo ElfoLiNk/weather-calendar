@@ -128,6 +128,7 @@ public class Event implements Serializable {
      * @param invitedUsers the list of the invited users
      * @param forecast the forecast weather of the event
      */
+    @SuppressWarnings("java:S107")
     public Event(User eo, String name, String description, String location, Site site, LocalDateTime startDateTime, LocalDateTime endDateTime, Forecast forecast, Visibility visibility, List<User> eventParticipants, List<User> invitedUsers) {
         this.eo = eo;
         this.name = name;

@@ -402,7 +402,7 @@ public class HandleEventImpl implements HandleEvent {
                     event.setForecast(null);
                 }
             }
-            LOGGER.log(Level.INFO, "EVENT MOVED: " + event.toString());
+            LOGGER.log(Level.INFO, () -> "EVENT MOVED: " + event.toString());
             em.merge(event);
             em.flush();
 
@@ -454,7 +454,7 @@ public class HandleEventImpl implements HandleEvent {
         }
         event.getInvitedUsers().add(user);
 
-        LOGGER.log(Level.INFO, "User participant " + user.toString() + " added to event: " + event.toString());
+        LOGGER.log(Level.INFO, () -> "User participant " + user.toString() + " added to event: " + event.toString());
         em.merge(event);
         em.flush();
 
@@ -473,7 +473,7 @@ public class HandleEventImpl implements HandleEvent {
                     Calendar.class);
             queryCalendar.setParameter(PARAM_EVENT, event);
             // UPDATE FORECAST
-            LOGGER.log(Level.INFO, "CHECK EVENT WEATHER CONDITION DATE: " + event.getStartDate());
+            LOGGER.log(Level.INFO, () -> "CHECK EVENT WEATHER CONDITION DATE: " + event.getStartDate());
             ForecastDTO forecast = handleForecast.getForecast(event.getLocation(), event.getStartDate());
             if (forecast != null && !queryCalendar.getResultList().isEmpty()) {
                 // RECOMENDER SYSTEM
@@ -552,7 +552,7 @@ public class HandleEventImpl implements HandleEvent {
      * @return the suggester rescheduled event or null if there isn't any
      */
     private Event checkBestAlternativeDay(Event event) {
-        LOGGER.log(Level.INFO, "CHECK BEST ALTERNATIVE EVENT DATE: " + event.getStartDate());
+        LOGGER.log(Level.INFO, () -> "CHECK BEST ALTERNATIVE EVENT DATE: " + event.getStartDate());
         Event suggestedEvent = new Event(event.getEo(), event.getName(), event.getDescription(), event.getLocation(), event.getSite(), null, null, null, event.getVisibility(), event.getEventParticipants(), event.getInvitedUsers());
         // GET FORECASTS FOR THE LOCATION
         List<ForecastDTO> forecasts = handleForecast.getForecasts(event.getLocation());
@@ -607,7 +607,7 @@ public class HandleEventImpl implements HandleEvent {
         List<LocalDateTime> forecastDates = new ArrayList<>();
         for (ForecastDTO forecast : forecasts) {
             forecastDates.add(forecast.getDate());
-            LOGGER.log(Level.INFO, "Date Forecast Rimaste: " + forecast.getDate().toString());
+            LOGGER.log(Level.INFO, () -> "Date Forecast Rimaste: " + forecast.getDate().toString());
         }
         LocalDateTime nearestDate = getDateNearest(forecastDates, event.getStartDate());
 
@@ -615,7 +615,8 @@ public class HandleEventImpl implements HandleEvent {
         for (ForecastDTO forecast : forecasts) {
             if (forecast.getDate().equals(nearestDate)) {
                 forecastId = forecast.getId();
-                LOGGER.log(Level.INFO, "ForecastID: " + forecastId);
+                final long forecastIdSnapshot = forecastId;
+                LOGGER.log(Level.INFO, () -> "ForecastID: " + forecastIdSnapshot);
             }
         }
         if (forecastId != -1) {
@@ -638,7 +639,7 @@ public class HandleEventImpl implements HandleEvent {
      * @return nearest date to target date
      */
     private LocalDateTime getDateNearest(List<LocalDateTime> dates, LocalDateTime targetDate) {
-        LOGGER.log(Level.INFO, "targetDate: " + targetDate);
+        LOGGER.log(Level.INFO, () -> "targetDate: " + targetDate);
         LocalDateTime nearestDate = new TreeSet<>(dates).floor(targetDate);
         if (nearestDate == null) {
             nearestDate = new TreeSet<>(dates).ceiling(targetDate);

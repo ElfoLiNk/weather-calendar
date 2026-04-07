@@ -47,6 +47,10 @@ import javax.crypto.spec.PBEKeySpec;
 
 public class PasswordHash {
 
+    private PasswordHash() {
+        throw new IllegalStateException("Utility class");
+    }
+
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     /**

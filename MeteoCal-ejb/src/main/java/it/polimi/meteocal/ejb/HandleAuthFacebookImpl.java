@@ -112,7 +112,7 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
                 ResponseHandler<String> responseHandler = new BasicResponseHandler();
                 String responseBody = httpclient.execute(httpget,
                         responseHandler);
-                LOGGER.log(Level.INFO, "Response Body: " + responseBody);
+                LOGGER.log(Level.INFO, () -> "Response Body: " + responseBody);
                 accessToken = responseBody.startsWith("access_token=")
                         ? responseBody.substring("access_token=".length())
                         : responseBody;
@@ -280,7 +280,7 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
         // SET UP SETTING
         Setting setting = new Setting();
         setting.setTimeZone(TimeZone.getTimeZone("GMT" + userFB.getTimezone()));
-        LOGGER.log(Level.INFO, "TimeZone User " + utente.getId() + ": " + setting.getTimeZone().toString());
+        LOGGER.log(Level.INFO, () -> "TimeZone User " + utente.getId() + ": " + setting.getTimeZone().toString());
         utente.setSetting(setting);
 
         // SETUP CALENDAR

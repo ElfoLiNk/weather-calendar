@@ -140,7 +140,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
             /* Though not necessary when first created, you can manually refresh the token, which is needed after 60 minutes. */
             if (credential.getExpiresInSeconds() < 1) {
                 boolean ref = credential.refreshToken();
-                LOGGER.log(Level.DEBUG, "Refresh token refreshed: " + ref);
+                LOGGER.log(Level.DEBUG, () -> "Refresh token refreshed: " + ref);
                 LOGGER.log(Level.DEBUG, "Access token: [redacted]");
                 LOGGER.log(Level.DEBUG, "Refresh token: [redacted]");
 
@@ -222,10 +222,6 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
 
             // Set authorized credentials.
             credential.setFromTokenResponse(tokenResponse);
-            // Though not necessary when first created, you can manually refresh
-            // the
-            // token, which is needed after 60 minutes.
-            // credential.refreshToken();
 
             String tokenGoogle = tokenResponse.toString();
 
@@ -381,13 +377,6 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
 
         flow = new GoogleAuthorizationCodeFlow.Builder(new NetHttpTransport(),
                 new JacksonFactory(), CLIENT_ID, CLIENT_SECRET, scope)
-                //.setApprovalPrompt("force")
-                // Set the access type to offline so that the token can be
-                // refreshed.
-                // By default, the library will automatically refresh tokens
-                // when it
-                // can, but this can be turned off by setting
-                // dfp.api.refreshOAuth2Token=false in your ads.properties file.
                 .setAccessType("offline")
                 .build();
 

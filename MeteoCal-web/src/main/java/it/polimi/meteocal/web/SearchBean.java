@@ -114,14 +114,14 @@ public class SearchBean implements Serializable {
         if (!query.isEmpty()) {
             result.addAll(handleUser.search(query));
             result.addAll(handleEvent.search(query));
-            LOGGER.log(Level.INFO, "SIZE RESULT: " + result.size());
+            LOGGER.log(Level.INFO, () -> "SIZE RESULT: " + result.size());
         }
         return result;
     }
 
     /**
      * Method that search the user in the system
-     * 
+     *
      * @param query the query of the search
      * @return the results of the search
      */
@@ -129,7 +129,7 @@ public class SearchBean implements Serializable {
         result = new ArrayList<>();
         if (!query.isEmpty()) {
             result.addAll(handleUser.searchUser(query));
-            LOGGER.log(Level.INFO, "SIZE RESULT: " + result.size());
+            LOGGER.log(Level.INFO, () -> "SIZE RESULT: " + result.size());
         }
         return result;
     }
