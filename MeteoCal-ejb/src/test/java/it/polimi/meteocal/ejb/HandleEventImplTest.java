@@ -20,6 +20,7 @@ import it.polimi.meteocal.dto.EventDTO;
 import it.polimi.meteocal.dto.ForecastDTO;
 import it.polimi.meteocal.dto.ResultDTO;
 import it.polimi.meteocal.dto.WeatherDTO;
+import java.time.Duration;
 import it.polimi.meteocal.entities.Event;
 import it.polimi.meteocal.entities.EventNotification;
 import it.polimi.meteocal.entities.Forecast;
@@ -53,6 +54,7 @@ import org.mockito.InjectMocks;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.reset;
@@ -398,6 +400,76 @@ public class HandleEventImplTest {
         selectedResult.setId(String.valueOf(ep.getId()));
         handleEvent.addParticipant(eventDTO.getId(), selectedResult);
         assertTrue(event.getInvitedUsers().contains(ep));
+    }
+
+    /**
+     * Test of resizeEvent method, of class HandleEventImpl.
+     * Verifies that after resizing the event's start and end dates are updated by the given deltas.
+     *
+     * @throws it.polimi.meteocal.exception.ErrorRequestException
+     */
+    @Test
+    public void testResizeEvent() throws ErrorRequestException {
+        System.out.println("resizeEvent");
+        LocalDateTime originalStart = event.getStartDate();
+        LocalDateTime originalEnd = event.getEndDate();
+
+        Duration startDelta = Duration.ofMinutes(30);
+        Duration endDelta = Duration.ofHours(1);
+
+        handleEvent.resizeEvent(eventDTO.getId(), startDelta, endDelta);
+
+        assertEquals(originalStart.plus(startDelta), event.getStartDate());
+        assertEquals(originalEnd.plus(endDelta), event.getEndDate());
+        verify(handleEvent.em, times(1)).merge(event);
+    }
+
+    /**
+     * Test of checkEventWeatherCondition method when no forecast is available for the event.
+     * Verifies that no notification is sent when handleForecast returns null.
+     */
+    @Test
+    public void testCheckEventWeatherConditionNoForecast() {
+        System.out.println("checkEventWeatherConditionNoForecast");
+        List<Event> listEvent = new ArrayList<>();
+        listEvent.add(event);
+        when(query.getResultList()).thenReturn(listEvent);
+
+        // Mock the calendar query that is always executed inside the event loop
+        TypedQuery<it.polimi.meteocal.entities.Calendar> queryCalendar = mock(TypedQuery.class);
+        when(handleEvent.em.createNamedQuery(it.polimi.meteocal.entities.Calendar.FIND_BY_ORGANIZEDEVENT,
+                it.polimi.meteocal.entities.Calendar.class)).thenReturn(queryCalendar);
+        when(queryCalendar.setParameter(any(String.class), any())).thenReturn(queryCalendar);
+        when(queryCalendar.getResultList()).thenReturn(new ArrayList<>());
+
+        // No forecast available for this event's location/date
+        when(handleEvent.handleForecast.getForecast(event.getLocation(), event.getStartDate())).thenReturn(null);
+
+        handleEvent.checkEventWeatherCondition(user.getId());
+
+        // No notification should be persisted because forecast is null
+        verify(handleEvent.em, never()).persist(any(EventNotification.class));
+        verify(handleEvent.em, never()).persist(any(RescheduleNotification.class));
+    }
+
+    /**
+     * Test of getEvents method when the user has no events, of class HandleEventImpl.
+     *
+     * @throws it.polimi.meteocal.exception.ErrorRequestException
+     */
+    @Test
+    public void testGetEventsEmpty() throws ErrorRequestException {
+        System.out.println("getEventsEmpty");
+        // Create a user with an empty calendar
+        User emptyUser = new User();
+        emptyUser.setId(99L);
+        it.polimi.meteocal.entities.Calendar emptyCalendar = new it.polimi.meteocal.entities.Calendar();
+        emptyUser.setCalendar(emptyCalendar);
+        when(handleEvent.em.find(User.class, emptyUser.getId())).thenReturn(emptyUser);
+
+        List<EventDTO> result = handleEvent.getEvents(emptyUser.getId());
+
+        assertTrue(result.isEmpty());
     }
 
     /**

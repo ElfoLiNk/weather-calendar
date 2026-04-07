@@ -17,6 +17,7 @@
 package it.polimi.meteocal.ejb;
 
 import it.polimi.meteocal.dto.EventNotificationDTO;
+import it.polimi.meteocal.dto.RescheduleNotificationDTO;
 import it.polimi.meteocal.dto.ResultDTO;
 import it.polimi.meteocal.dto.SettingDTO;
 import it.polimi.meteocal.dto.UserDTO;
@@ -24,6 +25,7 @@ import it.polimi.meteocal.entities.Calendar;
 import it.polimi.meteocal.entities.Event;
 import it.polimi.meteocal.entities.EventNotification;
 import it.polimi.meteocal.entities.Notification;
+import it.polimi.meteocal.entities.RescheduleNotification;
 import it.polimi.meteocal.entities.Setting;
 import it.polimi.meteocal.entities.User;
 import it.polimi.meteocal.exception.ErrorRequestException;
@@ -57,6 +59,7 @@ import org.junit.Test;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -168,6 +171,10 @@ public class HandleUserImplTest {
         when(handleUser.em.createNamedQuery(Notification.FIND_BY_USER, Notification.class)).thenReturn(queryNotif);
         TypedQuery<EventNotification> queryEventNotif = mock(TypedQuery.class);
         when(handleUser.em.createNamedQuery(EventNotification.FIND_BY_EVENT, EventNotification.class)).thenReturn(queryEventNotif);
+        TypedQuery<EventNotification> queryOldEventNotif = mock(TypedQuery.class);
+        when(handleUser.em.createNamedQuery(EventNotification.FIND_OLD_NOTIFICATION, EventNotification.class)).thenReturn(queryOldEventNotif);
+        TypedQuery<RescheduleNotification> queryOldReschNotif = mock(TypedQuery.class);
+        when(handleUser.em.createNamedQuery(RescheduleNotification.FIND_OLD_NOTIFICATION, RescheduleNotification.class)).thenReturn(queryOldReschNotif);
 
         when(handleUser.em.createNamedQuery(User.FIND_BY_CALENDAR_ID, User.class)).thenReturn(query);
         when(handleUser.em.createNamedQuery(User.FIND_BY_SEARCHQUERY, User.class)).thenReturn(query);
@@ -446,6 +453,121 @@ public class HandleUserImplTest {
         user.getListPreferedCalendars().add(preferedCalendar);
         handleUser.delPreferedCalendar(String.valueOf(preferedCalendar.getId()));
         assertFalse(user.getListPreferedCalendars().contains(preferedCalendar));
+    }
+
+    /**
+     * Test of removeOldNotification method, of class HandleUserImpl.
+     * Verifies that expired EventNotifications are removed and non-expired ones are not.
+     */
+    @Test
+    public void testRemoveOldNotification() {
+        System.out.println("removeOldNotification");
+
+        // Expired EventNotification: event endDate is in the past
+        Event expiredEvent = new Event();
+        expiredEvent.setId(10L);
+        expiredEvent.setName("Expired Event");
+        EventNotification expiredNotif = new EventNotification();
+        expiredNotif.setId(10L);
+        expiredNotif.setUser(user);
+        expiredNotif.setEvent(expiredEvent);
+        expiredNotif.setStatus(Status.PENDING);
+        user.getListNotifications().add(expiredNotif);
+
+        // Non-expired EventNotification: event endDate is in the future
+        Event currentEvent = new Event();
+        currentEvent.setId(11L);
+        currentEvent.setName("Current Event");
+        EventNotification currentNotif = new EventNotification();
+        currentNotif.setId(11L);
+        currentNotif.setUser(user);
+        currentNotif.setEvent(currentEvent);
+        currentNotif.setStatus(Status.PENDING);
+        // (currentNotif is NOT in the expired query result list)
+
+        // Set up FIND_OLD_NOTIFICATION for EventNotification: returns the expired one
+        TypedQuery<EventNotification> queryOldEventNotif = mock(TypedQuery.class);
+        when(handleUser.em.createNamedQuery(EventNotification.FIND_OLD_NOTIFICATION, EventNotification.class))
+                .thenReturn(queryOldEventNotif);
+        List<EventNotification> expiredEventNotifs = new ArrayList<>();
+        expiredEventNotifs.add(expiredNotif);
+        when(queryOldEventNotif.setParameter(org.mockito.ArgumentMatchers.eq("now"), any())).thenReturn(queryOldEventNotif);
+        when(queryOldEventNotif.getResultList()).thenReturn(expiredEventNotifs);
+
+        // Set up FIND_OLD_NOTIFICATION for RescheduleNotification: returns empty list
+        TypedQuery<RescheduleNotification> queryOldReschNotif = mock(TypedQuery.class);
+        when(handleUser.em.createNamedQuery(RescheduleNotification.FIND_OLD_NOTIFICATION, RescheduleNotification.class))
+                .thenReturn(queryOldReschNotif);
+        when(queryOldReschNotif.setParameter(org.mockito.ArgumentMatchers.eq("now"), any())).thenReturn(queryOldReschNotif);
+        when(queryOldReschNotif.getResultList()).thenReturn(new ArrayList<>());
+
+        handleUser.removeOldNotification();
+
+        // Expired notification should be removed
+        verify(handleUser.em, times(1)).remove(expiredNotif);
+        // Non-expired notification should not be removed
+        verify(handleUser.em, never()).remove(currentNotif);
+        // User's list should no longer contain the expired notification
+        assertFalse(user.getListNotifications().contains(expiredNotif));
+    }
+
+    /**
+     * Test of acceptNotification with a RescheduleNotification, of class HandleUserImpl.
+     * Verifies the reschedule notification status changes to ACCEPTED and the suggested event
+     * is handled correctly.
+     */
+    @Test
+    public void testAcceptNotificationReschedule() throws ErrorRequestException {
+        System.out.println("acceptNotificationReschedule");
+
+        // Build suggested event (what EO will reschedule to)
+        Event suggestedEvent = new Event();
+        suggestedEvent.setId(5L);
+        suggestedEvent.setEo(user);
+        suggestedEvent.setEventParticipants(new ArrayList<>());
+        suggestedEvent.setInvitedUsers(new ArrayList<>());
+
+        // Build reschedule notification
+        RescheduleNotification rescheduleNotification = new RescheduleNotification();
+        rescheduleNotification.setId(20L);
+        rescheduleNotification.setUser(user);
+        rescheduleNotification.setEvent(event);
+        rescheduleNotification.setSuggestedEvent(suggestedEvent);
+        rescheduleNotification.setStatus(Status.PENDING);
+        user.getListNotifications().add(rescheduleNotification);
+
+        // em.find for EventNotification returns null (not an event notification)
+        when(handleUser.em.find(EventNotification.class, 20L)).thenReturn(null);
+        // em.find for RescheduleNotification returns our object
+        when(handleUser.em.find(RescheduleNotification.class, 20L)).thenReturn(rescheduleNotification);
+        // em.find for the user (used inside acceptNotification for the reschedule branch)
+        when(handleUser.em.find(User.class, user.getId())).thenReturn(user);
+        // em.find for the suggested event
+        when(handleUser.em.find(Event.class, suggestedEvent.getId())).thenReturn(suggestedEvent);
+
+        // Set up handleEvent mock (injected via @EJB field)
+        handleUser.handleEvent = mock(HandleEvent.class);
+        // getEvent throws ErrorRequestException so removeEvent is skipped cleanly
+        when(handleUser.handleEvent.getEvent(user.getId(), "0"))
+                .thenThrow(new ErrorRequestException("no event", false));
+
+        // Build the DTO
+        RescheduleNotificationDTO reschNotifDTO = new RescheduleNotificationDTO();
+        reschNotifDTO.setId("20");
+        reschNotifDTO.setUserId(String.valueOf(user.getId()));
+        reschNotifDTO.setEventId(String.valueOf(event.getId()));
+        reschNotifDTO.setSuggestedEventId(String.valueOf(suggestedEvent.getId()));
+        reschNotifDTO.setStatus(Status.PENDING);
+        reschNotifDTO.setMessage("reschedule message");
+
+        handleUser.acceptNotification(reschNotifDTO);
+
+        // Status should be ACCEPTED
+        assertEquals(Status.ACCEPTED, rescheduleNotification.getStatus());
+        // Notification should be removed from the user's list
+        assertFalse(user.getListNotifications().contains(rescheduleNotification));
+        // em.remove should have been called for the reschedule notification
+        verify(handleUser.em, times(1)).remove(rescheduleNotification);
     }
 
     /**

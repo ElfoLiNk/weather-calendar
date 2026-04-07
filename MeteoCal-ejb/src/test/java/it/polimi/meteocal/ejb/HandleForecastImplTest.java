@@ -28,13 +28,20 @@ import java.util.ArrayList;
 import java.util.List;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Root;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -219,6 +226,138 @@ public class HandleForecastImplTest {
         when(queryLocation.getResultList()).thenReturn(listLocation);
         List<String> result = handleForecast.searchLocation(queryString);
         assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of countLocations method, of class HandleForecastImpl.
+     */
+    @Test
+    public void testCountLocations() {
+        System.out.println("countLocations");
+        long expectedCount = 500L;
+
+        CriteriaBuilder criteriaBuilder = mock(CriteriaBuilder.class);
+        CriteriaQuery<Long> criteriaQuery = mock(CriteriaQuery.class);
+        Root<Location> root = mock(Root.class);
+        Expression<Long> countExpression = mock(Expression.class);
+        TypedQuery<Long> typedQuery = mock(TypedQuery.class);
+
+        when(handleForecast.em.getCriteriaBuilder()).thenReturn(criteriaBuilder);
+        when(criteriaBuilder.createQuery(Long.class)).thenReturn(criteriaQuery);
+        when(criteriaQuery.from(Location.class)).thenReturn(root);
+        when(criteriaBuilder.count(root)).thenReturn(countExpression);
+        when(criteriaQuery.select(countExpression)).thenReturn(criteriaQuery);
+        when(handleForecast.em.createQuery(criteriaQuery)).thenReturn(typedQuery);
+        when(typedQuery.getSingleResult()).thenReturn(expectedCount);
+
+        long result = handleForecast.countLocations();
+        assertEquals(expectedCount, result);
+    }
+
+    /**
+     * Test of getForecast(long) method when no forecast exists for that ID.
+     */
+    @Test
+    public void testGetForecastByIdNotFound() {
+        System.out.println("getForecast by id - not found");
+        long idForecast = 99L;
+        when(handleForecast.em.find(Forecast.class, idForecast)).thenReturn(null);
+        ForecastDTO result = handleForecast.getForecast(idForecast);
+        assertNull(result);
+    }
+
+    /**
+     * Test of getForecast(long) method when a forecast exists for that ID.
+     */
+    @Test
+    public void testGetForecastByIdFound() {
+        System.out.println("getForecast by id - found");
+        Forecast localForecast = new Forecast();
+        localForecast.setId(42L);
+        LocalDateTime now = LocalDateTime.now();
+        localForecast.setCreationDate(now);
+        localForecast.setForecastDate(now);
+        localForecast.setLocation("Rome, IT");
+        localForecast.setLatitude(41.9f);
+        localForecast.setLongitude(12.5f);
+
+        Weather localWeather = new Weather();
+        localWeather.setId(10L);
+        localWeather.setWeatherConditionCode("800");
+        localWeather.setDescription("Clear sky");
+        localWeather.setTemperature(22.0f);
+        localWeather.setIcon("01d");
+        localForecast.setWeather(localWeather);
+
+        when(handleForecast.em.find(Forecast.class, 42L)).thenReturn(localForecast);
+
+        ForecastDTO result = handleForecast.getForecast(42L);
+
+        assertNotNull(result);
+        assertEquals(Long.valueOf(42L), result.getId());
+        assertEquals("Rome, IT", result.getLocation());
+        assertEquals(now, result.getDate());
+        assertEquals(now, result.getCreationDate());
+        assertNotNull(result.getWeather());
+        assertEquals("800", result.getWeather().getWeatherConditionCode());
+        assertEquals("Clear sky", result.getWeather().getDescription());
+    }
+
+    /**
+     * Test of getForecasts method when no forecasts exist in DB.
+     */
+    @Test
+    public void testGetForecastsEmpty() {
+        System.out.println("getForecasts - empty");
+        String location = "UnknownCity, XX";
+        List<Forecast> emptyList = new ArrayList<>();
+        when(query.getResultList()).thenReturn(emptyList);
+
+        List<ForecastDTO> result = handleForecast.getForecasts(location);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    /**
+     * Test of searchLocation when the location IS found in DB.
+     */
+    @Test
+    public void testSearchLocationFound() {
+        System.out.println("searchLocation - found");
+        String queryString = "Rome";
+        TypedQuery<Location> queryLocation = mock(TypedQuery.class);
+        when(handleForecast.em.createNamedQuery(Location.FIND_BY_SEARCHQUERY, Location.class)).thenReturn(queryLocation);
+
+        List<Location> listLocation = new ArrayList<>();
+        Location location = new Location();
+        location.setName("Rome");
+        location.setCountryCode("IT");
+        listLocation.add(location);
+        when(queryLocation.getResultList()).thenReturn(listLocation);
+
+        List<String> result = handleForecast.searchLocation(queryString);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("Rome, IT", result.get(0));
+    }
+
+    /**
+     * Test of searchLocation when no matches are found.
+     */
+    @Test
+    public void testSearchLocationEmpty() {
+        System.out.println("searchLocation - empty");
+        String queryString = "XxXnonExistentXxX";
+        TypedQuery<Location> queryLocation = mock(TypedQuery.class);
+        when(handleForecast.em.createNamedQuery(Location.FIND_BY_SEARCHQUERY, Location.class)).thenReturn(queryLocation);
+        when(queryLocation.getResultList()).thenReturn(new ArrayList<>());
+
+        List<String> result = handleForecast.searchLocation(queryString);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
     }
 
 }
