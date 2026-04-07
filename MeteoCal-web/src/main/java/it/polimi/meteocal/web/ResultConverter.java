@@ -54,7 +54,7 @@ public class ResultConverter implements Converter<ResultDTO> {
      */
     @Override
     public ResultDTO getAsObject(FacesContext fc, UIComponent uic, String value) {
-        if (value != null && value.trim().length() > 0) {
+        if (value != null && !value.trim().isEmpty()) {
             try {
                 LOGGER.log(Level.INFO, () -> "CONVERTER VALUE TO GET OBJECT " + value);
                 if ("searchBar".equals(uic.getId())) {

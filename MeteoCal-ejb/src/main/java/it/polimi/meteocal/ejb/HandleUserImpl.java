@@ -296,7 +296,7 @@ public class HandleUserImpl implements HandleUser {
                 result.setId(user.getId().toString());
                 result.setType("USER");
                 result.setName(user.getFirstName() + " " + user.getLastName());
-                LOGGER.log(Level.INFO, () -> user.toString());
+                LOGGER.log(Level.INFO, user::toString);
                 results.add(result);
 
             }
@@ -417,7 +417,7 @@ public class HandleUserImpl implements HandleUser {
                     result.setId(user.getId().toString());
                     result.setType("USER");
                     result.setName(user.getFirstName() + " " + user.getLastName());
-                    LOGGER.log(Level.INFO, () -> user.toString());
+                    LOGGER.log(Level.INFO, user::toString);
                     results.add(result);
                 }
 

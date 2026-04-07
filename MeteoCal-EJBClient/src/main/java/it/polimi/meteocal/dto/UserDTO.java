@@ -17,6 +17,7 @@
 package it.polimi.meteocal.dto;
 
 import it.polimi.meteocal.util.Gender;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -26,7 +27,9 @@ import java.util.Objects;
  * 
  * @author Matteo Gazzetta, Alessandro Fato
  */
-public class UserDTO {
+public class UserDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String id;
     private String firstName;

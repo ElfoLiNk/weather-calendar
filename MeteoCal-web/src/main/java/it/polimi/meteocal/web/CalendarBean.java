@@ -226,6 +226,7 @@ public class CalendarBean implements Serializable {
      * Method that add or update the event in the system
      *
      */
+    @SuppressWarnings("java:S1874")
     public void addEvent() {
         long idEventDb = 0;
         if (event.getId() == null) {
@@ -309,7 +310,7 @@ public class CalendarBean implements Serializable {
             try {
                 currentUser = handleUser.getUser(
                         authUtente.getUserID());
-                LOGGER.log(Level.INFO, () -> currentUser.toString());
+                LOGGER.log(Level.INFO, currentUser::toString);
                 loggedUser = currentUser;
                 LOGGER.log(Level.INFO, () -> "NotificationDTO SIZE: " + currentUser.getNotifications().size());
 
@@ -451,6 +452,7 @@ public class CalendarBean implements Serializable {
      * Method that remove the event from the model and from the system and send
      * visual notification to the user
      */
+    @SuppressWarnings("java:S1874")
     public void removeEvent() {
         if (event.getId() == null) {
             addMessage(new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -486,6 +488,7 @@ public class CalendarBean implements Serializable {
      * Method that cancel the user from the partecipated users and the event
      * from the model and send visual notification to the user
      */
+    @SuppressWarnings("java:S1874")
     public void cancelEvent() {
         if (event.getId() == null) {
             addMessage(new FacesMessage(FacesMessage.SEVERITY_ERROR,

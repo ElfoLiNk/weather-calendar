@@ -30,7 +30,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinTable;
-import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -43,8 +42,7 @@ import jakarta.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "calendar")
-@NamedQueries({
-        @NamedQuery(name = Calendar.FIND_BY_ORGANIZEDEVENT, query = "SELECT c FROM Calendar c WHERE :event MEMBER OF c.organizedEvents"),})
+@NamedQuery(name = Calendar.FIND_BY_ORGANIZEDEVENT, query = "SELECT c FROM Calendar c WHERE :event MEMBER OF c.organizedEvents")
 public class Calendar implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -157,6 +155,11 @@ public class Calendar implements Serializable {
         return Objects.equals(participatedEvents, calendar.participatedEvents) &&
                 Objects.equals(organizedEvents, calendar.organizedEvents) &&
                 visibility == calendar.visibility;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(participatedEvents, organizedEvents, visibility);
     }
 
 }

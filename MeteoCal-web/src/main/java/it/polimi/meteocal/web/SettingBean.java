@@ -179,7 +179,7 @@ public class SettingBean {
             try {
                 loggedUser = handleUser.getUser(
                         authUser.getUserID());
-                LOGGER.log(Level.INFO, () -> loggedUser.toString());
+                LOGGER.log(Level.INFO, loggedUser::toString);
 
             } catch (ErrorRequestException e) {
                 LOGGER.log(Level.ERROR, e);

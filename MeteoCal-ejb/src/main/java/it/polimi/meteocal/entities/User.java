@@ -28,7 +28,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinTable;
-import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -47,15 +46,14 @@ import org.eclipse.persistence.annotations.ObjectTypeConverter;
  */
 @Entity
 @Table(name = "user")
-@NamedQueries({
-    @NamedQuery(name = User.FIND_BY_TWITTER_ID, query = "SELECT u FROM User u WHERE u.twitterId = :twitterId "),
-    @NamedQuery(name = User.FIND_BY_GOOGLE_ID, query = "SELECT u FROM User u WHERE u.googleId = :googleId "),
-    @NamedQuery(name = User.FIND_BY_FACEBOOK_ID, query = "SELECT u FROM User u WHERE u.facebookId = :facebookId "),
-    @NamedQuery(name = User.FIND_BY_EMAIL, query = "SELECT u FROM User u WHERE u.email = :email "),
-    @NamedQuery(name = User.FIND_BY_EMAIL_AND_PASSWORD, query = "SELECT u FROM User u WHERE u.email = :email and u.password = :password "),
-    @NamedQuery(name = User.FIND_BY_SEARCHQUERY, query = "SELECT u FROM User u WHERE u.calendar.visibility = it.polimi.meteocal.util.Visibility.PUBLIC AND (u.email LIKE :query OR u.firstName LIKE :query OR u.lastName LIKE :query OR CONCAT(u.firstName, ' ', u.lastName) LIKE :query)"),
-    @NamedQuery(name = User.FIND_BY_SEARCH, query = "SELECT u FROM User u WHERE u.email LIKE :query OR u.firstName LIKE :query OR u.lastName LIKE :query OR CONCAT(u.firstName, ' ', u.lastName) LIKE :query"),
-    @NamedQuery(name = User.FIND_BY_CALENDAR_ID, query = "SELECT u FROM User u WHERE u.calendar.id = :calendarId"),})
+@NamedQuery(name = User.FIND_BY_TWITTER_ID, query = "SELECT u FROM User u WHERE u.twitterId = :twitterId ")
+@NamedQuery(name = User.FIND_BY_GOOGLE_ID, query = "SELECT u FROM User u WHERE u.googleId = :googleId ")
+@NamedQuery(name = User.FIND_BY_FACEBOOK_ID, query = "SELECT u FROM User u WHERE u.facebookId = :facebookId ")
+@NamedQuery(name = User.FIND_BY_EMAIL, query = "SELECT u FROM User u WHERE u.email = :email ")
+@NamedQuery(name = User.FIND_BY_EMAIL_AND_PASSWORD, query = "SELECT u FROM User u WHERE u.email = :email and u.password = :password ")
+@NamedQuery(name = User.FIND_BY_SEARCHQUERY, query = "SELECT u FROM User u WHERE u.calendar.visibility = it.polimi.meteocal.util.Visibility.PUBLIC AND (u.email LIKE :query OR u.firstName LIKE :query OR u.lastName LIKE :query OR CONCAT(u.firstName, ' ', u.lastName) LIKE :query)")
+@NamedQuery(name = User.FIND_BY_SEARCH, query = "SELECT u FROM User u WHERE u.email LIKE :query OR u.firstName LIKE :query OR u.lastName LIKE :query OR CONCAT(u.firstName, ' ', u.lastName) LIKE :query")
+@NamedQuery(name = User.FIND_BY_CALENDAR_ID, query = "SELECT u FROM User u WHERE u.calendar.id = :calendarId")
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -493,10 +491,5 @@ public class User implements Serializable {
     public int hashCode() {
         return Objects.hash(id);
     }
-
-//    @Override
-//    public String toString() {
-//        return "User{" + "id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", dateBirth=" + dateBirth + ", email=" + email + ", password=" + password + ", avatar=" + avatar + ", calendar=" + calendar.getId() + ", listPreferedCalendars=" + listPreferedCalendars.size() + ", setting=" + setting + ", listNotifications=" + listNotifications + ", role=" + role + ", twitterId=" + twitterId + ", twitterToken=" + twitterToken + ", twitterTokenSecret=" + twitterTokenSecret + ", googleId=" + googleId + ", googleToken=" + googleToken + ", facebookId=" + facebookId + ", facebookToken=" + facebookToken + '}';
-//    }
 
 }

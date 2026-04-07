@@ -29,9 +29,8 @@ import jakarta.persistence.*;
 @Table(name = "forecast", indexes = {
         @Index(columnList = "LOCATION")})
 @Entity
-@NamedQueries({
-        @NamedQuery(name = Forecast.FIND_BY_LOCATION, query = "SELECT f FROM Forecast f WHERE f.location LIKE :location"),
-        @NamedQuery(name = Forecast.FIND_OLD_FORECAST, query = "SELECT f FROM Forecast f WHERE f.creationDate < :today"),})
+@NamedQuery(name = Forecast.FIND_BY_LOCATION, query = "SELECT f FROM Forecast f WHERE f.location LIKE :location")
+@NamedQuery(name = Forecast.FIND_OLD_FORECAST, query = "SELECT f FROM Forecast f WHERE f.creationDate < :today")
 public class Forecast implements Serializable {
 
     /**

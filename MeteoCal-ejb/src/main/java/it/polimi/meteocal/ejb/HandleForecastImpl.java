@@ -26,7 +26,6 @@ import it.polimi.meteocal.entities.Weather;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -99,7 +98,7 @@ public class HandleForecastImpl implements HandleForecast {
             for (Forecast forecastEntity : query.getResultList()) {
                 ForecastDTO forecast = mapForecastToForecastDTO(forecastEntity);
                 if (forecast != null) {
-                    LOGGER.log(Level.INFO, () -> forecast.toString());
+                    LOGGER.log(Level.INFO, forecast::toString);
                     forecasts.add(forecast);
                 }
             }
@@ -111,7 +110,7 @@ public class HandleForecastImpl implements HandleForecast {
                 for (Forecast forecastEntity : query.getResultList()) {
                     ForecastDTO forecast = mapForecastToForecastDTO(forecastEntity);
                     if (forecast != null) {
-                        LOGGER.log(Level.INFO, () -> forecast.toString());
+                        LOGGER.log(Level.INFO, forecast::toString);
                         forecasts.add(forecast);
                     }
                 }
@@ -157,7 +156,7 @@ public class HandleForecastImpl implements HandleForecast {
                             entityForecast.setWeather(entityWeather);
                             em.persist(entityForecast);
                             em.flush();
-                            LOGGER.log(Level.INFO, () -> entityForecast.toString());
+                            LOGGER.log(Level.INFO, entityForecast::toString);
                         }
                     }
                 }
@@ -203,7 +202,7 @@ public class HandleForecastImpl implements HandleForecast {
                             entityForecast.setWeather(entityWeather);
                             em.persist(entityForecast);
                             em.flush();
-                            LOGGER.log(Level.INFO, () -> entityForecast.toString());
+                            LOGGER.log(Level.INFO, entityForecast::toString);
                         }
                     }
                 }
@@ -222,9 +221,7 @@ public class HandleForecastImpl implements HandleForecast {
         ForecastDTO forecast = null;
         if (forecastEntity != null) {
             forecast = mapForecastToForecastDTO(forecastEntity);
-            if(forecast != null) {
-                LOGGER.log(Level.INFO, forecast.toString());
-            }
+            LOGGER.log(Level.INFO, forecast::toString);
         }
         return forecast;
     }
@@ -311,36 +308,50 @@ public class HandleForecastImpl implements HandleForecast {
             JSONTokener tokener = new JSONTokener(gis);
             // Skip opening '['
             tokener.nextClean();
-            while (tokener.more()) {
+            boolean done = false;
+            while (tokener.more() && !done) {
                 char c = tokener.nextClean();
-                if (c == ']') break;
-                tokener.back();
-                JSONObject elem = new JSONObject(tokener);
-                Location location = new Location();
-                try {
-                    JSONObject coord = elem.getJSONObject("coord");
-                    location.setId(elem.getLong("id"));
-                    location.setName(elem.getString("name"));
-                    location.setLatitude(coord.getFloat("lat"));
-                    location.setLongitude(coord.getFloat("lon"));
-                    location.setCountryCode(elem.getString("country"));
-                    em.persist(location);
-                    count++;
-                    if (count % BATCH_SIZE == 0) {
-                        em.flush();
-                        em.clear();
+                if (c == ']') {
+                    done = true;
+                } else {
+                    tokener.back();
+                    JSONObject elem = new JSONObject(tokener);
+                    if (persistLocation(elem)) {
+                        count++;
+                        if (count % BATCH_SIZE == 0) {
+                            em.flush();
+                            em.clear();
+                        }
                     }
-                } catch (Exception e) {
-                    LOGGER.log(Level.ERROR, e);
+                    // skip ',' between objects
+                    char sep = tokener.nextClean();
+                    if (sep == ']') {
+                        done = true;
+                    } else if (sep != ',') {
+                        tokener.back();
+                    }
                 }
-                // skip ',' between objects
-                char sep = tokener.nextClean();
-                if (sep == ']') break;
-                if (sep != ',') tokener.back();
             }
             em.flush();
         } catch (IOException ex) {
             LOGGER.log(Level.ERROR, ex);
+        }
+    }
+
+    private boolean persistLocation(JSONObject elem) {
+        try {
+            JSONObject coord = elem.getJSONObject("coord");
+            Location location = new Location();
+            location.setId(elem.getLong("id"));
+            location.setName(elem.getString("name"));
+            location.setLatitude(coord.getFloat("lat"));
+            location.setLongitude(coord.getFloat("lon"));
+            location.setCountryCode(elem.getString("country"));
+            em.persist(location);
+            return true;
+        } catch (Exception e) {
+            LOGGER.log(Level.ERROR, e);
+            return false;
         }
     }
 

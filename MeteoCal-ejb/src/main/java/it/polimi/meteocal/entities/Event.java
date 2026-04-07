@@ -38,11 +38,10 @@ import org.eclipse.persistence.annotations.ObjectTypeConverter;
  */
 @Entity
 @Table(name = "event")
-@NamedQueries({
-    @NamedQuery(name = Event.FIND_BY_SEARCHQUERY, query = "SELECT e FROM Event e WHERE e.visibility = it.polimi.meteocal.util.Visibility.PUBLIC AND (e.name LIKE :query)"),
-    @NamedQuery(name = Event.FIND_USER_OCCUPATION_RESCHEDULE, query = "SELECT e FROM Event e WHERE e.startDateTime >= :tomorrow AND e.startDateTime <= :lastforecastday"),
-    @NamedQuery(name = Event.FIND_NEAR_OUTDOOR, query = "SELECT e FROM Event e WHERE e.site = it.polimi.meteocal.util.Site.OUTDOOR AND e.startDateTime >= :today AND e.startDateTime <= :threeday"),
-    @NamedQuery(name = Event.FIND_BY_FORECAST, query = "SELECT e FROM Event e WHERE e.forecast = :forecast"),})
+@NamedQuery(name = Event.FIND_BY_SEARCHQUERY, query = "SELECT e FROM Event e WHERE e.visibility = it.polimi.meteocal.util.Visibility.PUBLIC AND (e.name LIKE :query)")
+@NamedQuery(name = Event.FIND_USER_OCCUPATION_RESCHEDULE, query = "SELECT e FROM Event e WHERE e.startDateTime >= :tomorrow AND e.startDateTime <= :lastforecastday")
+@NamedQuery(name = Event.FIND_NEAR_OUTDOOR, query = "SELECT e FROM Event e WHERE e.site = it.polimi.meteocal.util.Site.OUTDOOR AND e.startDateTime >= :today AND e.startDateTime <= :threeday")
+@NamedQuery(name = Event.FIND_BY_FORECAST, query = "SELECT e FROM Event e WHERE e.forecast = :forecast")
 public class Event implements Serializable {
 
     private static final long serialVersionUID = 1L;

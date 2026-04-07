@@ -72,13 +72,13 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
     private static final String REFRESH_TOKEN = "refresh_token";
     private static final String GOOGLE_ID = "googleId";
     private static final String GOOGLE_TOKEN_UPDATED = "GoogleToken updated";
-    private String REDIRECT_URL;
+    private String redirectUrl;
 
     private static final Logger LOGGER = LogManager.getLogger(HandleAuthGoogleImpl.class.getName());
 
     @PostConstruct
     public void init() {
-        REDIRECT_URL = System.getenv().getOrDefault("APP_BASE_URL", "http://www.meteocal.tk") + "/MeteoCal-web/loginGoogle.xhtml";
+        redirectUrl = System.getenv().getOrDefault("APP_BASE_URL", "http://www.meteocal.tk") + "/MeteoCal-web/loginGoogle.xhtml";
     }
     
     /**
@@ -165,6 +165,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
      * @see Credential
      * @see TokenResponse
      */
+    @SuppressWarnings("java:S1172")
     protected static void setGoogleToken(EntityManager em, Credential _credential, TokenResponse tokenResponse, User user) {
         try {
             String tokenGoogle = tokenResponse.toString();
@@ -209,7 +210,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
             GoogleTokenResponse tokenResponse = flow
                     .newTokenRequest(code)
                     .setRedirectUri(
-                            REDIRECT_URL)
+                            redirectUrl)
                     .execute();
             GoogleCredential credential = new GoogleCredential.Builder()
                     .setTransport(new NetHttpTransport())
@@ -255,7 +256,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
                     }
                     setHashedPassword(user);
 
-                    LOGGER.log(Level.INFO, () -> user.toString());
+                    LOGGER.log(Level.INFO, user::toString);
 
                     Setting setting = new Setting();
                     setting.setTimeZone(TimeZone.getTimeZone("GMT+1"));
@@ -375,8 +376,6 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
         final List<String> scope = Arrays.asList(
                 "https://www.googleapis.com/auth/plus.login",
                 "https://www.googleapis.com/auth/userinfo.email");
-
-        final String redirectUrl = REDIRECT_URL;
 
         flow = new GoogleAuthorizationCodeFlow.Builder(new NetHttpTransport(),
                 new JacksonFactory(), CLIENT_ID, CLIENT_SECRET, scope)

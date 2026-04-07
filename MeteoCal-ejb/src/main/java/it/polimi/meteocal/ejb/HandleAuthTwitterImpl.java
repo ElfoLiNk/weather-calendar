@@ -50,13 +50,13 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
     // OAuth Data
     private static final String CLIENT_ID = System.getenv("TWITTER_CLIENT_ID");
     private static final String CLIENT_SECRET = System.getenv("TWITTER_CLIENT_SECRET");
-    private String URL_BASE;
+    private String urlBase;
 
     private static final Logger LOGGER = LogManager.getLogger(HandleAuthTwitterImpl.class.getName());
 
     @PostConstruct
     public void init() {
-        URL_BASE = System.getenv().getOrDefault("APP_BASE_URL", "http://www.meteocal.tk");
+        urlBase = System.getenv().getOrDefault("APP_BASE_URL", "http://www.meteocal.tk");
     }
 
     /**
@@ -84,7 +84,7 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
 
         AccessToken at = new AccessToken(user.getTwitterToken(),
                 user.getTwitterTokenSecret());
-        LOGGER.log(Level.INFO, () -> at.toString());
+        LOGGER.log(Level.INFO, at::toString);
         try {
             twitter.setOAuthAccessToken(at);
         } catch (Exception e) {
@@ -99,7 +99,6 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
 
     private Twitter twitter;
     private RequestToken requestToken;
-    private AccessToken accessToken;
     private int cont;
 
     /**
@@ -126,7 +125,7 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
             Configuration configuration = builder.build();
             TwitterFactory factory = new TwitterFactory(configuration);
             twitter = factory.getInstance();
-            requestToken = twitter.getOAuthRequestToken(URL_BASE
+            requestToken = twitter.getOAuthRequestToken(urlBase
                     + "/MeteoCal-web/loginTwitter.xhtml");
             urlLogin = requestToken.getAuthenticationURL();
         } catch (TwitterException e) {
@@ -145,7 +144,7 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
         try {
             LOGGER.log(Level.INFO, () -> "Verifier: " + verifier);
 
-            accessToken = twitter.getOAuthAccessToken(requestToken, verifier);
+            AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, verifier);
 
             if (!AuthUtil.isUserLogged()) {
                 // Saves the new user data in the DB
@@ -181,7 +180,7 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
                     setting.setTimeZone(TimeZone.getTimeZone(user.getTimeZone()));
                     utente.setSetting(setting);
 
-                    LOGGER.log(Level.INFO, () -> utente.toString());
+                    LOGGER.log(Level.INFO, utente::toString);
 
                     em.persist(utente);
                     em.flush();

@@ -22,7 +22,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
-import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -35,9 +34,8 @@ import jakarta.validation.constraints.NotNull;
 @Table(name="location",indexes = {
     @Index(columnList = "NAME")})
 @Entity
-@NamedQueries({
-    @NamedQuery(name = Location.FIND_BY_SEARCHQUERY, query = "SELECT l FROM Location l WHERE l.name LIKE :query"),
-    @NamedQuery(name = Location.FIND_BY_LOCATION_AND_COUNTRYCODE, query = "SELECT l FROM Location l WHERE (l.name LIKE :name AND l.countryCode = :countrycode)"),})
+@NamedQuery(name = Location.FIND_BY_SEARCHQUERY, query = "SELECT l FROM Location l WHERE l.name LIKE :query")
+@NamedQuery(name = Location.FIND_BY_LOCATION_AND_COUNTRYCODE, query = "SELECT l FROM Location l WHERE (l.name LIKE :name AND l.countryCode = :countrycode)")
 public class Location implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -20,7 +20,6 @@ import it.polimi.meteocal.util.Status;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -34,10 +33,9 @@ import java.util.Objects;
  */
 @Entity
 @Table(name ="eventnotification")
-@NamedQueries({
-    @NamedQuery(name = EventNotification.FIND_BY_EVENT, query = "SELECT n FROM EventNotification n WHERE n.event = :event"),
-    @NamedQuery(name = EventNotification.FIND_BY_EVENT_AND_USER, query = "SELECT n FROM EventNotification n WHERE n.event = :event AND n.user = :user"),
-    @NamedQuery(name = EventNotification.FIND_OLD_NOTIFICATION, query = "SELECT n FROM EventNotification n WHERE n.event.endDateTime <= :now"),})
+@NamedQuery(name = EventNotification.FIND_BY_EVENT, query = "SELECT n FROM EventNotification n WHERE n.event = :event")
+@NamedQuery(name = EventNotification.FIND_BY_EVENT_AND_USER, query = "SELECT n FROM EventNotification n WHERE n.event = :event AND n.user = :user")
+@NamedQuery(name = EventNotification.FIND_OLD_NOTIFICATION, query = "SELECT n FROM EventNotification n WHERE n.event.endDateTime <= :now")
 public class EventNotification extends Notification {
 
     /**

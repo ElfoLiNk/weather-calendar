@@ -174,10 +174,7 @@ public class HandleForecastImplTest {
     @Test
     public void testRemoveOldForecast() {
         System.out.println("removeOldForecast");
-        String location = "";
         List<Forecast> forecasts = new ArrayList<>();
-        ForecastDTO localForecastDTO = new ForecastDTO();
-        localForecastDTO.setId(0L);
         Forecast localForecast = new Forecast();
         localForecast.setId(0L);
         LocalDateTime yesterday = LocalDateTime.now().minusDays(1);

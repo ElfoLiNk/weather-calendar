@@ -20,7 +20,6 @@ import it.polimi.meteocal.util.Status;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -34,9 +33,8 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "reschedulenotification")
-@NamedQueries({
-    @NamedQuery(name = RescheduleNotification.FIND_BY_EVENT, query = "SELECT n FROM RescheduleNotification n WHERE n.event = :event OR n.suggestedEvent = :event"),
-    @NamedQuery(name = RescheduleNotification.FIND_OLD_NOTIFICATION, query = "SELECT n FROM RescheduleNotification n WHERE n.event.startDateTime <= :now"),})
+@NamedQuery(name = RescheduleNotification.FIND_BY_EVENT, query = "SELECT n FROM RescheduleNotification n WHERE n.event = :event OR n.suggestedEvent = :event")
+@NamedQuery(name = RescheduleNotification.FIND_OLD_NOTIFICATION, query = "SELECT n FROM RescheduleNotification n WHERE n.event.startDateTime <= :now")
 public class RescheduleNotification extends Notification {
 
     /**

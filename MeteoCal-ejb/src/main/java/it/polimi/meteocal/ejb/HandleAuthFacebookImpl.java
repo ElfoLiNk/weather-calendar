@@ -39,7 +39,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.servlet.http.HttpSession;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
@@ -56,14 +55,14 @@ import org.apache.logging.log4j.Logger;
 public class HandleAuthFacebookImpl implements HandleAuthFacebook {
 
     private static final String APP_ID = System.getenv("FACEBOOK_APP_ID");
-    private static final String APPSECRET = System.getenv("FACEBOOK_APP_SECRET");
-    private String URL_BASE;
+    private static final String APP_SECRET = System.getenv("FACEBOOK_APP_SECRET");
+    private String urlBase;
 
-    private static final Logger LOGGER = LogManager.getLogger(HandleAuthFacebook.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(HandleAuthFacebookImpl.class.getName());
 
     @PostConstruct
     public void init() {
-        URL_BASE = System.getenv().getOrDefault("APP_BASE_URL", "http://www.meteocal.tk");
+        urlBase = System.getenv().getOrDefault("APP_BASE_URL", "http://www.meteocal.tk");
     }
 
     /**
@@ -78,12 +77,9 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
         String accessToken;
         accessToken = user.getFacebookToken();
         FacebookClient facebookClient;
-        facebookClient = new DefaultFacebookClient(accessToken, APPSECRET, Version.VERSION_12_0);
+        facebookClient = new DefaultFacebookClient(accessToken, APP_SECRET, Version.VERSION_12_0);
         return facebookClient;
     }
-
-    private String accessToken;
-    private FacebookClient facebookClient;
 
     @PersistenceContext
     EntityManager em;
@@ -99,13 +95,13 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
     public boolean doLoginFacebook(String faceCode) {
         if (faceCode != null && !"".equals(faceCode)) {
             boolean success = false;
-            String redirectUrl = URL_BASE
+            String redirectUrl = urlBase
                     + "/MeteoCal-web/loginFacebook.xhtml";
             String newUrl = "https://graph.facebook.com/oauth/access_token?client_id="
                     + APP_ID
                     + "&redirect_uri="
                     + redirectUrl
-                    + "&client_secret=" + APPSECRET + "&code=" + faceCode;
+                    + "&client_secret=" + APP_SECRET + "&code=" + faceCode;
             LOGGER.log(Level.DEBUG, "URL FB: [redacted client_secret]");
             try (CloseableHttpClient httpclient = HttpClientBuilder.create().build()) {
                 HttpGet httpget = new HttpGet(newUrl);
@@ -113,15 +109,15 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
                 String responseBody = httpclient.execute(httpget,
                         responseHandler);
                 LOGGER.log(Level.INFO, () -> "Response Body: " + responseBody);
-                accessToken = responseBody.startsWith("access_token=")
+                String accessToken = responseBody.startsWith("access_token=")
                         ? responseBody.substring("access_token=".length())
                         : responseBody;
                 int i = accessToken.indexOf("&");
                 accessToken = accessToken.substring(0, i);
                 LOGGER.log(Level.DEBUG, "AccessToken: [redacted]");
 
-                facebookClient = new DefaultFacebookClient(accessToken,
-                        APPSECRET, Version.VERSION_12_0);
+                FacebookClient facebookClient = new DefaultFacebookClient(accessToken,
+                        APP_SECRET, Version.VERSION_12_0);
                 com.restfb.types.User userFB = facebookClient.fetchObject("me", com.restfb.types.User.class);
 
                 if (!AuthUtil.isUserLogged()) {
@@ -135,7 +131,7 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
 
                     if (q.getResultList().isEmpty() && q2.getResultList().isEmpty()) {
                         // The userFB isn't in the system
-                        utente = setupNewUser(userFB);
+                        utente = setupNewUser(userFB, accessToken);
                         em.persist(utente);
                         em.flush();
                         em.refresh(utente);
@@ -222,7 +218,7 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
                 .getExternalContext().getSession(false);
         String sessionId = session.getId();
-        String redirectUrl = URL_BASE + "/MeteoCal-web/loginFacebook.xhtml";
+        String redirectUrl = urlBase + "/MeteoCal-web/loginFacebook.xhtml";
         return "https://www.facebook.com/dialog/oauth?client_id="
                 + APP_ID + "&redirect_uri=" + redirectUrl + "&scope="
                 + "public_profile,user_friends,email"/*scopeUser + scopeFriend + scopeExtended */ + "&state="
@@ -250,7 +246,7 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
      * @param userFB the Facebook Class for the User.
      * @return The User entity of MeteoCal to persist in the DB
      */
-    private User setupNewUser(com.restfb.types.User userFB) {
+    private User setupNewUser(com.restfb.types.User userFB, String accessToken) {
         User utente = new User();
         utente.setFacebookId(userFB.getId());
         utente.setFacebookToken(accessToken);

@@ -22,7 +22,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -35,8 +34,7 @@ import jakarta.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "notification")
-@NamedQueries({
-    @NamedQuery(name = Notification.FIND_BY_USER, query = "SELECT n FROM Notification n WHERE n.user = :user"),})
+@NamedQuery(name = Notification.FIND_BY_USER, query = "SELECT n FROM Notification n WHERE n.user = :user")
 public abstract class Notification implements Serializable {
 
     private static final long serialVersionUID = 1L;
