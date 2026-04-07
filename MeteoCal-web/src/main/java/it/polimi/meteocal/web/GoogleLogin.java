@@ -68,7 +68,7 @@ public class GoogleLogin implements Serializable {
      */
     public String getLinkLoginGoogle() {
         cont++;
-        LOGGER.log(Level.INFO, "ContB: " + cont);
+        LOGGER.log(Level.INFO, () -> "ContB: " + cont);
 
         return handleAuthGoogle.getUrlLoginGoogle();
     }

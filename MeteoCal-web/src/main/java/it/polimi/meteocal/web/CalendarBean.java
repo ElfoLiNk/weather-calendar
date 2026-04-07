@@ -77,7 +77,7 @@ public class CalendarBean implements Serializable {
 
     private DefaultScheduleEvent<WeatherScheduleEventData> event = DefaultScheduleEvent.<WeatherScheduleEventData>builder().title("").startDate(LocalDateTime.now()).endDate(LocalDateTime.now()).build();
     
-    private WeatherScheduleModel eventModel;
+    private transient WeatherScheduleModel eventModel;
 
     @EJB
     transient HandleEvent handleEvent;

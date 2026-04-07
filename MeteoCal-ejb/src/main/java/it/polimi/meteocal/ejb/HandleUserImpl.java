@@ -81,9 +81,6 @@ public class HandleUserImpl implements HandleUser {
             em.merge(event);
             newUser.getCalendar().getParticipatedEvents().add(event);
         }
-        // MOVE SETTING
-        //newUser.setSetting(oldUser.getSetting());
-
         em.merge(newUser);
         em.flush();
     }

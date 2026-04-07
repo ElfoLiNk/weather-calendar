@@ -232,7 +232,7 @@ public class HourlyForecast extends AbstractForecast {
          * @version 2014/12/26
          * @since 2.5.0.1
          */
-        public static class Clouds extends AbstractForecast.Forecast.Clouds {
+        public static class Clouds extends AbstractWeather.Clouds {
 
             Clouds() {
                 super();
@@ -263,7 +263,7 @@ public class HourlyForecast extends AbstractForecast {
          * @version 2014/12/26
          * @since 2.5.0.1
          */
-        public static class Main extends AbstractForecast.Forecast.Main {
+        public static class Main extends AbstractWeather.Main {
 
             private static final String JSON_MAIN_SEA_LEVEL = "sea_level";
             private static final String JSON_MAIN_GRND_LEVEL = "grnd_level";

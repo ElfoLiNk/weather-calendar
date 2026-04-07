@@ -112,8 +112,7 @@ public class User implements Serializable {
     @Temporal(jakarta.persistence.TemporalType.DATE)
     private Date dateBirth;
     @NotNull(message = "Email cannot be empty")
-    @Pattern(regexp = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",
-            message = "Invalid email")
+    @Pattern(regexp = "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$", message = "Invalid email")
     private String email;
     @NotNull(message = "Password cannot be empty")
     private String password;

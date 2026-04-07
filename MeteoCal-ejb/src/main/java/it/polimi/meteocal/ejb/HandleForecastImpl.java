@@ -49,7 +49,6 @@ import net.aksingh.owmjapis.OpenWeatherMap;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -262,14 +261,6 @@ public class HandleForecastImpl implements HandleForecast {
                 event.setForecast(em.find(Forecast.class, forecastDTO.getId()));
             } else {
                 event.setForecast(null);
-                // FORCE CHECK OWM
-                LocalDateTime fiveDays = LocalDateTime.now().plusDays(5);
-                if (event.getStartDate().isAfter(fiveDays)) {
-                    addDailyForecasts(event.getLocation());
-                } else {
-                    addHourlyForecasts(event.getLocation());
-                }
-
             }
             em.merge(event);
             em.flush();
@@ -323,8 +314,7 @@ public class HandleForecastImpl implements HandleForecast {
             while (tokener.more()) {
                 char c = tokener.nextClean();
                 if (c == ']') break;
-                if (c != '{') { tokener.back(); }
-                else { tokener.back(); }
+                tokener.back();
                 JSONObject elem = new JSONObject(tokener);
                 Location location = new Location();
                 try {

@@ -92,7 +92,7 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
      * Default constructor.
      */
     public HandleAuthFacebookImpl() {
-
+        // Required no-arg constructor for EJB
     }
 
     @Override

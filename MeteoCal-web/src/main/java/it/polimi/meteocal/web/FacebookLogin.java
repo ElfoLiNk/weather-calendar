@@ -72,7 +72,7 @@ public class FacebookLogin implements Serializable {
      */
     public String getLinkLoginFacebook() {
         cont++;
-        LOGGER.log(Level.INFO, "ContB: " + cont);
+        LOGGER.log(Level.INFO, () -> "ContB: " + cont);
 
         return handleAuthFacebook.getUrlLoginFacebook();
     }
