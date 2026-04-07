@@ -23,17 +23,16 @@ FROM ghcr.io/eclipse-ee4j/glassfish:8.0.0
 
 USER root
 
-RUN mkdir -p /opt/glassfish8/glassfish/domains/domain1/lib/ext
+RUN mkdir -p /opt/gfinstall/custom \
+             /opt/gfinstall/glassfish/domains/domain1/var/webapp
 
 COPY --from=builder /build/lib/mysql-connector-j-8.0.33.jar \
-    /opt/glassfish8/glassfish/domains/domain1/lib/ext/mysql-connector-j.jar
+    /opt/gfinstall/glassfish/domains/domain1/lib/mysql-connector-j.jar
 
 COPY --from=builder /build/MeteoCal-ear/target/MeteoCal-ear-*.ear \
-    /opt/glassfish8/glassfish/domains/domain1/autodeploy/MeteoCal-ear.ear
+    /opt/gfinstall/glassfish/domains/domain1/autodeploy/MeteoCal-ear.ear
 
-COPY ws/scripts/glassfish-postboot.txt /opt/glassfish8/glassfish/domains/domain1/config/post-boot-commands.txt
+COPY ws/scripts/glassfish-init.sh /opt/gfinstall/custom/init.sh
+RUN chmod +x /opt/gfinstall/custom/init.sh
 
 EXPOSE 4848 8080 8181
-
-CMD ["/opt/glassfish8/bin/asadmin", "start-domain", "--verbose", "--postbootcommandfile", \
-     "/opt/glassfish8/glassfish/domains/domain1/config/post-boot-commands.txt"]
