@@ -1,0 +1,178 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e4]:
+    - link "Logo MeteoCal" [ref=e6] [cursor=pointer]:
+      - /url: /MeteoCal-web/calendar/calendar.xhtml
+      - img "Logo MeteoCal" [ref=e7]
+    - application [ref=e9] [cursor=pointer]:
+      - textbox [ref=e10]
+      - status [ref=e11]
+    - link "Settings" [ref=e13] [cursor=pointer]:
+      - /url: /MeteoCal-web/calendar/settings.xhtml
+    - button "Logout" [ref=e16] [cursor=pointer]:
+      - generic [ref=e17]: Logout
+  - generic [ref=e18]:
+    - generic [ref=e19]:
+      - generic [ref=e21]:
+        - generic [ref=e22]: Test User Calendar
+        - img "No avatar" [ref=e26]
+      - generic [ref=e28]:
+        - generic [ref=e29]: Notifications
+        - grid [ref=e32]:
+          - rowgroup [ref=e33]:
+            - row "Message Show" [ref=e34]:
+              - columnheader "Message" [ref=e35]
+              - columnheader "Show" [ref=e36]
+        - grid [ref=e38]:
+          - rowgroup:
+            - row "Message Show":
+              - columnheader "Message":
+                - generic: Message
+              - columnheader "Show":
+                - generic: Show
+          - rowgroup [ref=e39]:
+            - row "No notification available" [ref=e40]:
+              - gridcell "No notification available" [ref=e41]
+        - generic:
+          - generic:
+            - grid
+      - generic [ref=e43]:
+        - generic [ref=e44]: Prefered Calendar
+        - grid [ref=e47]:
+          - rowgroup [ref=e48]:
+            - row [ref=e49]:
+              - columnheader [ref=e50]
+        - grid [ref=e52]:
+          - rowgroup:
+            - row:
+              - columnheader
+          - rowgroup [ref=e53]:
+            - row "No prefered calendar" [ref=e54]:
+              - gridcell "No prefered calendar" [ref=e55]
+        - generic:
+          - generic:
+            - grid
+    - generic [ref=e57]:
+      - generic [ref=e58]:
+        - generic [ref=e59]:
+          - generic [ref=e60]:
+            - generic [ref=e61]:
+              - button "Previous" [ref=e62] [cursor=pointer]
+              - button "Next" [ref=e63] [cursor=pointer]
+            - button "Current Date" [disabled] [ref=e64]
+          - heading "April 2026" [level=2] [ref=e66]
+          - generic [ref=e68]:
+            - button "Month" [pressed] [ref=e69] [cursor=pointer]
+            - button "Week" [ref=e70] [cursor=pointer]
+            - button "Day" [ref=e71] [cursor=pointer]
+        - generic "April 2026" [ref=e72]:
+          - grid [ref=e74]:
+            - rowgroup [ref=e75]:
+              - row "Sunday Monday Tuesday Wednesday Thursday Friday Saturday" [ref=e79]:
+                - columnheader "Sunday" [ref=e80]:
+                  - generic "Sunday" [ref=e82]: Sun
+                - columnheader "Monday" [ref=e83]:
+                  - generic "Monday" [ref=e85]: Mon
+                - columnheader "Tuesday" [ref=e86]:
+                  - generic "Tuesday" [ref=e88]: Tue
+                - columnheader "Wednesday" [ref=e89]:
+                  - generic "Wednesday" [ref=e91]: Wed
+                - columnheader "Thursday" [ref=e92]:
+                  - generic "Thursday" [ref=e94]: Thu
+                - columnheader "Friday" [ref=e95]:
+                  - generic "Friday" [ref=e97]: Fri
+                - columnheader "Saturday" [ref=e98]:
+                  - generic "Saturday" [ref=e100]: Sat
+            - rowgroup [ref=e101]:
+              - generic [ref=e104]:
+                - row "March 29, 2026 March 30, 2026 March 31, 2026 April 1, 2026 April 2, 2026 April 3, 2026 April 4, 2026" [ref=e106]:
+                  - gridcell "March 29, 2026" [ref=e107]:
+                    - generic "March 29, 2026" [ref=e110]: "29"
+                  - gridcell "March 30, 2026" [ref=e113]:
+                    - generic "March 30, 2026" [ref=e116]: "30"
+                  - gridcell "March 31, 2026" [ref=e119]:
+                    - generic "March 31, 2026" [ref=e122]: "31"
+                  - gridcell "April 1, 2026" [ref=e125]:
+                    - generic "April 1, 2026" [ref=e128]: "1"
+                  - gridcell "April 2, 2026" [ref=e131]:
+                    - generic "April 2, 2026" [ref=e134]: "2"
+                  - gridcell "April 3, 2026" [ref=e137]:
+                    - generic "April 3, 2026" [ref=e140]: "3"
+                  - gridcell "April 4, 2026" [ref=e143]:
+                    - generic "April 4, 2026" [ref=e146]: "4"
+                - row "April 5, 2026 April 6, 2026 April 7, 2026 April 8, 2026 April 9, 2026 April 10, 2026 April 11, 2026" [ref=e149]:
+                  - gridcell "April 5, 2026" [ref=e150]:
+                    - generic "April 5, 2026" [ref=e153]: "5"
+                  - gridcell "April 6, 2026" [ref=e156]:
+                    - generic "April 6, 2026" [ref=e159]: "6"
+                  - gridcell "April 7, 2026" [ref=e162]:
+                    - generic "April 7, 2026" [ref=e165]: "7"
+                  - gridcell "April 8, 2026" [ref=e168]:
+                    - generic "April 8, 2026" [ref=e171]: "8"
+                  - gridcell "April 9, 2026" [ref=e174]:
+                    - generic "April 9, 2026" [ref=e177]: "9"
+                  - gridcell "April 10, 2026" [ref=e180]:
+                    - generic "April 10, 2026" [ref=e183]: "10"
+                  - gridcell "April 11, 2026" [ref=e186]:
+                    - generic "April 11, 2026" [ref=e189]: "11"
+                - row "April 12, 2026 April 13, 2026 April 14, 2026 April 15, 2026 April 16, 2026 April 17, 2026 April 18, 2026" [ref=e192]:
+                  - gridcell "April 12, 2026" [ref=e193]:
+                    - generic "April 12, 2026" [ref=e196]: "12"
+                  - gridcell "April 13, 2026" [ref=e199]:
+                    - generic "April 13, 2026" [ref=e202]: "13"
+                  - gridcell "April 14, 2026" [ref=e205]:
+                    - generic "April 14, 2026" [ref=e208]: "14"
+                  - gridcell "April 15, 2026" [ref=e211]:
+                    - generic "April 15, 2026" [ref=e214]: "15"
+                  - gridcell "April 16, 2026" [ref=e217]:
+                    - generic "April 16, 2026" [ref=e220]: "16"
+                  - gridcell "April 17, 2026" [ref=e223]:
+                    - generic "April 17, 2026" [ref=e226]: "17"
+                  - gridcell "April 18, 2026" [ref=e229]:
+                    - generic "April 18, 2026" [ref=e232]: "18"
+                - row "April 19, 2026 April 20, 2026 April 21, 2026 April 22, 2026 April 23, 2026 April 24, 2026 April 25, 2026" [ref=e235]:
+                  - gridcell "April 19, 2026" [ref=e236]:
+                    - generic "April 19, 2026" [ref=e239]: "19"
+                  - gridcell "April 20, 2026" [ref=e242]:
+                    - generic "April 20, 2026" [ref=e245]: "20"
+                  - gridcell "April 21, 2026" [ref=e248]:
+                    - generic "April 21, 2026" [ref=e251]: "21"
+                  - gridcell "April 22, 2026" [ref=e254]:
+                    - generic "April 22, 2026" [ref=e257]: "22"
+                  - gridcell "April 23, 2026" [ref=e260]:
+                    - generic "April 23, 2026" [ref=e263]: "23"
+                  - gridcell "April 24, 2026" [ref=e266]:
+                    - generic "April 24, 2026" [ref=e269]: "24"
+                  - gridcell "April 25, 2026" [ref=e272]:
+                    - generic "April 25, 2026" [ref=e275]: "25"
+                - row "April 26, 2026 April 27, 2026 April 28, 2026 April 29, 2026 April 30, 2026 May 1, 2026 May 2, 2026" [ref=e278]:
+                  - gridcell "April 26, 2026" [ref=e279]:
+                    - generic "April 26, 2026" [ref=e282]: "26"
+                  - gridcell "April 27, 2026" [ref=e285]:
+                    - generic "April 27, 2026" [ref=e288]: "27"
+                  - gridcell "April 28, 2026" [ref=e291]:
+                    - generic "April 28, 2026" [ref=e294]: "28"
+                  - gridcell "April 29, 2026" [ref=e297]:
+                    - generic "April 29, 2026" [ref=e300]: "29"
+                  - gridcell "April 30, 2026" [ref=e303]:
+                    - generic "April 30, 2026" [ref=e306]: "30"
+                  - gridcell "May 1, 2026" [ref=e309]:
+                    - generic "May 1, 2026" [ref=e312]: "1"
+                  - gridcell "May 2, 2026" [ref=e315]:
+                    - generic "May 2, 2026" [ref=e318]: "2"
+                - row "May 3, 2026 May 4, 2026 May 5, 2026 May 6, 2026 May 7, 2026 May 8, 2026 May 9, 2026" [ref=e321]:
+                  - gridcell "May 3, 2026" [ref=e322]:
+                    - generic "May 3, 2026" [ref=e325]: "3"
+                  - gridcell "May 4, 2026" [ref=e328]:
+                    - generic "May 4, 2026" [ref=e331]: "4"
+                  - gridcell "May 5, 2026" [ref=e334]:
+                    - generic "May 5, 2026" [ref=e337]: "5"
+                  - gridcell "May 6, 2026" [ref=e340]:
+                    - generic "May 6, 2026" [ref=e343]: "6"
+                  - gridcell "May 7, 2026" [ref=e346]:
+                    - generic "May 7, 2026" [ref=e349]: "7"
+                  - gridcell "May 8, 2026" [ref=e352]:
+                    - generic "May 8, 2026" [ref=e355]: "8"
+                  - gridcell "May 9, 2026" [ref=e358]:
+                    - generic "May 9, 2026" [ref=e361]: "9"
+      - text:  
+  - text: 

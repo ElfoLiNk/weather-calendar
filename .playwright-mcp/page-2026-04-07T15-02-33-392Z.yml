@@ -1,0 +1,40 @@
+- generic [ref=e2]:
+  - paragraph [ref=e3]:
+    - img "Logo MeteoCal" [ref=e4]
+  - paragraph [ref=e5]:
+    - link [ref=e6] [cursor=pointer]:
+      - /url: ../index.xhtml
+    - link [ref=e7] [cursor=pointer]:
+      - /url: https://www.facebook.com/dialog/oauth?client_id=&redirect_uri=http://localhost:8080/MeteoCal-web/loginFacebook.xhtml&scope=public_profile,user_friends,email&state=8773dc6d5f4eb67abf7f50b1ee0f
+    - link [ref=e8] [cursor=pointer]:
+      - /url: https://accounts.google.com/o/oauth2/auth?access_type=offline&client_id&redirect_uri=http://localhost:8080/MeteoCal-web/loginGoogle.xhtml&response_type=code&scope=https://www.googleapis.com/auth/plus.login%20https://www.googleapis.com/auth/userinfo.email
+  - paragraph [ref=e9]:
+    - button "Login" [ref=e10] [cursor=pointer]:
+      - generic [ref=e11]: Login
+    - button "Registration" [ref=e12] [cursor=pointer]:
+      - generic [ref=e13]: Registration
+  - dialog "Login" [ref=e14]:
+    - generic [ref=e15]:
+      - text: Login
+      - button "Close" [ref=e16] [cursor=pointer]:
+        - generic [ref=e17]: 
+    - table [ref=e20]:
+      - rowgroup [ref=e21]:
+        - row "Login" [ref=e22]:
+          - cell "Login" [ref=e23]:
+            - button "Login" [ref=e24] [cursor=pointer]:
+              - generic [ref=e25]: Login
+      - rowgroup [ref=e26]:
+        - row "Email:" [ref=e27]:
+          - cell "Email:" [ref=e28]
+          - cell [ref=e29]:
+            - textbox "Email:" [active] [ref=e30]
+          - cell [ref=e31]:
+            - alert [ref=e32]
+        - row "Password:" [ref=e33]:
+          - cell "Password:" [ref=e34]
+          - cell [ref=e35]:
+            - textbox "Password:" [ref=e36]
+          - cell [ref=e37]:
+            - alert [ref=e38]
+  - text: 
