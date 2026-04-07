@@ -24,7 +24,7 @@ import it.polimi.meteocal.exception.ErrorRequestException;
 import it.polimi.meteocal.util.Visibility;
 import java.util.List;
 
-import javax.ejb.Local;
+import jakarta.ejb.Local;
 
 /**
  * Class tha handle the user and user's notifications in MeteoCal

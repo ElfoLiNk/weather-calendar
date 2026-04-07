@@ -20,7 +20,7 @@ import it.polimi.meteocal.dto.ForecastDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import javax.ejb.Local;
+import jakarta.ejb.Local;
 
 /**
  * Class that handle the forecast in MeteoCal

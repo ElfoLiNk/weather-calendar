@@ -22,7 +22,7 @@ import it.polimi.meteocal.exception.ErrorRequestException;
 
 import java.time.Duration;
 import java.util.List;
-import javax.ejb.Local;
+import jakarta.ejb.Local;
 
 /**
  * Class that handle the event in MeteoCal

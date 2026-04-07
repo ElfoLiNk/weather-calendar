@@ -19,7 +19,7 @@ package it.polimi.meteocal.entities;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 /**
  * Entity that rappresent the Forecast of the Event in MeteoCal

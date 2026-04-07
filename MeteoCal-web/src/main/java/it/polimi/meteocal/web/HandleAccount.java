@@ -19,9 +19,9 @@ package it.polimi.meteocal.web;
 import it.polimi.meteocal.ejb.HandleAuthFacebook;
 import it.polimi.meteocal.ejb.HandleAuthGoogle;
 import it.polimi.meteocal.ejb.HandleAuthTwitter;
-import javax.ejb.EJB;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
+import jakarta.ejb.EJB;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Named;
 
 /**
  * Class that handle the social network account

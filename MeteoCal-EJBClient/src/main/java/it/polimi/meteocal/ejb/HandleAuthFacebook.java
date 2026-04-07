@@ -16,7 +16,7 @@
  */
 package it.polimi.meteocal.ejb;
 
-import javax.ejb.Local;
+import jakarta.ejb.Local;
 
 /**
  * Class that handle the user authentication with Facebook

@@ -16,7 +16,7 @@
  */
 package it.polimi.meteocal.util;
 
-import javax.faces.context.FacesContext;
+import jakarta.faces.context.FacesContext;
 
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
