@@ -76,13 +76,6 @@ public abstract class AbstractWeather extends AbstractResponse {
 
         long sec = (jsonObj != null) ? jsonObj.optLong(jsonDateTime, Long.MIN_VALUE) : Long.MIN_VALUE;
         if (sec != Long.MIN_VALUE) { // converting seconds to Date object
-            /*
-             Bugfix: It always return "Sat Jan 17 04:10:42 CET 1970"
-             Issue: #3 at http://code.aksingh.net/owm-japis/issue/3/problem-with-datetime
-             Incorrect: this.dateTime = new Date(sec);
-             Correct: this.dateTime = new Date(sec * 1000);
-             Reason: Date requires milliseconds but previously, seconds were provided.
-             */
             this.dateTime = new Date(sec * 1000);
         } else {
             this.dateTime = null;

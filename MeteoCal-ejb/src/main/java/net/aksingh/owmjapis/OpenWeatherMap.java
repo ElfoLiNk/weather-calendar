@@ -917,7 +917,8 @@ public class OpenWeatherMap {
                         }
 
                         // if response is bad
-                        LOGGER.log(Level.ERROR, "Bad Response: " + response);
+                        final String badResponse = response;
+                        LOGGER.log(Level.ERROR, () -> "Bad Response: " + badResponse);
                         return null;
                     }
                 } finally {

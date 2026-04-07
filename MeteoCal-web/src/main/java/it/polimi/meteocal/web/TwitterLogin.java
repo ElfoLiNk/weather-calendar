@@ -73,7 +73,7 @@ public class TwitterLogin implements Serializable {
      */
     public String getLinkLoginTwitter() {
         cont++;
-        LOGGER.log(Level.INFO, "ContB: " + cont);
+        LOGGER.log(Level.INFO, () -> "ContB: " + cont);
         return handleAuthTwitter.getUrlLoginTwitter();
     }
 }

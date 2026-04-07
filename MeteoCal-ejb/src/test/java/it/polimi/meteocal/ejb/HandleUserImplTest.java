@@ -237,13 +237,13 @@ public class HandleUserImplTest {
     @Test
     public void testGetUser() throws ErrorRequestException {
         System.out.println("getUser");
-        User user = mock(User.class);
-        when(user.getEmail()).thenReturn(userInsert.getEmail());
-        Calendar calendar = mock(Calendar.class);
-        when(calendar.getId()).thenReturn(Long.MIN_VALUE);
-        when(user.getCalendar()).thenReturn(calendar);
-        when(user.getSetting()).thenReturn(mock(Setting.class));
-        when(handleUser.em.find(User.class, 0L)).thenReturn(user);
+        User mockUser = mock(User.class);
+        when(mockUser.getEmail()).thenReturn(userInsert.getEmail());
+        Calendar mockCalendar = mock(Calendar.class);
+        when(mockCalendar.getId()).thenReturn(Long.MIN_VALUE);
+        when(mockUser.getCalendar()).thenReturn(mockCalendar);
+        when(mockUser.getSetting()).thenReturn(mock(Setting.class));
+        when(handleUser.em.find(User.class, 0L)).thenReturn(mockUser);
         UserDTO result = handleUser.getUser(0L);
         assertEquals(userInsert.getEmail(), result.getEmail());
     }

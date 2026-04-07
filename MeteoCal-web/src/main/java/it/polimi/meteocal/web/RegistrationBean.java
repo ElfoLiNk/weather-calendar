@@ -126,7 +126,7 @@ public class RegistrationBean implements Serializable {
      * 
      * @param event the select event of the user
      */
-    public void onDateSelect(SelectEvent event) {
+    public void onDateSelect(SelectEvent<Object> event) {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
         facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Date Selected", format.format(event.getObject())));

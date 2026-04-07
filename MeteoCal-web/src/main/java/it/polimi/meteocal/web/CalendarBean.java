@@ -307,10 +307,9 @@ public class CalendarBean implements Serializable {
 
         if (authUtente != null) {
             try {
-                LOGGER.log(Level.INFO, handleUser.getUser(
-                        authUtente.getUserID()).toString());
                 currentUser = handleUser.getUser(
                         authUtente.getUserID());
+                LOGGER.log(Level.INFO, () -> currentUser.toString());
                 loggedUser = currentUser;
                 LOGGER.log(Level.INFO, () -> "NotificationDTO SIZE: " + currentUser.getNotifications().size());
 
@@ -743,8 +742,8 @@ public class CalendarBean implements Serializable {
     }
 
     private void eventPrivacyCheck() {
-        for (ScheduleEvent<?> event : eventModel.getEvents()) {
-            DefaultScheduleEvent<WeatherScheduleEventData> eventWeather = (DefaultScheduleEvent<WeatherScheduleEventData>) event;
+        for (ScheduleEvent<?> scheduleEvent : eventModel.getEvents()) {
+            DefaultScheduleEvent<WeatherScheduleEventData> eventWeather = (DefaultScheduleEvent<WeatherScheduleEventData>) scheduleEvent;
             eventWeather.setEditable(false);
             if (eventWeather.getData().getVisibility().equals(Visibility.PRIVATE.name())) {
                 eventWeather.setDescription("");

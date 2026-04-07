@@ -423,13 +423,6 @@ public class CurrentWeather extends AbstractWeather {
 
             long srSecs = jsonObj.optLong(Sys.JSON_SYS_SUNRISE, Long.MIN_VALUE);
             if (srSecs != Long.MIN_VALUE) {
-                /*
-                 Bugfix: Incorrect date and time
-                 Issue: #3 given at http://code.aksingh.net/owm-japis/issue/3/problem-with-datetime
-                 Incorrect: this.sunrise = new Date(sr_secs);
-                 Correct: this.sunrise = new Date(sr_secs * 1000);
-                 Reason: Date requires milliseconds but previously, seconds were provided.
-                 */
                 this.sunrise = new Date(srSecs * 1000);
             } else {
                 this.sunrise = null;
@@ -437,13 +430,6 @@ public class CurrentWeather extends AbstractWeather {
 
             long ssSecs = jsonObj.optLong(Sys.JSON_SYS_SUNSET, Long.MIN_VALUE);
             if (ssSecs != Long.MIN_VALUE) {
-                /*
-                 Bugfix: Incorrect date and time
-                 Issue: #3 given at http://code.aksingh.net/owm-japis/issue/3/problem-with-datetime
-                 Incorrect: this.sunrise = new Date(ss_secs);
-                 Correct: this.sunrise = new Date(ss_secs * 1000);
-                 Reason: Date requires milliseconds but previously, seconds were provided.
-                 */
                 this.sunset = new Date(ssSecs * 1000);
             } else {
                 this.sunset = null;

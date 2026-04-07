@@ -127,8 +127,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
                         public void onTokenErrorResponse(Credential credential,
                                 TokenErrorResponse tokenErrorResponse) {
                             // Handle error.
-                            LOGGER.log(Level.ERROR, "Credential was not refreshed successfully. "
-                                    + "Redirect to error page or login screen.");
+                            LOGGER.log(Level.ERROR, "Credential was not refreshed successfully. Redirect to error page or login screen.");
                         }
                     })
                     /* You can also add a credential store listener to have credentials stored automatically. .addRefreshListener(new CredentialStoreRefreshListener(userId, credentialStore)) */
@@ -440,8 +439,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
         public void onTokenErrorResponse(Credential credential,
                 TokenErrorResponse tokenErrorResponse) {
             // Handle error.
-            LOGGER.log(Level.ERROR, "Credential was not refreshed successfully. "
-                    + "Redirect to error page or login screen.");
+            LOGGER.log(Level.ERROR, "Credential was not refreshed successfully. Redirect to error page or login screen.");
         }
     }
 

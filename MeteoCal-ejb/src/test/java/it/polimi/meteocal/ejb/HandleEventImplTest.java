@@ -239,15 +239,15 @@ public class HandleEventImplTest {
         System.out.println("addEvent: " + timeMilli);
         doAnswer((Answer<Event>) invocationOnMock -> {
             Object[] args = invocationOnMock.getArguments();
-            Event event = (Event) args[0];
-            event.setId((long) 0);
+            Event persistedEvent = (Event) args[0];
+            persistedEvent.setId((long) 0);
             return null;
         }).when(handleEvent.em).persist(any(Event.class));
         event.setForecast(null);
         event.setEventParticipants(new ArrayList<>());
         event.setInvitedUsers(new ArrayList<>());
         long eventID = handleEvent.addEvent(user.getId(), eventDTO);
-        assertEquals(eventID, 0L);
+        assertEquals(0L, eventID);
         verify(handleEvent.em, times(1)).persist(event);
     }
 

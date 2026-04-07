@@ -54,7 +54,6 @@ public class DefaultWeatherScheduleModel implements WeatherScheduleModel, Serial
      */
     @Override
     public void addEvent(DefaultScheduleEvent<WeatherScheduleEventData> event) {
-        //event.setId(UUID.randomUUID().toString());
         events.add(event);
     }
 

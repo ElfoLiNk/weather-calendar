@@ -77,14 +77,4 @@ public class HandleEventImplIT {
         assertNotNull(em);
     }
 
-//    @Test
-//        public void newUserCorrectInsert() {
-//        RegisteredUser newUser = new RegisteredUser();
-//        newUser.setEmail("prova@prova.it");
-//        Calendar newCalendar = new Calendar();
-//        newCalendar.setOwner(newUser);
-//        ruf.save(newUser,newCalendar);
-//                verify(ruf.em,times(1)).persist(newUser);
-//        assertThat(newUser.getEmail(),is("prova@prova.it"));
-//        }
 }
