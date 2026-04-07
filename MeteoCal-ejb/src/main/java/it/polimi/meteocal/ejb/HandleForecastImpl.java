@@ -124,7 +124,7 @@ public class HandleForecastImpl implements HandleForecast {
 
     @Override
     public void addHourlyForecasts(String location) {
-        OpenWeatherMap owm = new OpenWeatherMap("92a7c7673050d5da5c850a8c1cb995b7");
+        OpenWeatherMap owm = new OpenWeatherMap(System.getenv("OPENWEATHER_API_KEY"));
         try {
             HourlyForecast hf = owm.hourlyForecastByCityName(location);
             if (hf.isValid()) {
@@ -172,7 +172,7 @@ public class HandleForecastImpl implements HandleForecast {
 
     @Override
     public void addDailyForecasts(String location) {
-        OpenWeatherMap owm = new OpenWeatherMap("92a7c7673050d5da5c850a8c1cb995b7");
+        OpenWeatherMap owm = new OpenWeatherMap(System.getenv("OPENWEATHER_API_KEY"));
         try {
             DailyForecast df = owm.dailyForecastByCityName(location, Byte.parseByte("16"));
             if (df.isValid()) {
