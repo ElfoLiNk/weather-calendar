@@ -24,8 +24,7 @@ jobs:
         distribution: 'temurin'
         cache: 'maven'
 
-    - name: Build, test and analyze
-      run: mvn verify sonar:sonar -B -DskipITs -Dmaven.javadoc.skip=true -Dmaven.source.skip=true
+    - name: Build and test
+      run: mvn verify -B -DskipITs -Dmaven.javadoc.skip=true -Dmaven.source.skip=true
       env:
         OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
