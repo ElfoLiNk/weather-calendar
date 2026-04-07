@@ -20,7 +20,7 @@ asadmin create-jdbc-resource --connectionpoolid MySQLConnPool jdbc/meteocaldb ||
 
 # Auth realm
 asadmin create-auth-realm \
-    --classname com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm \
+    --classname com.sun.enterprise.security.ee.authentication.glassfish.jdbc.JDBCRealm \
     --property "jaas-context=jdbcRealm:datasource-jndi=jdbc/meteocaldb:user-table=user:user-name-column=EMAIL:password-column=PASSWORD:group-table=user:group-name-column=ROLE:digest-algorithm=none" \
     realmMeteoCal || true
 

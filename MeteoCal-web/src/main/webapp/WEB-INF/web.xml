@@ -16,6 +16,10 @@
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>/jakarta.faces.resource/*</url-pattern>
+    </servlet-mapping>
     <filter>
         <filter-name>AuthenticationFilter</filter-name>
         <filter-class>it.polimi.meteocal.web.AuthenticationFilter</filter-class>

@@ -111,7 +111,7 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
 
     @Override
     public String getUrlLoginTwitter() {
-        String urlLogin = "error.xhtml";
+        String urlLogin = "../index.xhtml";
 
         try {
             ConfigurationBuilder builder = new ConfigurationBuilder();
