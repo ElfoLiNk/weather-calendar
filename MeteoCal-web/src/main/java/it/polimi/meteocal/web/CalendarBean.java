@@ -72,7 +72,7 @@ public class CalendarBean implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = LogManager.getLogger(CalendarBean.class.getName());
 
-    private DefaultScheduleEvent<WeatherScheduleEventData> event = new DefaultScheduleEvent<>();
+    private DefaultScheduleEvent<WeatherScheduleEventData> event = DefaultScheduleEvent.<WeatherScheduleEventData>builder().title("").startDate(LocalDateTime.now()).endDate(LocalDateTime.now()).build();
     
     private WeatherScheduleModel eventModel;
 
@@ -273,7 +273,7 @@ public class CalendarBean implements Serializable {
                             "Event", "Updated Successfully"));
         }
         // RESET BEAN EVENT
-        event = new DefaultScheduleEvent<>();
+        event = DefaultScheduleEvent.<WeatherScheduleEventData>builder().title("").startDate(LocalDateTime.now()).endDate(LocalDateTime.now()).build();
     }
 
     /**
@@ -381,7 +381,7 @@ public class CalendarBean implements Serializable {
                 eventModel.updateEvent(mapEventDTOtoWeatherScheduleEvent(updatedEvent));
             }
             // RESET BEAN EVENT
-            this.event = new DefaultScheduleEvent<>();
+            this.event = DefaultScheduleEvent.<WeatherScheduleEventData>builder().title("").startDate(LocalDateTime.now()).endDate(LocalDateTime.now()).build();
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
                     "Event moved", "Day delta:" + event.getDayDelta()
                     + ", Minute delta:" + event.getMinuteDelta());
@@ -474,7 +474,7 @@ public class CalendarBean implements Serializable {
                     "Event removed", "Successfully removed " + event.getTitle()));
         }
         // RESET BEAN EVENT
-        event = new DefaultScheduleEvent<>();
+        event = DefaultScheduleEvent.<WeatherScheduleEventData>builder().title("").startDate(LocalDateTime.now()).endDate(LocalDateTime.now()).build();
     }
 
     /**
@@ -505,7 +505,7 @@ public class CalendarBean implements Serializable {
                     "Event canceled", "Not partecipating to " + event.getTitle()));
         }
         // RESET BEAN EVENT
-        event = new DefaultScheduleEvent<>();
+        event = DefaultScheduleEvent.<WeatherScheduleEventData>builder().title("").startDate(LocalDateTime.now()).endDate(LocalDateTime.now()).build();
     }
 
     /**

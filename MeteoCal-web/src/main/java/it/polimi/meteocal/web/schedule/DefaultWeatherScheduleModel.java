@@ -32,7 +32,6 @@ import org.primefaces.model.ScheduleEvent;
 public class DefaultWeatherScheduleModel implements WeatherScheduleModel, Serializable {
 
     private List<DefaultScheduleEvent<WeatherScheduleEventData>> events;
-    private boolean eventLimit = false;
 
     /**
      * Defaulf Constructor
@@ -114,17 +113,12 @@ public class DefaultWeatherScheduleModel implements WeatherScheduleModel, Serial
         events = new ArrayList<>();
     }
 
-    @Override
-    public boolean isEventLimit() {
-        return this.eventLimit;
-    }
-
     /**
      *
      * @param event
      */
     @Override
-    public void addEvent(ScheduleEvent event) {
+    public void addEvent(ScheduleEvent<WeatherScheduleEventData> event) {
         event.setId(UUID.randomUUID().toString());
 
         events.add((DefaultScheduleEvent<WeatherScheduleEventData>) event);
@@ -136,7 +130,7 @@ public class DefaultWeatherScheduleModel implements WeatherScheduleModel, Serial
      * @return
      */
     @Override
-    public boolean deleteEvent(ScheduleEvent event) {
+    public boolean deleteEvent(ScheduleEvent<WeatherScheduleEventData> event) {
         return events.remove(event);
     }
 
@@ -145,7 +139,7 @@ public class DefaultWeatherScheduleModel implements WeatherScheduleModel, Serial
      * @return
      */
     @Override
-    public List<ScheduleEvent<?>> getEvents() {
+    public List<ScheduleEvent<WeatherScheduleEventData>> getEvents() {
         return new ArrayList<>(events);
     }
 
@@ -154,7 +148,7 @@ public class DefaultWeatherScheduleModel implements WeatherScheduleModel, Serial
      * @param event
      */
     @Override
-    public void updateEvent(ScheduleEvent event) {
+    public void updateEvent(ScheduleEvent<WeatherScheduleEventData> event) {
         int index = -1;
 
         for (int i = 0; i < events.size(); i++) {

@@ -40,6 +40,30 @@
             .ui-autocomplete-input {
                 width: 80%;
             }
+            .layout-north {
+                width: 100%;
+                overflow: hidden;
+                padding: 5px;
+                box-sizing: border-box;
+            }
+            .layout-body {
+                display: flex;
+                flex-direction: row;
+                width: 100%;
+                min-height: calc(100vh - 110px);
+            }
+            .layout-west {
+                width: 300px;
+                min-width: 300px;
+                text-align: center;
+                padding: 5px;
+                box-sizing: border-box;
+            }
+            .layout-center {
+                flex: 1;
+                padding: 5px;
+                box-sizing: border-box;
+            }
         </style>
         <script type="text/javascript">
             function handleRegistrationRequest(xhr, status, args)
@@ -66,54 +90,51 @@
     </h:head>
 
     <h:body>
-        <p:layout fullPage="true">
+        <div class="layout-north">
+            <div class="ui-grid ui-grid-responsive">
+                <div class="ui-grid-row" style="margin: 20px auto;">
+                    <div class="ui-grid-col-3" style="margin: -20px auto;">
+                        <p:link outcome="calendar">
+                            <p:graphicImage style="max-width:100%; max-height:95%;"
+                                            library="images" name="meteocal-logo.png" alt="Logo MeteoCal"/>
+                        </p:link>
+                    </div>
+                    <div class="ui-grid-col-8">
+                        <p:autoComplete id="searchBar"  value="#{searchBean.input}" completeMethod="#{searchBean.search}" style="width:100%;"
+                                        var="result" itemLabel="#{result.name}" itemValue="#{result}" converter="resultConverter" forceSelection="true">
+                            <p:column style="width:10%">
+                                <h:outputText value="#{result.type}" />
+                            </p:column>
 
-            <p:layoutUnit position="north" size="100">
-                <div class="ui-grid ui-grid-responsive">
-                    <div class="ui-grid-row" style="margin: 20px auto;">
-                        <div class="ui-grid-col-3" style="margin: -20px auto;">
-                            <p:link outcome="calendar">
-                                <p:graphicImage style="max-width:100%; max-height:95%;"
-                                                library="images" name="meteocal-logo.png" alt="Logo MeteoCal"/>
-                            </p:link> 
-                        </div>
-                        <div class="ui-grid-col-8">
-                            <p:autoComplete id="searchBar"  value="#{searchBean.input}" completeMethod="#{searchBean.search}" style="width:100%;"
-                                            var="result" itemLabel="#{result.name}" itemValue="#{result}" converter="resultConverter" forceSelection="true">
-                                <p:column style="width:10%">
-                                    <h:outputText value="#{result.type}" />
-                                </p:column>
-
-                                <p:column>
-                                    <h:outputText value="#{result.name}" />
-                                </p:column>
-                                <p:ajax event="itemSelect" listener="#{calendarBean.handleSelect}" />
-                            </p:autoComplete>  
-                        </div>
-                        <div class="ui-grid-col-1" style="text-align: center;">
-                            <p:link outcome="settings" title="Settings" >
-                                <p:graphicImage 
-                                    library="images"  name="settings.svg" width="25"
-                                    height="25" />
-                            </p:link>
-                        </div>
-                        <div class="ui-grid-col-1" >
-                            <h:form>
-                                <p:commandButton value="Logout" icon="ui-icon-extlink" action="#{loginBean.logout}" 
-                                                 ajax="false" 
-                                                 actionListener="#{loginBean.redirect('../index.xhtml')}"  />
-                            </h:form> 
-                        </div>
+                            <p:column>
+                                <h:outputText value="#{result.name}" />
+                            </p:column>
+                            <p:ajax event="itemSelect" listener="#{calendarBean.handleSelect}" />
+                        </p:autoComplete>
+                    </div>
+                    <div class="ui-grid-col-1" style="text-align: center;">
+                        <p:link outcome="settings" title="Settings" >
+                            <p:graphicImage
+                                library="images"  name="settings.svg" width="25"
+                                height="25" />
+                        </p:link>
+                    </div>
+                    <div class="ui-grid-col-1" >
+                        <h:form>
+                            <p:commandButton value="Logout" icon="ui-icon-extlink" action="#{loginBean.logout}"
+                                             ajax="false"
+                                             actionListener="#{loginBean.redirect('../index.xhtml')}"  />
+                        </h:form>
                     </div>
                 </div>
-            </p:layoutUnit>
+            </div>
+        </div>
 
-
-
-            <p:layoutUnit position="west" size="300" style="text-align: center">
+        <div class="layout-body">
+            <div class="layout-west">
 
                 <h:form id="userInfoForm">
-                    <p:growl id="msgs" showDetail="true" />
+                    <p:messages id="msgs" showDetail="true" closable="true"/>
                     <p:panelGrid id="userInfo" columns="1" layout="grid">
                         <f:facet name="header">
                             <h:outputText value="#{calendarBean.currentUser.firstName} #{calendarBean.currentUser.lastName} Calendar" />
@@ -121,7 +142,7 @@
                         <p:graphicImage id="userImg" value="#{calendarBean.currentUser.avatar}" height="100" width="100" />
                         <p:commandButton rendered="#{not calendarBean.loggedUser.preferedCalendarsIDs.contains(calendarBean.currentUser.calendarId) and not calendarBean.loggedUser.id.equals(calendarBean.currentUser.id)}"
                                          action="#{calendarBean.addPreferedCalendar()}"
-                                         id="addPostPreferito" update="msgs,userInfoForm,:preferedCalendarForm" value="" 
+                                         id="addPostPreferito" update="msgs,userInfoForm,:preferedCalendarForm" value=""
                                          style=" background-image: url('#{resource['images/star_add.png']}') !important;
                                          height: 32px;
                                          width: 32px;"
@@ -129,7 +150,7 @@
 
                         <p:commandButton rendered="#{calendarBean.loggedUser.preferedCalendarsIDs.contains(calendarBean.currentUser.calendarId)}"
                                          action="#{calendarBean.delPreferedCalendar()}"
-                                         id="delPostPreferito" update="msgs,userInfoForm,:preferedCalendarForm" value=""   
+                                         id="delPostPreferito" update="msgs,userInfoForm,:preferedCalendarForm" value=""
                                          style=" background-image: url('#{resource['images/star.png']}') !important;
                                          height: 32px;
                                          width: 32px;"
@@ -138,8 +159,8 @@
                 </h:form>
 
                 <h:form id="notificationForm">
-                    <p:dataTable var="notification" 
-                                 value="#{calendarBean.loggedUser.notifications}" 
+                    <p:dataTable var="notification"
+                                 value="#{calendarBean.loggedUser.notifications}"
                                  scrollRows="5" scrollable="true" liveScroll="true" scrollHeight="150" style="margin-bottom:0"
                                  emptyMessage="No notification available">
                         <f:facet name="header">
@@ -178,7 +199,7 @@
                 </h:form>
 
                 <h:form id="preferedCalendarForm">
-                    <p:dataTable var="preferedCalendar" value="#{calendarBean.loggedUser.preferedCalendarsIDs}" 
+                    <p:dataTable var="preferedCalendar" value="#{calendarBean.loggedUser.preferedCalendarsIDs}"
                                  scrollRows="5" scrollable="true" liveScroll="true" scrollHeight="150" style="margin-bottom:0"
                                  emptyMessage="No prefered calendar">
                         <f:facet name="header">
@@ -191,15 +212,13 @@
                         </p:column>
                     </p:dataTable>
                 </h:form>
-            </p:layoutUnit>
+            </div>
 
-
-            <p:layoutUnit position="center">
+            <div class="layout-center" id="centerPanel">
                 <ui:insert name="center">
                 </ui:insert>
-            </p:layoutUnit>
-
-        </p:layout>
+            </div>
+        </div>
 
     </h:body>
 </html>
