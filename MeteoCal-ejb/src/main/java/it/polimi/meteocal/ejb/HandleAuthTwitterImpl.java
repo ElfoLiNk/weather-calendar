@@ -48,8 +48,8 @@ import twitter4j.conf.ConfigurationBuilder;
 public class HandleAuthTwitterImpl implements HandleAuthTwitter {
 
     // OAuth Data
-    private String CLIENT_ID;
-    private String CLIENT_SECRET;
+    private static String CLIENT_ID;
+    private static String CLIENT_SECRET;
     private String URL_BASE;
 
     private static final Logger LOGGER = LogManager.getLogger(HandleAuthTwitterImpl.class.getName());

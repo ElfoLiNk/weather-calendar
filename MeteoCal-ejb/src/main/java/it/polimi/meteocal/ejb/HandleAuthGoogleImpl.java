@@ -63,10 +63,11 @@ import org.apache.logging.log4j.Logger;
  * Session Bean implementation class HandleAuthGoogleImpl
  */
 @Stateless
+@SuppressWarnings("deprecation")
 public class HandleAuthGoogleImpl implements HandleAuthGoogle {
 
-    private String CLIENT_ID;
-    private String CLIENT_SECRET;
+    private static String CLIENT_ID;
+    private static String CLIENT_SECRET;
     private static final String APPLICATION_NAME = "MeteoCal";
     private String REDIRECT_URL;
 

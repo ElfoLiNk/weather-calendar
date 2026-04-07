@@ -22,6 +22,17 @@
         <module>MeteoCal-web</module>
         <module>MeteoCal-ear</module>
     </modules>
+    <properties>
+        <sonar.projectKey>ElfoLiNk_weather-calendar</sonar.projectKey>
+        <sonar.organization>elfolink</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.coverage.jacoco.xmlReportPaths>
+            ${project.basedir}/MeteoCal-ejb/target/site/jacoco/jacoco.xml,
+            ${project.basedir}/MeteoCal-web/target/site/jacoco/jacoco.xml,
+            ${project.basedir}/MeteoCal-EJBClient/target/site/jacoco/jacoco.xml
+        </sonar.coverage.jacoco.xmlReportPaths>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -41,6 +52,13 @@
                         <id>prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
                         </goals>
                     </execution>
                 </executions>

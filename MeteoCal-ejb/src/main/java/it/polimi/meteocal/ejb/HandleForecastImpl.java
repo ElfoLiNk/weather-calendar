@@ -25,6 +25,7 @@ import it.polimi.meteocal.entities.Location;
 import it.polimi.meteocal.entities.Weather;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -314,7 +315,7 @@ public class HandleForecastImpl implements HandleForecast {
         final int BATCH_SIZE = 500;
         int count = 0;
         try {
-            InputStream inputStream = new URL("https://bulk.openweathermap.org/sample/city.list.json.gz").openStream();
+            InputStream inputStream = URI.create("https://bulk.openweathermap.org/sample/city.list.json.gz").toURL().openStream();
             GZIPInputStream gis = new GZIPInputStream(inputStream);
             JSONTokener tokener = new JSONTokener(gis);
             // Skip opening '['

@@ -55,8 +55,8 @@ import org.apache.logging.log4j.Logger;
 @Stateless
 public class HandleAuthFacebookImpl implements HandleAuthFacebook {
 
-    private String APP_ID;
-    private String APPSECRET;
+    private static String APP_ID;
+    private static String APPSECRET;
     private String URL_BASE;
 
     private static final Logger LOGGER = LogManager.getLogger(HandleAuthFacebook.class.getName());
@@ -116,8 +116,9 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
                 String responseBody = httpclient.execute(httpget,
                         responseHandler);
                 LOGGER.log(Level.INFO, "Response Body: " + responseBody);
-                accessToken = StringUtils.removeStart(responseBody,
-                        "access_token=");
+                accessToken = responseBody.startsWith("access_token=")
+                        ? responseBody.substring("access_token=".length())
+                        : responseBody;
                 int i = accessToken.indexOf("&");
                 accessToken = accessToken.substring(0, i);
                 LOGGER.log(Level.DEBUG, "AccessToken: [redacted]");

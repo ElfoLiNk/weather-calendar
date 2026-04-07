@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.zip.GZIPInputStream;
@@ -887,7 +888,7 @@ public class OpenWeatherMap {
             String response = null;
 
             try {
-                request = new URL(requestAddress);
+                request = URI.create(requestAddress).toURL();
                 connection = (HttpURLConnection) request.openConnection();
 
                 connection.setRequestMethod("GET");

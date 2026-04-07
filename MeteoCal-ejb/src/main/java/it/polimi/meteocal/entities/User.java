@@ -108,6 +108,7 @@ public class User implements Serializable {
     private String firstName;
     @NotNull(message = "Last Name cannot be empty")
     private String lastName;
+    @SuppressWarnings("deprecation")
     @Temporal(jakarta.persistence.TemporalType.DATE)
     private Date dateBirth;
     @NotNull(message = "Email cannot be empty")
