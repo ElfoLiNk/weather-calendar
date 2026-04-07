@@ -80,7 +80,7 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
         String accessToken;
         accessToken = user.getFacebookToken();
         FacebookClient facebookClient;
-        facebookClient = new DefaultFacebookClient(accessToken, APPSECRET, Version.VERSION_3_1);
+        facebookClient = new DefaultFacebookClient(accessToken, APPSECRET, Version.VERSION_12_0);
         return facebookClient;
     }
 
@@ -123,7 +123,7 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
                 LOGGER.log(Level.DEBUG, "AccessToken: [redacted]");
 
                 facebookClient = new DefaultFacebookClient(accessToken,
-                        APPSECRET, Version.VERSION_3_1);
+                        APPSECRET, Version.VERSION_12_0);
                 com.restfb.types.User userFB = facebookClient.fetchObject("me", com.restfb.types.User.class);
 
                 if (!AuthUtil.isUserLogged()) {
