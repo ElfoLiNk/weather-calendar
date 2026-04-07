@@ -75,7 +75,7 @@ public class CalendarBean implements Serializable {
     private static final String ERROR_PREFIX = "Error: ";
     private static final String INDEX_PAGE = "../index.xhtml";
 
-    private DefaultScheduleEvent<WeatherScheduleEventData> event = DefaultScheduleEvent.<WeatherScheduleEventData>builder().title("").startDate(LocalDateTime.now()).endDate(LocalDateTime.now()).build();
+    private transient DefaultScheduleEvent<WeatherScheduleEventData> event = DefaultScheduleEvent.<WeatherScheduleEventData>builder().title("").startDate(LocalDateTime.now()).endDate(LocalDateTime.now()).build();
     
     private transient WeatherScheduleModel eventModel;
 
@@ -88,15 +88,15 @@ public class CalendarBean implements Serializable {
     @EJB
     transient HandleForecast handleForecast;
 
-    private UserDTO currentUser;
+    private transient UserDTO currentUser;
 
-    private UserDTO loggedUser;
+    private transient UserDTO loggedUser;
 
-    private NotificationDTO selectedNotification;
+    private transient NotificationDTO selectedNotification;
 
     private String selectedCalendarId;
 
-    private ResultDTO selectedResult;
+    private transient ResultDTO selectedResult;
 
     /**
      *

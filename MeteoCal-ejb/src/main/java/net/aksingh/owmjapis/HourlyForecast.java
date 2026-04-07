@@ -232,6 +232,7 @@ public class HourlyForecast extends AbstractForecast {
          * @version 2014/12/26
          * @since 2.5.0.1
          */
+        @SuppressWarnings("java:S3252")
         public static class Clouds extends AbstractWeather.Clouds {
 
             Clouds() {
@@ -263,6 +264,7 @@ public class HourlyForecast extends AbstractForecast {
          * @version 2014/12/26
          * @since 2.5.0.1
          */
+        @SuppressWarnings("java:S3252")
         public static class Main extends AbstractWeather.Main {
 
             private static final String JSON_MAIN_SEA_LEVEL = "sea_level";

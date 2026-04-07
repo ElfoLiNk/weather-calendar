@@ -47,7 +47,7 @@ public class LoginBean implements Serializable {
     @EJB
     private transient HandleUser handleUser;
 
-    private UserDTO loginUser;
+    private transient UserDTO loginUser;
 
     /**
      * Creates a new instance of LoginBean

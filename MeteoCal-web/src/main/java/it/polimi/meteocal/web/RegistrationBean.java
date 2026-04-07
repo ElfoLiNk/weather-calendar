@@ -48,7 +48,7 @@ public class RegistrationBean implements Serializable {
     @EJB
     private transient HandleUser handleUser;
 
-    private UserDTO registerUser;
+    private transient UserDTO registerUser;
 
     private String passwordCheck;
 
