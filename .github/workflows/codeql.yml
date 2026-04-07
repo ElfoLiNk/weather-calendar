@@ -20,6 +20,12 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
+    - name: Set up Java 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
     # Initializes the CodeQL Action. This step creates an empty CodeQL database.
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
@@ -29,6 +35,8 @@ jobs:
     # Autobuild attempts to build your code. If it fails, you'll need to provide a custom build command.
     - name: Autobuild
       uses: github/codeql-action/autobuild@v3
+      env:
+        MAVEN_OPTS: "-DskipTests"
 
     # Performs the CodeQL analysis.
     - name: Perform CodeQL Analysis
