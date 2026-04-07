@@ -169,7 +169,7 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
                         utente.setLastName(utente.getLastName() + " " + stok.nextToken());
 
                     }
-                    LOGGER.log(Level.INFO, () -> utente.getLastName());
+                    LOGGER.log(Level.INFO, utente::getLastName);
                     utente.setAvatar(user.getProfileImageURLHttps());
                     // MANCA EMAIL
                     utente.setEmail(utente.getFirstName().toLowerCase() + "." + utente.getLastName().toLowerCase().replaceAll("\\s", ".") + "@twitter.com");

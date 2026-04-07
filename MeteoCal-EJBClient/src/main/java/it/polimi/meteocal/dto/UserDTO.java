@@ -43,9 +43,9 @@ public class UserDTO implements Serializable {
 
     private String calendarId;
 
-    private SettingDTO setting;
+    private transient SettingDTO setting;
 
-    private List<NotificationDTO> notifications;
+    private transient List<NotificationDTO> notifications;
 
     private List<String> preferedCalendarsIDs;
 

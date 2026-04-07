@@ -302,9 +302,8 @@ public class HandleForecastImpl implements HandleForecast {
     public void setLocations() {
         final int BATCH_SIZE = 500;
         int count = 0;
-        try {
-            InputStream inputStream = URI.create("https://bulk.openweathermap.org/sample/city.list.json.gz").toURL().openStream();
-            GZIPInputStream gis = new GZIPInputStream(inputStream);
+        try (InputStream inputStream = URI.create("https://bulk.openweathermap.org/sample/city.list.json.gz").toURL().openStream();
+             GZIPInputStream gis = new GZIPInputStream(inputStream)) {
             JSONTokener tokener = new JSONTokener(gis);
             // Skip opening '['
             tokener.nextClean();

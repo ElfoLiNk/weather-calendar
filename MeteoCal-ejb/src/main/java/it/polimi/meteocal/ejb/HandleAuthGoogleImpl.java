@@ -166,7 +166,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
      * @see TokenResponse
      */
     @SuppressWarnings("java:S1172")
-    protected static void setGoogleToken(EntityManager em, Credential _credential, TokenResponse tokenResponse, User user) {
+    protected static void setGoogleToken(EntityManager em, Credential unusedCredential, TokenResponse tokenResponse, User user) {
         try {
             String tokenGoogle = tokenResponse.toString();
             LOGGER.log(Level.DEBUG, "Google token response received [redacted]");
