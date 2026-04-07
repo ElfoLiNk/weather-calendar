@@ -4,6 +4,10 @@ set -e
 # Start domain temporarily to run remote configuration commands
 asadmin start-domain
 
+# Increase heap for the city list import (~200k locations)
+asadmin delete-jvm-options -- -Xmx512m || true
+asadmin create-jvm-options -- -Xmx1g || true
+
 # JDBC connection pool
 asadmin create-jdbc-connection-pool \
     --datasourceclassname=com.mysql.cj.jdbc.MysqlDataSource \

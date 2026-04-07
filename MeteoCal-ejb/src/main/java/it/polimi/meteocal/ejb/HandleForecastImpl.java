@@ -313,32 +313,46 @@ public class HandleForecastImpl implements HandleForecast {
 
     @Override
     public void setLocations() {
-        JSONArray cities = new JSONArray();
+        final int BATCH_SIZE = 500;
+        int count = 0;
         try {
             InputStream inputStream = new URL("http://bulk.openweathermap.org/sample/city.list.json.gz").openStream();
             GZIPInputStream gis = new GZIPInputStream(inputStream);
-            cities =  (JSONArray) new JSONTokener(gis).nextValue();
+            JSONTokener tokener = new JSONTokener(gis);
+            // Skip opening '['
+            tokener.nextClean();
+            while (tokener.more()) {
+                char c = tokener.nextClean();
+                if (c == ']') break;
+                if (c != '{') { tokener.back(); }
+                else { tokener.back(); }
+                JSONObject elem = new JSONObject(tokener);
+                Location location = new Location();
+                try {
+                    JSONObject coord = elem.getJSONObject("coord");
+                    location.setId(elem.getLong("id"));
+                    location.setName(elem.getString("name"));
+                    location.setLatitude(coord.getFloat("lat"));
+                    location.setLongitude(coord.getFloat("lon"));
+                    location.setCountryCode(elem.getString("country"));
+                    em.persist(location);
+                    count++;
+                    if (count % BATCH_SIZE == 0) {
+                        em.flush();
+                        em.clear();
+                    }
+                } catch (Exception e) {
+                    LOGGER.log(Level.ERROR, e);
+                }
+                // skip ',' between objects
+                char sep = tokener.nextClean();
+                if (sep == ']') break;
+                if (sep != ',') tokener.back();
+            }
+            em.flush();
         } catch (IOException ex) {
             LOGGER.log(Level.ERROR, ex);
         }
-
-        cities.forEach(item -> {
-            JSONObject elem = (JSONObject) item;
-            Location location = new Location();
-            try {
-                JSONObject coord = elem.getJSONObject("coord");
-                location.setId(elem.getLong("id"));
-                location.setName(elem.getString("name"));
-                location.setLatitude(coord.getFloat("lat"));
-                location.setLongitude(coord.getFloat("lon"));
-                location.setCountryCode(elem.getString("country"));
-            } catch (NumberFormatException e) {
-                LOGGER.log(Level.ERROR, e);
-            }
-
-            em.persist(location);
-        });
-        em.flush();
     }
 
     @Override
