@@ -139,7 +139,8 @@
                         <f:facet name="header">
                             <h:outputText value="#{calendarBean.currentUser.firstName} #{calendarBean.currentUser.lastName} Calendar" />
                         </f:facet>
-                        <p:graphicImage id="userImg" value="#{calendarBean.currentUser.avatar}" height="100" width="100" />
+                        <p:graphicImage id="userImg" rendered="#{not empty calendarBean.currentUser.avatar}" value="#{calendarBean.currentUser.avatar}" height="100" width="100" />
+                        <h:graphicImage rendered="#{empty calendarBean.currentUser.avatar}" library="images" name="avatar-placeholder.svg" height="100" width="100" alt="No avatar" />
                         <p:commandButton rendered="#{not calendarBean.loggedUser.preferedCalendarsIDs.contains(calendarBean.currentUser.calendarId) and not calendarBean.loggedUser.id.equals(calendarBean.currentUser.id)}"
                                          action="#{calendarBean.addPreferedCalendar()}"
                                          id="addPostPreferito" update="msgs,userInfoForm,:preferedCalendarForm" value=""

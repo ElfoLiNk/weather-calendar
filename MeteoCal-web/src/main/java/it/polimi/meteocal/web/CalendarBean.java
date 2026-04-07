@@ -355,6 +355,7 @@ public class CalendarBean implements Serializable {
                 .startDate(selectEvent.getObject())
                 .endDate(selectEvent.getObject())
                 .allDay(true)
+                .editable(true)
                 .data(data).build();
     }
 
