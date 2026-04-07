@@ -64,38 +64,37 @@
 
 
                             <h:outputLabel for="from" value="From:" />
-                            <p:calendar rendered="#{calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id)  and calendarBean.event.editable}"  id="from" 
-                                        value="#{calendarBean.event.startDate}"  
-                                        pattern="#{settingBean.loggedUser.setting.dateFormat == 'DMY' ? 'dd/MM/yyyy' :
-                                                   settingBean.loggedUser.setting.dateFormat == 'MDY' ? 'MM/dd/yyyy' :
-                                                   'yyyy/MM/dd'} HH:mm"
-                                        timeZone="#{calendarBean.loggedUser.setting.timeZone.ID}" >
-                                <p:ajax event="change" listener="#{calendarBean.checkEventDate()}"   update="allDay,from,to" process="@this" />
-                                <p:ajax event="dateSelect" listener="#{calendarBean.checkEventDate()}"   update="allDay,from,to" process="@this" />
-                            </p:calendar>
+                            <p:datePicker rendered="#{calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.editable}" id="from"
+                                          value="#{calendarBean.event.startDate}"
+                                          pattern="#{settingBean.loggedUser.setting.dateFormat == 'DMY' ? 'dd/MM/yyyy' :
+                                                     settingBean.loggedUser.setting.dateFormat == 'MDY' ? 'MM/dd/yyyy' :
+                                                     'yyyy/MM/dd'} HH:mm"
+                                          showTime="true" hourFormat="24">
+                                <p:ajax event="dateSelect" listener="#{calendarBean.checkEventDate()}" update="allDay,from,to" process="@this" />
+                            </p:datePicker>
                             <h:outputText rendered="#{not calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id) or not calendarBean.event.editable}"
-                                          value="#{calendarBean.event.startDate}" >
-                                <f:convertDateTime pattern="#{settingBean.loggedUser.setting.dateFormat == 'DMY' ? 'dd/MM/yyyy' :
-                                                              settingBean.loggedUser.setting.dateFormat == 'MDY' ? 'MM/dd/yyyy' :
-                                                              'yyyy/MM/dd'} HH:mm" 
-                                                   timeZone="#{calendarBean.loggedUser.setting.timeZone.ID}"/>
+                                          value="#{calendarBean.event.startDate}">
+                                <f:converter converterId="localDateTimeConverter"/>
+                                <f:attribute name="pattern" value="#{settingBean.loggedUser.setting.dateFormat == 'DMY' ? 'dd/MM/yyyy' :
+                                                                     settingBean.loggedUser.setting.dateFormat == 'MDY' ? 'MM/dd/yyyy' :
+                                                                     'yyyy/MM/dd'} HH:mm"/>
                             </h:outputText>
 
                             <h:outputLabel for="to" value="To:" />
-                            <p:calendar rendered="#{calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.editable}"  id="to" 
-                                        value="#{calendarBean.event.endDate}" 
-                                        pattern="#{settingBean.loggedUser.setting.dateFormat == 'DMY' ? 'dd/MM/yyyy' :
-                                                   settingBean.loggedUser.setting.dateFormat == 'MDY' ? 'MM/dd/yyyy' :
-                                                   'yyyy/MM/dd'} HH:mm"  
-                                        timeZone="#{calendarBean.loggedUser.setting.timeZone.ID}" >
-                                <p:ajax event="change" listener="#{calendarBean.checkEventDate()}"   update="allDay,from,to" process="@this" />
-                                <p:ajax event="dateSelect" listener="#{calendarBean.checkEventDate()}"   update="allDay,from,to" process="@this" />
-                            </p:calendar>
-                            <h:outputText rendered="#{not calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id) or not calendarBean.event.editable}" value="#{calendarBean.event.endDate}" >
-                                <f:convertDateTime pattern="#{settingBean.loggedUser.setting.dateFormat == 'DMY' ? 'dd/MM/yyyy' :
-                                                              settingBean.loggedUser.setting.dateFormat == 'MDY' ? 'MM/dd/yyyy' :
-                                                              'yyyy/MM/dd'} HH:mm"
-                                                   timeZone="#{calendarBean.loggedUser.setting.timeZone.ID}"/>
+                            <p:datePicker rendered="#{calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id) and calendarBean.event.editable}" id="to"
+                                          value="#{calendarBean.event.endDate}"
+                                          pattern="#{settingBean.loggedUser.setting.dateFormat == 'DMY' ? 'dd/MM/yyyy' :
+                                                     settingBean.loggedUser.setting.dateFormat == 'MDY' ? 'MM/dd/yyyy' :
+                                                     'yyyy/MM/dd'} HH:mm"
+                                          showTime="true" hourFormat="24">
+                                <p:ajax event="dateSelect" listener="#{calendarBean.checkEventDate()}" update="allDay,from,to" process="@this" />
+                            </p:datePicker>
+                            <h:outputText rendered="#{not calendarBean.event.data.eoId.equals(calendarBean.loggedUser.id) or not calendarBean.event.editable}"
+                                          value="#{calendarBean.event.endDate}">
+                                <f:converter converterId="localDateTimeConverter"/>
+                                <f:attribute name="pattern" value="#{settingBean.loggedUser.setting.dateFormat == 'DMY' ? 'dd/MM/yyyy' :
+                                                                     settingBean.loggedUser.setting.dateFormat == 'MDY' ? 'MM/dd/yyyy' :
+                                                                     'yyyy/MM/dd'} HH:mm"/>
                             </h:outputText>
 
                             <h:outputLabel for="allDay" value="All Day:" />
