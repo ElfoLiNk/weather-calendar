@@ -649,12 +649,12 @@ public class HandleUserImpl implements HandleUser {
 
     @Override
     public void removeOldNotification() {
-//        TypedQuery<EventNotification> query = em.createNamedQuery(EventNotification.FIND_OLD_NOTIFICATION, EventNotification.class);
-//        query.setParameter("now", LocalDateTime.now());
-//        for (EventNotification eventNotif : query.getResultList()) {
-//            eventNotif.getUser().getListNotifications().remove(eventNotif);
-//            em.remove(eventNotif);
-//        }
+        TypedQuery<EventNotification> query = em.createNamedQuery(EventNotification.FIND_OLD_NOTIFICATION, EventNotification.class);
+        query.setParameter("now", LocalDateTime.now());
+        for (EventNotification eventNotif : query.getResultList()) {
+            eventNotif.getUser().getListNotifications().remove(eventNotif);
+            em.remove(eventNotif);
+        }
         TypedQuery<RescheduleNotification> queryResch = em.createNamedQuery(RescheduleNotification.FIND_OLD_NOTIFICATION, RescheduleNotification.class);
         queryResch.setParameter("now", LocalDateTime.now());
         for (RescheduleNotification reschNotif : queryResch.getResultList()) {

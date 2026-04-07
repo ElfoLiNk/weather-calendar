@@ -266,6 +266,9 @@ public class HandleEventImpl implements HandleEvent {
 
         Event event = em.find(Event.class, Long.valueOf(insertEvent.getId()));
         if (event != null) {
+            if (!event.getEo().getId().equals(userId)) {
+                throw new ErrorRequestException("event eo != current user", false);
+            }
             // MODIFY EVENT
             em.merge(modifyEvent(event, insertEvent));
             return event.getId();

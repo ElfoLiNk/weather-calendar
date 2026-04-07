@@ -454,7 +454,7 @@ public class CalendarBean implements Serializable {
         if (event.getId() == null) {
             addMessage(new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Error: ", "Not Valid Event"));
-            LOGGER.log(Level.ERROR, "Evento non rimosso: " + event.toString());
+            LOGGER.log(Level.ERROR, "Event not removed: " + event.toString());
         } else {
             // REMOVE EVENT
             try {
@@ -488,8 +488,8 @@ public class CalendarBean implements Serializable {
     public void cancelEvent() {
         if (event.getId() == null) {
             addMessage(new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Error: ", "Evento Selezionato Non Valido"));
-            LOGGER.log(Level.ERROR, "Evento non rimosso: " + event.toString());
+                    "Error: ", "No event selected"));
+            LOGGER.log(Level.ERROR, "Event not removed: " + event.toString());
         } else {
             // CANCEL EVENT
             try {
@@ -510,7 +510,7 @@ public class CalendarBean implements Serializable {
                 return false;
             });
             addMessage(new FacesMessage(FacesMessage.SEVERITY_INFO,
-                    "Event canceled", "Not partecipating to " + event.getTitle()));
+                    "Event canceled", "No longer participating in " + event.getTitle()));
         }
         // RESET BEAN EVENT
         event = DefaultScheduleEvent.<WeatherScheduleEventData>builder().title("").startDate(LocalDateTime.now()).endDate(LocalDateTime.now()).build();
