@@ -39,9 +39,9 @@ public class GoogleLogin implements Serializable {
     int cont = 0;
 
     @EJB
-    HandleAuthGoogle handleAuthGoogle;
+    transient HandleAuthGoogle handleAuthGoogle;
 
-    private static final Logger LOGGER = LogManager.getLogger(GoogleLogin.class.getName());
+    private static final transient Logger LOGGER = LogManager.getLogger(GoogleLogin.class.getName());
 
     /**
      * Method that execute the Google Login

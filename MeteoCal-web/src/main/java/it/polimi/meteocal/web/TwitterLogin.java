@@ -37,12 +37,11 @@ import org.apache.logging.log4j.Logger;
 public class TwitterLogin implements Serializable {
 
     @EJB
-    private HandleAuthTwitter handleAuthTwitter;
+    private transient HandleAuthTwitter handleAuthTwitter;
 
-    
     int cont = 0;
-    
-    private static final Logger LOGGER = LogManager.getLogger(TwitterLogin.class.getName());
+
+    private static final transient Logger LOGGER = LogManager.getLogger(TwitterLogin.class.getName());
 
     /**
      * Method that execute the Twitter Login

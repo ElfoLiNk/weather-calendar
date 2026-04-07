@@ -57,6 +57,7 @@ import org.apache.logging.log4j.Logger;
 public class HandleUserImpl implements HandleUser {
 
     private static final Logger LOGGER = LogManager.getLogger(HandleUserImpl.class.getName());
+    private static final String PARAM_EMAIL = "email";
 
     /**
      * Method that merge the inforation between the old user and the new user in
@@ -217,7 +218,7 @@ public class HandleUserImpl implements HandleUser {
     public void addUser(UserDTO newUser) throws ErrorRequestException {
         TypedQuery<User> query = em.createNamedQuery(User.FIND_BY_EMAIL,
                 User.class);
-        query.setParameter("email", newUser.getEmail());
+        query.setParameter(PARAM_EMAIL, newUser.getEmail());
         if (query.getResultList().isEmpty()) {
             // The user isn't in the system
             User user = new User();
@@ -250,7 +251,7 @@ public class HandleUserImpl implements HandleUser {
     public boolean doLogin(UserDTO loginUser) {
         TypedQuery<User> query = em.createNamedQuery(User.FIND_BY_EMAIL,
                 User.class);
-        query.setParameter("email", loginUser.getEmail());
+        query.setParameter(PARAM_EMAIL, loginUser.getEmail());
         if (!query.getResultList().isEmpty()) {
             boolean valid = validatePasssword(loginUser.getPassword(), query.getResultList().get(0).getPassword());
             if (valid) {
@@ -315,7 +316,7 @@ public class HandleUserImpl implements HandleUser {
             if (!user.getEmail().equals(loggedUser.getEmail())) {
                 TypedQuery<User> query = em.createNamedQuery(User.FIND_BY_EMAIL,
                         User.class);
-                query.setParameter("email", loggedUser.getEmail());
+                query.setParameter(PARAM_EMAIL, loggedUser.getEmail());
                 if (query.getResultList().isEmpty()) {
                     user.setEmail(loggedUser.getEmail());
                 } else {

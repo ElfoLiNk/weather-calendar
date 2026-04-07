@@ -58,6 +58,7 @@ import org.apache.logging.log4j.Logger;
 public class HandleEventImpl implements HandleEvent {
 
     private static final Logger LOGGER = LogManager.getLogger(HandleEventImpl.class.getName());
+    private static final String PARAM_EVENT = "event";
 
     @PersistenceContext
     EntityManager em;
@@ -299,7 +300,7 @@ public class HandleEventImpl implements HandleEvent {
                 // REMOVE NOTIFICATION RELATED TO EVENT
                 TypedQuery<EventNotification> queryNotify = em.createNamedQuery(EventNotification.FIND_BY_EVENT,
                         EventNotification.class);
-                queryNotify.setParameter("event", eventDb);
+                queryNotify.setParameter(PARAM_EVENT, eventDb);
                 for (EventNotification notif : queryNotify.getResultList()) {
                     notif.getUser().getListNotifications().remove(notif);
                     em.remove(notif);
@@ -470,7 +471,7 @@ public class HandleEventImpl implements HandleEvent {
         for (Event event : query.getResultList()) {
             TypedQuery<Calendar> queryCalendar = em.createNamedQuery(Calendar.FIND_BY_ORGANIZEDEVENT,
                     Calendar.class);
-            queryCalendar.setParameter("event", event);
+            queryCalendar.setParameter(PARAM_EVENT, event);
             // UPDATE FORECAST
             LOGGER.log(Level.INFO, "CHECK EVENT WEATHER CONDITION DATE: " + event.getStartDate());
             ForecastDTO forecast = handleForecast.getForecast(event.getLocation(), event.getStartDate());
@@ -486,7 +487,7 @@ public class HandleEventImpl implements HandleEvent {
                             if (ep.getCalendar().getParticipatedEvents().contains(event)) {
                                 TypedQuery<EventNotification> q = em.createNamedQuery(EventNotification.FIND_BY_EVENT_AND_USER,
                                         EventNotification.class);
-                                q.setParameter("event", event);
+                                q.setParameter(PARAM_EVENT, event);
                                 q.setParameter("user", ep);
                                 if (q.getResultList().isEmpty()) {
                                     EventNotification notif = new EventNotification();
@@ -503,7 +504,7 @@ public class HandleEventImpl implements HandleEvent {
                     // CHECK IF ALREADY NOTIFIED TO EO
                     TypedQuery<RescheduleNotification> q = em.createNamedQuery(RescheduleNotification.FIND_BY_EVENT,
                             RescheduleNotification.class);
-                    q.setParameter("event", event);
+                    q.setParameter(PARAM_EVENT, event);
                     if (q.getResultList().isEmpty()) {
                         // FIND SUGGESTED EVENT
                         Event suggestedEvent = checkBestAlternativeDay(event);
@@ -527,7 +528,7 @@ public class HandleEventImpl implements HandleEvent {
                     // REMOVE NOTIFICATION IF PRESENT
                     TypedQuery<RescheduleNotification> q = em.createNamedQuery(RescheduleNotification.FIND_BY_EVENT,
                             RescheduleNotification.class);
-                    q.setParameter("event", event);
+                    q.setParameter(PARAM_EVENT, event);
                     for (RescheduleNotification rnotif : q.getResultList()) {
                         User user = rnotif.getUser();
                         user.getListNotifications().remove(rnotif);

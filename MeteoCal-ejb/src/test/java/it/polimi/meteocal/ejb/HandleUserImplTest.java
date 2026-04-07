@@ -86,6 +86,7 @@ public class HandleUserImplTest {
      *
      */
     public HandleUserImplTest() {
+        // Default constructor required by JUnit
     }
 
     /**
@@ -93,7 +94,7 @@ public class HandleUserImplTest {
      */
     @BeforeClass
     public static void setUpClass() {
-        // no setup needed
+        // intentionally empty: no class-level setup required
     }
 
     /**
@@ -101,7 +102,7 @@ public class HandleUserImplTest {
      */
     @AfterClass
     public static void tearDownClass() {
-        // no teardown needed
+        // intentionally empty: no class-level teardown required
     }
 
     /**
@@ -204,7 +205,7 @@ public class HandleUserImplTest {
      */
     @After
     public void tearDown() {
-        // no teardown needed
+        // intentionally empty: no instance-level teardown required
     }
 
     /**

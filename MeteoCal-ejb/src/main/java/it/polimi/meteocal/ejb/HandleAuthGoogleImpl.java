@@ -202,7 +202,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
      * Default constructor.
      */
     public HandleAuthGoogleImpl() {
-
+        // Required no-arg constructor for EJB
     }
 
     @Override

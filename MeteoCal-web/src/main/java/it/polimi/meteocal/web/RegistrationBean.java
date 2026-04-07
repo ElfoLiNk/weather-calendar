@@ -43,10 +43,10 @@ import org.primefaces.event.SelectEvent;
 public class RegistrationBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private static final Logger LOGGER = LogManager.getLogger(RegistrationBean.class.getName());
+    private static final transient Logger LOGGER = LogManager.getLogger(RegistrationBean.class.getName());
 
     @EJB
-    private HandleUser handleUser;
+    private transient HandleUser handleUser;
 
     private UserDTO registerUser;
 
@@ -72,7 +72,7 @@ public class RegistrationBean implements Serializable {
      * Creates a new instance of RegistrationBean
      */
     public RegistrationBean() {
-
+        // Required no-arg constructor for CDI
     }
 
     /**

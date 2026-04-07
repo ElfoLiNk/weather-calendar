@@ -37,11 +37,11 @@ import org.apache.logging.log4j.Logger;
 public class FacebookLogin implements Serializable {
 
     @EJB
-    private HandleAuthFacebook handleAuthFacebook;
+    private transient HandleAuthFacebook handleAuthFacebook;
 
     int cont = 0;
-    
-    private static final Logger LOGGER = LogManager.getLogger(FacebookLogin.class.getName());
+
+    private static final transient Logger LOGGER = LogManager.getLogger(FacebookLogin.class.getName());
 
     /**
      * Method that execute the Facebook Login

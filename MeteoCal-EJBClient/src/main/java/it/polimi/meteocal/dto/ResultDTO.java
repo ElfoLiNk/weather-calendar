@@ -33,6 +33,7 @@ public class ResultDTO {
      * Default Constructor
      */
     public ResultDTO() {
+        // Default no-arg constructor
     }
 
     /**

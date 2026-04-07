@@ -97,6 +97,7 @@ public class HandleEventImplTest {
      * HandleEventImplTest constructor
      */
     public HandleEventImplTest() {
+        // Default constructor required by JUnit
     }
 
     /**
@@ -104,7 +105,7 @@ public class HandleEventImplTest {
      */
     @BeforeClass
     public static void setUpClass() {
-        // no setup needed
+        // intentionally empty: no class-level setup required
     }
 
     /**
@@ -112,7 +113,7 @@ public class HandleEventImplTest {
      */
     @AfterClass
     public static void tearDownClass() {
-        // no teardown needed
+        // intentionally empty: no class-level teardown required
     }
 
     /**

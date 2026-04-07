@@ -133,7 +133,7 @@ public class HandleForecastImpl implements HandleForecast {
                     HourlyForecast.Forecast forecast = hf.getForecastInstance(i);
                     if (forecast.hasWeatherInstance()) {
                         for (int j = 0; j < forecast.getWeatherCount(); j++) {
-                            HourlyForecast.Forecast.Weather weather = forecast.getWeatherInstance(j);
+                            net.aksingh.owmjapis.AbstractWeather.Weather weather = forecast.getWeatherInstance(j);
                             Forecast entityForecast = new Forecast();
                             if (hf.hasCityInstance()) {
                                 if (hf.getCityInstance().getCountryCode().length() <= 2) {
@@ -181,7 +181,7 @@ public class HandleForecastImpl implements HandleForecast {
                     DailyForecast.Forecast forecast = df.getForecastInstance(i);
                     if (forecast.hasWeatherInstance()) {
                         for (int j = 0; j < forecast.getWeatherCount(); j++) {
-                            HourlyForecast.Forecast.Weather weather = forecast.getWeatherInstance(j);
+                            net.aksingh.owmjapis.AbstractWeather.Weather weather = forecast.getWeatherInstance(j);
                             Forecast entityForecast = new Forecast();
                             if (df.hasCityInstance()) {
                                 if (df.getCityInstance().getCountryCode().length() <= 2) {

@@ -69,6 +69,7 @@ public class SettingBean {
      * Creates a new instance of SettingBean
      */
     public SettingBean() {
+        // Required no-arg constructor for CDI
     }
 
     /**

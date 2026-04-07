@@ -71,20 +71,22 @@ import org.primefaces.model.ScheduleEvent;
 public class CalendarBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private static final Logger LOGGER = LogManager.getLogger(CalendarBean.class.getName());
+    private static final transient Logger LOGGER = LogManager.getLogger(CalendarBean.class.getName());
+    private static final String ERROR_PREFIX = "Error: ";
+    private static final String INDEX_PAGE = "../index.xhtml";
 
     private DefaultScheduleEvent<WeatherScheduleEventData> event = DefaultScheduleEvent.<WeatherScheduleEventData>builder().title("").startDate(LocalDateTime.now()).endDate(LocalDateTime.now()).build();
     
     private WeatherScheduleModel eventModel;
 
     @EJB
-    HandleEvent handleEvent;
+    transient HandleEvent handleEvent;
 
     @EJB
-    HandleUser handleUser;
+    transient HandleUser handleUser;
 
     @EJB
-    HandleForecast handleForecast;
+    transient HandleForecast handleForecast;
 
     private UserDTO currentUser;
 
@@ -205,7 +207,7 @@ public class CalendarBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(
                     null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "Error: ", ex.getMessage()));
+                            ERROR_PREFIX, ex.getMessage()));
         }
 
         loadEventsModel(Long.valueOf(currentUser.getId()));
@@ -239,7 +241,7 @@ public class CalendarBean implements Serializable {
                 FacesContext.getCurrentInstance().addMessage(
                         null,
                         new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                "Error: ", e.getMessage()));
+                                ERROR_PREFIX, e.getMessage()));
             }
             event.setId(String.valueOf(idEventDb));
             eventModel.addEvent(event);
@@ -257,7 +259,7 @@ public class CalendarBean implements Serializable {
                 FacesContext.getCurrentInstance().addMessage(
                         null,
                         new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                "Error: ", e.getMessage()));
+                                ERROR_PREFIX, e.getMessage()));
             }
             EventDTO updatedEvent = null;
             try {
@@ -299,7 +301,7 @@ public class CalendarBean implements Serializable {
             authUtente = (User) session.getAttribute(User.AUTH_KEY);
         } else {
             LOGGER.log(Level.ERROR, "no active user session");
-            redirect("../index.xhtml");
+            redirect(INDEX_PAGE);
             currentUser = new UserDTO();
         }
 
@@ -316,11 +318,11 @@ public class CalendarBean implements Serializable {
                 LOGGER.log(Level.ERROR, e);
             } catch (NullPointerException e) {
                 LOGGER.log(Level.WARN, e);
-                redirect("../index.xhtml");
+                redirect(INDEX_PAGE);
             }
         } else {
             LOGGER.log(Level.ERROR, "no user authUser == null");
-            redirect("../index.xhtml");
+            redirect(INDEX_PAGE);
             currentUser = new UserDTO();
 
         }
@@ -453,7 +455,7 @@ public class CalendarBean implements Serializable {
     public void removeEvent() {
         if (event.getId() == null) {
             addMessage(new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Error: ", "Not Valid Event"));
+                    ERROR_PREFIX, "Not Valid Event"));
             LOGGER.log(Level.ERROR, "Event not removed: " + event.toString());
         } else {
             // REMOVE EVENT
@@ -465,7 +467,7 @@ public class CalendarBean implements Serializable {
                 FacesContext.getCurrentInstance().addMessage(
                         null,
                         new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                "Error: ", e.getMessage()));
+                                ERROR_PREFIX, e.getMessage()));
             }
             eventModel.deleteEvent(event);
             // REMOVE NOTIFICATION RELATED TO EVENT
@@ -488,7 +490,7 @@ public class CalendarBean implements Serializable {
     public void cancelEvent() {
         if (event.getId() == null) {
             addMessage(new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Error: ", "No event selected"));
+                    ERROR_PREFIX, "No event selected"));
             LOGGER.log(Level.ERROR, "Event not removed: " + event.toString());
         } else {
             // CANCEL EVENT
@@ -500,7 +502,7 @@ public class CalendarBean implements Serializable {
                 FacesContext.getCurrentInstance().addMessage(
                         null,
                         new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                "Error: ", e.getMessage()));
+                                ERROR_PREFIX, e.getMessage()));
             }
             eventModel.deleteEvent(event);
             // REMOVE NOTIFICATION RELATED TO EVENT
@@ -609,7 +611,7 @@ public class CalendarBean implements Serializable {
                         if (userList.equals(user)) {
                             addMessage(
                                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                            "Error: ", "User Already Invited"));
+                                            ERROR_PREFIX, "User Already Invited"));
                             alreadyAdded = false;
                         }
                     }
@@ -642,18 +644,18 @@ public class CalendarBean implements Serializable {
                 LOGGER.log(Level.ERROR, ex);
                 addMessage(
                         new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                "Error: ", ex.getMessage()));
+                                ERROR_PREFIX, ex.getMessage()));
             }
         } else {
             if (event.getId() != null) {
                 addMessage(
                         new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                "Error: ", "No Valid User"));
+                                ERROR_PREFIX, "No Valid User"));
 
             } else {
                 addMessage(
                         new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                "Error: ", "No Event"));
+                                ERROR_PREFIX, "No Event"));
             }
         }
         selectedResult = null;
@@ -705,7 +707,7 @@ public class CalendarBean implements Serializable {
             LOGGER.log(Level.ERROR, ex);
             addMessage(
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "Error: ", ex.getMessage()));
+                            ERROR_PREFIX, ex.getMessage()));
         }
 
         // UPDATE CONTEXT
@@ -728,7 +730,7 @@ public class CalendarBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(
                     null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "Error: ", e.getMessage()));
+                            ERROR_PREFIX, e.getMessage()));
         }
         for (EventDTO evento : eventi) {
             DefaultScheduleEvent<WeatherScheduleEventData> weatherEvent = mapEventDTOtoWeatherScheduleEvent(evento);

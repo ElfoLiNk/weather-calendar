@@ -31,6 +31,7 @@ public class StatusDTO {
      * Default Constructor
      */
     public StatusDTO() {
+        // Default no-arg constructor
     }
 
     /**

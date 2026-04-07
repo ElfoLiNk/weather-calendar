@@ -42,10 +42,10 @@ import org.primefaces.PrimeFaces;
 public class LoginBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private static final Logger LOGGER = LogManager.getLogger(LoginBean.class.getName());
+    private static final transient Logger LOGGER = LogManager.getLogger(LoginBean.class.getName());
 
     @EJB
-    private HandleUser handleUser;
+    private transient HandleUser handleUser;
 
     private UserDTO loginUser;
 
@@ -53,7 +53,7 @@ public class LoginBean implements Serializable {
      * Creates a new instance of LoginBean
      */
     public LoginBean() {
-
+        // Required no-arg constructor for CDI
     }
 
     /**

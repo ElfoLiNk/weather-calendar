@@ -41,19 +41,19 @@ import org.apache.logging.log4j.Logger;
 public class SearchBean implements Serializable {
 
     @EJB
-    HandleEvent handleEvent;
+    transient HandleEvent handleEvent;
 
     @EJB
-    HandleUser handleUser;
+    transient HandleUser handleUser;
 
     @EJB
-    HandleForecast handleForecast;
+    transient HandleForecast handleForecast;
 
     private List<ResultDTO> result;
     private String query = null;
     private String input = null;
 
-    private static final Logger LOGGER = LogManager.getLogger(SearchBean.class.getName());
+    private static final transient Logger LOGGER = LogManager.getLogger(SearchBean.class.getName());
     
     /**
      * Creates a new instance of SearchBean
