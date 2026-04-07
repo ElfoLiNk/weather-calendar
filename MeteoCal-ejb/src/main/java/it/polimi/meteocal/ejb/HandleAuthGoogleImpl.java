@@ -66,9 +66,10 @@ import org.apache.logging.log4j.Logger;
 @Stateless
 public class HandleAuthGoogleImpl implements HandleAuthGoogle {
 
-    private static final String CLIENT_ID =  "< Insert CLIENT ID >";
-    private static final String CLIENT_SECRET = "< Insert CLIENT SECRET >";
+    private static final String CLIENT_ID = System.getenv("GOOGLE_CLIENT_ID");
+    private static final String CLIENT_SECRET = System.getenv("GOOGLE_CLIENT_SECRET");
     private static final String APPLICATION_NAME = "MeteoCal";
+    private static final String REDIRECT_URL = System.getenv().getOrDefault("APP_BASE_URL", "http://www.meteocal.tk") + "/MeteoCal-web/loginGoogle.xhtml";
     
     private static final Logger LOGGER = LogManager.getLogger(HandleAuthGoogleImpl.class.getName());
     
@@ -211,7 +212,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
             GoogleTokenResponse tokenResponse = flow
                     .newTokenRequest(code)
                     .setRedirectUri(
-                            "http://www.meteocal.tk/MeteoCal-web/loginGoogle.xhtml")
+                            REDIRECT_URL)
                     .execute();
             GoogleCredential credential = new GoogleCredential.Builder()
                     .setTransport(new NetHttpTransport())
@@ -376,7 +377,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
                 "https://www.googleapis.com/auth/plus.login",
                 "https://www.googleapis.com/auth/userinfo.email");
 
-        final String redirectUrl = "http://www.meteocal.tk/MeteoCal-web/loginGoogle.xhtml";
+        final String redirectUrl = REDIRECT_URL;
 
         flow = new GoogleAuthorizationCodeFlow.Builder(new NetHttpTransport(),
                 new JacksonFactory(), CLIENT_ID, CLIENT_SECRET, scope)

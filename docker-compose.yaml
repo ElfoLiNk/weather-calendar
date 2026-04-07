@@ -28,6 +28,17 @@ services:
       - "8181:8181"
     environment:
       OPENWEATHER_API_KEY: ${OPENWEATHER_API_KEY:-}
+      FACEBOOK_APP_ID: ${FACEBOOK_APP_ID:-}
+      FACEBOOK_APP_SECRET: ${FACEBOOK_APP_SECRET:-}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      TWITTER_CLIENT_ID: ${TWITTER_CLIENT_ID:-}
+      TWITTER_CLIENT_SECRET: ${TWITTER_CLIENT_SECRET:-}
+      APP_BASE_URL: ${APP_BASE_URL:-http://localhost:8080}
+      MYSQL_HOST: db
+      MYSQL_USER: ${MYSQL_USER:-docker}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-docker}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-meteocal}
     depends_on:
       db:
         condition: service_healthy

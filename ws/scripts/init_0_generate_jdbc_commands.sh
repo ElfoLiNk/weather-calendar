@@ -12,7 +12,7 @@ touch $PREBOOT_COMMANDS
 
 CREATE_POOL_STATEMENT="create-jdbc-connection-pool --datasourceclassname=com.mysql.cj.jdbc.MysqlDataSource \
                                     --restype=javax.sql.DataSource \
-                                    --property port=3306:password=docker:user=docker:ServerName=db:DatabaseName=meteocal:useSSL=false:zeroDateTimeBehavior=CONVERT_TO_NULL:useUnicode=true:serverTimezone=UTC:characterEncoding=UTF-8:useInformationSchema=true:nullCatalogMeansCurrent=true:nullNamePatternMatchesAll=false MySQLConnPool"
+                                    --property port=3306:password=${MYSQL_PASSWORD:-docker}:user=${MYSQL_USER:-docker}:ServerName=${MYSQL_HOST:-db}:DatabaseName=${MYSQL_DATABASE:-meteocal}:useSSL=false:zeroDateTimeBehavior=CONVERT_TO_NULL:useUnicode=true:serverTimezone=UTC:characterEncoding=UTF-8:useInformationSchema=true:nullCatalogMeansCurrent=true:nullNamePatternMatchesAll=false MySQLConnPool"
 
 if grep -q "MySQLConnPool" $POSTBOOT_COMMANDS; then
   echo "post boot commands already have create-jdbc-connection-pool"
