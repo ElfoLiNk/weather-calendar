@@ -8,6 +8,11 @@ COPY MeteoCal-web/pom.xml MeteoCal-web/
 COPY MeteoCal-ear/pom.xml MeteoCal-ear/
 RUN mvn dependency:go-offline -B -q
 
+# Download MySQL Connector/J into local Maven cache
+RUN mvn dependency:copy -B \
+    -Dartifact=com.mysql:mysql-connector-j:8.0.33 \
+    -DoutputDirectory=/build/lib
+
 COPY MeteoCal-EJBClient/src MeteoCal-EJBClient/src
 COPY MeteoCal-ejb/src MeteoCal-ejb/src
 COPY MeteoCal-web/src MeteoCal-web/src
@@ -18,11 +23,10 @@ FROM ghcr.io/eclipse-ee4j/glassfish:8.0.0
 
 USER root
 
-# Download MySQL Connector/J
-RUN apt-get update -q && apt-get install -y -q wget && \
-    wget -q "https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.0.33/mysql-connector-j-8.0.33.jar" \
-         -O /opt/glassfish8/glassfish/domains/domain1/lib/ext/mysql-connector-j.jar && \
-    apt-get purge -y wget && rm -rf /var/lib/apt/lists/*
+RUN mkdir -p /opt/glassfish8/glassfish/domains/domain1/lib/ext
+
+COPY --from=builder /build/lib/mysql-connector-j-8.0.33.jar \
+    /opt/glassfish8/glassfish/domains/domain1/lib/ext/mysql-connector-j.jar
 
 COPY --from=builder /build/MeteoCal-ear/target/MeteoCal-ear-*.ear \
     /opt/glassfish8/glassfish/domains/domain1/autodeploy/MeteoCal-ear.ear
