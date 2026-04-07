@@ -113,12 +113,18 @@ public class DefaultWeatherScheduleModel implements WeatherScheduleModel, Serial
         events = new ArrayList<>();
     }
 
+    @Override
+    public boolean isEventLimit() {
+        return false;
+    }
+
     /**
      *
      * @param event
      */
     @Override
-    public void addEvent(ScheduleEvent<WeatherScheduleEventData> event) {
+    @SuppressWarnings("unchecked")
+    public void addEvent(ScheduleEvent<?> event) {
         event.setId(UUID.randomUUID().toString());
 
         events.add((DefaultScheduleEvent<WeatherScheduleEventData>) event);
@@ -130,7 +136,7 @@ public class DefaultWeatherScheduleModel implements WeatherScheduleModel, Serial
      * @return
      */
     @Override
-    public boolean deleteEvent(ScheduleEvent<WeatherScheduleEventData> event) {
+    public boolean deleteEvent(ScheduleEvent<?> event) {
         return events.remove(event);
     }
 
@@ -139,8 +145,10 @@ public class DefaultWeatherScheduleModel implements WeatherScheduleModel, Serial
      * @return
      */
     @Override
-    public List<ScheduleEvent<WeatherScheduleEventData>> getEvents() {
-        return new ArrayList<>(events);
+    public List<ScheduleEvent<?>> getEvents() {
+        List<ScheduleEvent<?>> result = new ArrayList<>();
+        result.addAll(events);
+        return result;
     }
 
     /**
@@ -148,7 +156,8 @@ public class DefaultWeatherScheduleModel implements WeatherScheduleModel, Serial
      * @param event
      */
     @Override
-    public void updateEvent(ScheduleEvent<WeatherScheduleEventData> event) {
+    @SuppressWarnings("unchecked")
+    public void updateEvent(ScheduleEvent<?> event) {
         int index = -1;
 
         for (int i = 0; i < events.size(); i++) {

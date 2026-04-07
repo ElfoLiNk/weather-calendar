@@ -27,7 +27,7 @@ import org.primefaces.model.ScheduleModel;
  *
  * @author Matteo Gazzetta, Alessandro Fato
  */
-public interface WeatherScheduleModel extends ScheduleModel<WeatherScheduleEventData> {
+public interface WeatherScheduleModel extends ScheduleModel {
 
     /**
      *
@@ -46,7 +46,7 @@ public interface WeatherScheduleModel extends ScheduleModel<WeatherScheduleEvent
      *
      * @return the list of the events in the model
      */
-    List<ScheduleEvent<WeatherScheduleEventData>> getEvents();
+    List<ScheduleEvent<?>> getEvents();
 
     /**
      *
