@@ -46,6 +46,8 @@ import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -498,6 +500,248 @@ public class HandleEventImplTest {
         when(handleEvent.em.createNamedQuery(Event.FIND_USER_OCCUPATION_RESCHEDULE, Event.class)).thenReturn(queryOccupation);
         when(queryOccupation.getResultList()).thenReturn(new ArrayList<>());
         handleEvent.checkEventWeatherCondition(user.getId());
+    }
+
+    /**
+     * Test of addEvent method when endDate is before startDate.
+     * The implementation does not validate date ordering, so the event is still persisted.
+     *
+     * @throws it.polimi.meteocal.exception.ErrorRequestException
+     */
+    @Test
+    public void testAddEventInvalidDates() throws ErrorRequestException {
+        System.out.println("addEventInvalidDates");
+        LocalDateTime start = LocalDateTime.now().plusDays(2);
+        LocalDateTime end = LocalDateTime.now(); // end is before start
+        EventDTO invalidDatesDTO = new EventDTO("0", String.valueOf(user.getId()), "Bad Dates Event",
+                start, end, true, Site.INDOOR, Visibility.PUBLIC,
+                "desc", "Milan", new ArrayList<>(), new ArrayList<>(), null);
+
+        doAnswer((Answer<Event>) invocationOnMock -> {
+            Object[] args = invocationOnMock.getArguments();
+            Event persistedEvent = (Event) args[0];
+            persistedEvent.setId(0L);
+            return null;
+        }).when(handleEvent.em).persist(any(Event.class));
+
+        // The implementation accepts inverted dates without throwing
+        long result = handleEvent.addEvent(user.getId(), invalidDatesDTO);
+        assertEquals(0L, result);
+    }
+
+    /**
+     * Test of addEvent method with a null location.
+     * No forecast lookup is performed; the event is persisted successfully.
+     *
+     * @throws it.polimi.meteocal.exception.ErrorRequestException
+     */
+    @Test
+    public void testAddEventNullLocation() throws ErrorRequestException {
+        System.out.println("addEventNullLocation");
+        LocalDateTime start = LocalDateTime.now();
+        LocalDateTime end = LocalDateTime.now().plusHours(1);
+        EventDTO noLocationDTO = new EventDTO("0", String.valueOf(user.getId()), "No Location Event",
+                start, end, true, Site.INDOOR, Visibility.PUBLIC,
+                "desc", null, new ArrayList<>(), new ArrayList<>(), null);
+
+        doAnswer((Answer<Event>) invocationOnMock -> {
+            Object[] args = invocationOnMock.getArguments();
+            Event persistedEvent = (Event) args[0];
+            persistedEvent.setId(0L);
+            return null;
+        }).when(handleEvent.em).persist(any(Event.class));
+
+        long result = handleEvent.addEvent(user.getId(), noLocationDTO);
+        assertEquals(0L, result);
+        // Forecast service must not be called when location is null
+        verify(handleEvent.handleForecast, never()).getForecast(any(), any());
+    }
+
+    /**
+     * Test of updateEvent method when the logged-in user is NOT the event organizer.
+     * Expects an ErrorRequestException to be thrown.
+     *
+     * @throws it.polimi.meteocal.exception.ErrorRequestException
+     */
+    @Test(expected = ErrorRequestException.class)
+    public void testUpdateEventNotOwner() throws ErrorRequestException {
+        System.out.println("updateEventNotOwner");
+        // ep (id=1) is a participant, not the organizer (user, id=0)
+        // eventDTO.getId() = "0" which maps to the event whose EO is user (id=0)
+        handleEvent.updateEvent(ep.getId(), eventDTO);
+    }
+
+    /**
+     * Test of removeEvent method called by a participant (not the organizer).
+     * Expects an ErrorRequestException; the event must remain in the EO's calendar.
+     *
+     * @throws it.polimi.meteocal.exception.ErrorRequestException
+     */
+    @Test(expected = ErrorRequestException.class)
+    public void testRemoveEventAsParticipant() throws ErrorRequestException {
+        System.out.println("removeEventAsParticipant");
+        // ep is a participant, not the EO — removeEvent should throw
+        handleEvent.removeEvent(ep.getId(), eventDTO);
+    }
+
+    /**
+     * Test of getEvent method when the event does not exist in the DB.
+     * Expects an ErrorRequestException.
+     *
+     * @throws it.polimi.meteocal.exception.ErrorRequestException
+     */
+    @Test(expected = ErrorRequestException.class)
+    public void testGetEventNotFound() throws ErrorRequestException {
+        System.out.println("getEventNotFound");
+        // Return null for event id 999 (doesn't exist)
+        when(handleEvent.em.find(Event.class, 999L)).thenReturn(null);
+        handleEvent.getEvent(user.getId(), "999");
+    }
+
+    /**
+     * Test of addParticipant method when the user is already in the invited list.
+     * Expects an ErrorRequestException; no duplicate must be added.
+     *
+     * @throws it.polimi.meteocal.exception.ErrorRequestException
+     */
+    @Test(expected = ErrorRequestException.class)
+    public void testAddParticipantAlreadyInvited() throws ErrorRequestException {
+        System.out.println("addParticipantAlreadyInvited");
+        // Add ep to the event's invited list first
+        event.getInvitedUsers().add(ep);
+
+        ResultDTO selectedResult = new ResultDTO();
+        selectedResult.setId(String.valueOf(ep.getId()));
+        // Should throw because ep is already in invitedUsers
+        handleEvent.addParticipant(eventDTO.getId(), selectedResult);
+    }
+
+    /**
+     * Test of addParticipant method when the target user does not exist.
+     * Expects an ErrorRequestException.
+     *
+     * @throws it.polimi.meteocal.exception.ErrorRequestException
+     */
+    @Test(expected = ErrorRequestException.class)
+    public void testAddParticipantNotFound() throws ErrorRequestException {
+        System.out.println("addParticipantNotFound");
+        // User id 999 is not in the DB
+        when(handleEvent.em.find(User.class, 999L)).thenReturn(null);
+
+        ResultDTO selectedResult = new ResultDTO();
+        selectedResult.setId("999");
+        handleEvent.addParticipant(eventDTO.getId(), selectedResult);
+    }
+
+    /**
+     * Test of search method with a query that returns no matching events.
+     * Verifies that an empty list is returned.
+     */
+    @Test
+    public void testSearchNoResults() {
+        System.out.println("searchNoResults");
+        // DB query returns empty
+        when(query.getResultList()).thenReturn(new ArrayList<>());
+        // User's organized events don't contain the query string
+        // user has "Event Title" in calendar; query for something not matching
+        List<ResultDTO> result = handleEvent.search("XYZ_NO_MATCH_ZYX");
+        assertTrue(result.isEmpty());
+    }
+
+    /**
+     * Test of moveEvent method moving an event forward in time.
+     * Verifies both start and end dates shift by the correct number of days.
+     *
+     * @throws it.polimi.meteocal.exception.ErrorRequestException
+     */
+    @Test
+    public void testMoveEventForward() throws ErrorRequestException {
+        System.out.println("moveEventForward");
+        int dayDelta = 3;
+        int minuteDelta = 0;
+        LocalDateTime expectedStart = event.getStartDate().plusDays(dayDelta);
+        LocalDateTime expectedEnd = event.getEndDate().plusDays(dayDelta);
+
+        handleEvent.moveEvent(eventDTO.getId(), dayDelta, minuteDelta);
+
+        assertEquals(expectedStart, event.getStartDate());
+        assertEquals(expectedEnd, event.getEndDate());
+        verify(handleEvent.em, times(1)).merge(event);
+    }
+
+    /**
+     * Test of checkEventWeatherCondition when the forecast has bad weather (code &lt; 800).
+     * Verifies that a RescheduleNotification IS created for the event organizer.
+     */
+    @Test
+    public void testCheckEventWeatherConditionBadWeather() {
+        System.out.println("checkEventWeatherConditionBadWeather");
+
+        // Set event's site to OUTDOOR so it appears in FIND_NEAR_OUTDOOR query result
+        event.setSite(Site.OUTDOOR);
+        // Set event start to tomorrow so the "day before" check (now.isAfter daybefore) is false,
+        // avoiding the EP-notification branch (which requires a non-null forecast on event).
+        // Actually let's keep startDate=now so daybefore=yesterday and now.isAfter(yesterday)=true.
+        // Make ep's participated calendar include the real event
+        ep.getCalendar().addParticipatedEvent(event);
+
+        // Stub the outdoor events query
+        List<Event> listEvent = new ArrayList<>();
+        listEvent.add(event);
+        when(query.getResultList()).thenReturn(listEvent);
+
+        // Stub the calendar query (EO lookup)
+        TypedQuery<it.polimi.meteocal.entities.Calendar> queryCalendar = mock(TypedQuery.class);
+        when(handleEvent.em.createNamedQuery(it.polimi.meteocal.entities.Calendar.FIND_BY_ORGANIZEDEVENT,
+                it.polimi.meteocal.entities.Calendar.class)).thenReturn(queryCalendar);
+        when(queryCalendar.setParameter(any(String.class), any())).thenReturn(queryCalendar);
+        List<it.polimi.meteocal.entities.Calendar> calendarQL = new ArrayList<>();
+        calendarQL.add(user.getCalendar());
+        when(queryCalendar.getResultList()).thenReturn(calendarQL);
+
+        // Bad weather forecast (thunderstorm code 200 < 800)
+        WeatherDTO badWeatherDTO = new WeatherDTO(weather.getId(), "200", "thunderstorm", weather.getTemperature(), weather.getIcon());
+        ForecastDTO badForecastDTO = new ForecastDTO(forecastDTO.getId(), forecastDTO.getLocation(),
+                forecastDTO.getLatitude(), forecastDTO.getLongitude(),
+                forecastDTO.getDate(), forecastDTO.getCreationDate(), badWeatherDTO);
+        when(handleEvent.handleForecast.getForecast(event.getLocation(), event.getStartDate()))
+                .thenReturn(badForecastDTO);
+
+        // Stub EventNotification query (FIND_BY_EVENT_AND_USER) — set user to track notifications
+        user.setListNotifications(new ArrayList<>());
+        ep.setListNotifications(new ArrayList<>());
+        when(queryNotify.setParameter(any(String.class), any())).thenReturn(queryNotify);
+        when(queryNotify.getResultList()).thenReturn(new ArrayList<>());
+
+        // Stub RescheduleNotification query — no existing notification
+        when(queryReschNotify.setParameter(any(String.class), any())).thenReturn(queryReschNotify);
+        when(queryReschNotify.getResultList()).thenReturn(new ArrayList<>());
+
+        // For checkBestAlternativeDay: provide a good-weather forecast (code 800)
+        LocalDateTime futureDate = LocalDateTime.now().plusDays(2);
+        WeatherDTO goodWeatherDTO = new WeatherDTO(2L, "800", "clear sky", 20.0f, "01d");
+        ForecastDTO goodForecastDTO = new ForecastDTO(2L, event.getLocation(), null, null,
+                futureDate, futureDate, goodWeatherDTO);
+        List<ForecastDTO> forecasts = new ArrayList<>();
+        forecasts.add(goodForecastDTO);
+        when(handleEvent.handleForecast.getForecasts(event.getLocation())).thenReturn(forecasts);
+
+        // Stub FIND_USER_OCCUPATION_RESCHEDULE — no conflicting events
+        TypedQuery<Event> queryOccupation = mock(TypedQuery.class);
+        when(handleEvent.em.createNamedQuery(Event.FIND_USER_OCCUPATION_RESCHEDULE, Event.class))
+                .thenReturn(queryOccupation);
+        when(queryOccupation.setParameter(any(String.class), any())).thenReturn(queryOccupation);
+        when(queryOccupation.getResultList()).thenReturn(new ArrayList<>());
+
+        // Stub em.find for the good forecast entity
+        Forecast goodForecastEntity = new Forecast();
+        goodForecastEntity.setId(2L);
+        when(handleEvent.em.find(Forecast.class, 2L)).thenReturn(goodForecastEntity);
+
+        handleEvent.checkEventWeatherCondition(user.getId());
+
+        // A RescheduleNotification should have been persisted
+        verify(handleEvent.em, times(1)).persist(any(RescheduleNotification.class));
     }
 
 }

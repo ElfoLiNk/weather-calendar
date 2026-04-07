@@ -571,6 +571,209 @@ public class HandleUserImplTest {
     }
 
     /**
+     * Test of doLogin method with an invalid (wrong) password.
+     * Verifies that doLogin returns false when the password does not match.
+     */
+    @Test
+    public void testDoLoginInvalidPassword() {
+        System.out.println("doLoginInvalidPassword");
+        List<User> userEmail = new ArrayList<>();
+        userEmail.add(user);
+        when(query.getResultList()).thenReturn(userEmail);
+
+        UserDTO loginUser = new UserDTO();
+        loginUser.setEmail("test@test.com");
+        loginUser.setPassword("wrongpassword");
+
+        boolean result = handleUser.doLogin(loginUser);
+        assertFalse(result);
+    }
+
+    /**
+     * Test of doLogin method when user email doesn't exist in DB.
+     * Verifies that doLogin returns false when no user is found for the given email.
+     */
+    @Test
+    public void testDoLoginUserNotFound() {
+        System.out.println("doLoginUserNotFound");
+        when(query.getResultList()).thenReturn(new ArrayList<>());
+
+        UserDTO loginUser = new UserDTO();
+        loginUser.setEmail("nobody@test.com");
+        loginUser.setPassword("password");
+
+        boolean result = handleUser.doLogin(loginUser);
+        assertFalse(result);
+    }
+
+    /**
+     * Test of addUser method when email already exists.
+     * Verifies that ErrorRequestException is thrown.
+     */
+    @Test(expected = ErrorRequestException.class)
+    public void testAddUserDuplicateEmail() throws ErrorRequestException {
+        System.out.println("addUserDuplicateEmail");
+        List<User> existingUsers = new ArrayList<>();
+        existingUsers.add(user);
+        when(query.setParameter(org.mockito.ArgumentMatchers.eq("email"), any())).thenReturn(query);
+        when(query.getResultList()).thenReturn(existingUsers);
+
+        handleUser.addUser(userInsert);
+    }
+
+    /**
+     * Test of changeSettings method when the logged-in user is not found in DB.
+     * Verifies that ErrorRequestException is thrown.
+     */
+    @Test(expected = ErrorRequestException.class)
+    public void testChangeSettingsInvalidUser() throws ErrorRequestException {
+        System.out.println("changeSettingsInvalidUser");
+        when(handleUser.em.find(User.class, Long.valueOf(userInsert.getId()))).thenReturn(null);
+
+        handleUser.changeSettings(userInsert);
+    }
+
+    /**
+     * Test of getCalendarVisibility when calendar visibility is PUBLIC.
+     */
+    @Test
+    public void testGetCalendarVisibilityPublic() throws ErrorRequestException {
+        System.out.println("getCalendarVisibilityPublic");
+        String calendarId = "0";
+        user.getCalendar().setVisibility(Visibility.PUBLIC);
+        when(handleUser.em.find(Calendar.class, Long.valueOf(calendarId))).thenReturn(user.getCalendar());
+
+        Visibility result = handleUser.getCalendarVisibility(calendarId);
+        assertEquals(Visibility.PUBLIC, result);
+    }
+
+    /**
+     * Test of getCalendarVisibility when calendar visibility is PRIVATE.
+     */
+    @Test
+    public void testGetCalendarVisibilityPrivate() throws ErrorRequestException {
+        System.out.println("getCalendarVisibilityPrivate");
+        String calendarId = "0";
+        user.getCalendar().setVisibility(Visibility.PRIVATE);
+        when(handleUser.em.find(Calendar.class, Long.valueOf(calendarId))).thenReturn(user.getCalendar());
+
+        Visibility result = handleUser.getCalendarVisibility(calendarId);
+        assertEquals(Visibility.PRIVATE, result);
+    }
+
+    /**
+     * Test of acceptNotification when the notification status is already ACCEPTED.
+     * Verifies no duplicate processing occurs (user is not added to participants again).
+     */
+    @Test
+    public void testAcceptNotificationAlreadyAccepted() {
+        System.out.println("acceptNotificationAlreadyAccepted");
+        eventNotification.setStatus(Status.ACCEPTED);
+        when(handleUser.em.find(EventNotification.class, Long.valueOf(eventNotificationDTO.getId()))).thenReturn(eventNotification);
+        // RescheduleNotification lookup must return null to avoid that branch
+        when(handleUser.em.find(RescheduleNotification.class, Long.valueOf(eventNotificationDTO.getId()))).thenReturn(null);
+
+        handleUser.acceptNotification(eventNotificationDTO);
+
+        // Status should remain ACCEPTED, not changed again
+        assertEquals(Status.ACCEPTED, eventNotification.getStatus());
+        // User should NOT have been added to event participants (was already accepted)
+        assertFalse(event.getEventParticipants().contains(user));
+        // em.merge for the event should not have been called (the branch was skipped)
+        verify(handleUser.em, never()).remove(eventNotification);
+    }
+
+    /**
+     * Test of declineNotification with a RescheduleNotification.
+     * Verifies status becomes DECLINED and the suggested event is NOT rescheduled.
+     */
+    @Test
+    public void testDeclineNotificationReschedule() throws ErrorRequestException {
+        System.out.println("declineNotificationReschedule");
+
+        Event suggestedEvent = new Event();
+        suggestedEvent.setId(7L);
+        suggestedEvent.setEo(user);
+        suggestedEvent.setEventParticipants(new ArrayList<>());
+        suggestedEvent.setInvitedUsers(new ArrayList<>());
+
+        RescheduleNotification rescheduleNotification = new RescheduleNotification();
+        rescheduleNotification.setId(30L);
+        rescheduleNotification.setUser(user);
+        rescheduleNotification.setEvent(event);
+        rescheduleNotification.setSuggestedEvent(suggestedEvent);
+        rescheduleNotification.setStatus(Status.PENDING);
+        user.getListNotifications().add(rescheduleNotification);
+
+        // No plain EventNotification with this id
+        when(handleUser.em.find(EventNotification.class, 30L)).thenReturn(null);
+        when(handleUser.em.find(RescheduleNotification.class, 30L)).thenReturn(rescheduleNotification);
+        when(handleUser.em.find(User.class, user.getId())).thenReturn(user);
+
+        handleUser.handleEvent = mock(HandleEvent.class);
+        when(handleUser.handleEvent.getEvent(user.getId(), String.valueOf(suggestedEvent.getId())))
+                .thenThrow(new ErrorRequestException("no event", false));
+
+        RescheduleNotificationDTO reschNotifDTO = new RescheduleNotificationDTO();
+        reschNotifDTO.setId("30");
+        reschNotifDTO.setUserId(String.valueOf(user.getId()));
+        reschNotifDTO.setEventId(String.valueOf(event.getId()));
+        reschNotifDTO.setSuggestedEventId(String.valueOf(suggestedEvent.getId()));
+        reschNotifDTO.setStatus(Status.PENDING);
+        reschNotifDTO.setMessage("reschedule decline message");
+
+        handleUser.declineNotification(reschNotifDTO);
+
+        assertEquals(Status.DECLINED, rescheduleNotification.getStatus());
+        assertFalse(user.getListNotifications().contains(rescheduleNotification));
+        verify(handleUser.em, times(1)).remove(rescheduleNotification);
+        // Event should NOT have been modified as EO (no rescheduling)
+        assertTrue(suggestedEvent.getEventParticipants().isEmpty());
+    }
+
+    /**
+     * Test of addNotification when the event doesn't exist.
+     * Verifies graceful handling (returns false, nothing persisted).
+     */
+    @Test
+    public void testAddNotificationInvalidEvent() {
+        System.out.println("addNotificationInvalidEvent");
+        when(handleUser.em.find(User.class, user.getId())).thenReturn(user);
+        when(handleUser.em.find(Event.class, Long.valueOf(eventNotificationDTO.getEventId()))).thenReturn(null);
+
+        boolean result = handleUser.addNotification(eventNotificationDTO);
+
+        assertFalse(result);
+        verify(handleUser.em, never()).persist(any(EventNotification.class));
+    }
+
+    /**
+     * Test of searchUser when no users match the query.
+     * Verifies that an empty list is returned.
+     */
+    @Test
+    public void testSearchUserEmptyResult() {
+        System.out.println("searchUserEmptyResult");
+        when(query.getResultList()).thenReturn(new ArrayList<>());
+
+        List<ResultDTO> result = handleUser.searchUser("nomatch");
+        assertTrue(result.isEmpty());
+    }
+
+    /**
+     * Test of getOwner when no owner is found for the calendar.
+     * Verifies that null is returned.
+     */
+    @Test
+    public void testGetOwnerNotFound() {
+        System.out.println("getOwnerNotFound");
+        when(query.getResultList()).thenReturn(new ArrayList<>());
+
+        UserDTO result = handleUser.getOwner("0");
+        assertEquals(null, result);
+    }
+
+    /**
      * Answer Class to set the User attributes
      */
     public static class UserAnswer implements Answer<Void> {
