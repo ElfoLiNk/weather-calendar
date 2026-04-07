@@ -116,9 +116,9 @@
                             <p:dataScroller  id="participants" rendered="#{calendarBean.event.id != null and calendarBean.event.editable or calendarBean.event.data.visibility == 'PUBLIC' or calendarBean.event.data.eventParticipants.contains(calendarBean.loggedUser)}" value="#{calendarBean.event.data.listParticipantAndInvitedUsers}" var="user" chunkSize="10">
                                 <h:panelGrid columns="2">
                                     <h:outputText value="#{user.firstName} #{user.lastName}" style="display:inline-block"/>
-                                    <p:graphicImage  library="images"  name="accept.svg" rendered="#{calendarBean.event.data.eventParticipants.contains(user)}" alt="Accepted" width="20" height="20"/>
-                                    <p:graphicImage  library="images"  name="pending.svg" rendered="#{calendarBean.event.data.invitedUsers.contains(user)}" alt="Pending"  width="20" height="20" />
-                                    <p:graphicImage library="images"  name="declined.svg" rendered="#{not calendarBean.event.data.invitedUsers.contains(user) and not calendarBean.event.data.eventParticipants.contains(user)}" alt="Declined"   width="20" height="20" />
+                                    <h:graphicImage  library="images"  name="accept.svg" rendered="#{calendarBean.event.data.eventParticipants.contains(user)}" alt="Accepted" width="20" height="20"/>
+                                    <h:graphicImage  library="images"  name="pending.svg" rendered="#{calendarBean.event.data.invitedUsers.contains(user)}" alt="Pending"  width="20" height="20" />
+                                    <h:graphicImage library="images"  name="declined.svg" rendered="#{not calendarBean.event.data.invitedUsers.contains(user) and not calendarBean.event.data.eventParticipants.contains(user)}" alt="Declined"   width="20" height="20" />
 
                                 </h:panelGrid>
                             </p:dataScroller>

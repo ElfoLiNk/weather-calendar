@@ -14,64 +14,64 @@
             <h1 align="center">SocialNetwork Collegati</h1>
             <p align="center">
                 <h:outputLink rendered="#{(handleAccount.isTwitterCollegato())}">
-                    <p:graphicImage value="#{resource['images/twitter.svg']}"
+                    <h:graphicImage library="images" name="twitter.svg"
                                     height="200" width="200"
                                     rendered="#{handleAccount.isTwitterCollegato()}"
                                     style="padding: 2px;" />
-                    <p:graphicImage value="#{resource['images/twitter.svg']}"
+                    <h:graphicImage library="images" name="twitter.svg"
                                     height="200" width="200"
                                     rendered="#{!(handleAccount.isTwitterCollegato())}"
                                     style="-webkit-filter: grayscale(100%);-moz-filter: grayscale(100%);filter: grayscale(100%);padding: 2px;" />
                 </h:outputLink>
                 <h:outputLink rendered="#{!(handleAccount.isTwitterCollegato())}"
                               value="#{twitterLogin.linkLoginTwitter}">
-                    <p:graphicImage value="#{resource['images/twitter.svg']}"
+                    <h:graphicImage library="images" name="twitter.svg"
                                     height="200" width="200"
                                     rendered="#{handleAccount.isTwitterCollegato()}"
                                     style="padding: 2px;" />
-                    <p:graphicImage value="#{resource['images/twitter.svg']}"
+                    <h:graphicImage library="images" name="twitter.svg"
                                     height="200" width="200"
                                     rendered="#{!(handleAccount.isTwitterCollegato())}"
                                     style="-webkit-filter: grayscale(100%);-moz-filter: grayscale(100%);filter: grayscale(100%);padding: 2px;" />
                 </h:outputLink>
                 <h:outputLink rendered="#{(handleAccount.isGoogleCollegato())}">
-                    <p:graphicImage value="#{resource['images/googleplus.svg']}"
+                    <h:graphicImage library="images" name="googleplus.svg"
                                     height="210" width="210"
                                     rendered="#{handleAccount.isGoogleCollegato()}"
                                     style="padding: 2px;" />
-                    <p:graphicImage value="#{resource['images/googleplus.svg']}"
+                    <h:graphicImage library="images" name="googleplus.svg"
                                     height="210" width="210"
                                     rendered="#{!(handleAccount.isGoogleCollegato())}"
                                     style="-webkit-filter: grayscale(100%);-moz-filter: grayscale(100%);filter: grayscale(100%);padding: 2px;" />
                 </h:outputLink>
                 <h:outputLink rendered="#{!(handleAccount.isGoogleCollegato())}"
                               value="#{googleLogin.linkLoginGoogle}">
-                    <p:graphicImage value="#{resource['images/googleplus.svg']}"
+                    <h:graphicImage library="images" name="googleplus.svg"
                                     height="210" width="210"
                                     rendered="#{handleAccount.isGoogleCollegato()}"
                                     style="padding: 2px;" />
-                    <p:graphicImage value="#{resource['images/googleplus.svg']}"
+                    <h:graphicImage library="images" name="googleplus.svg"
                                     height="210" width="210"
                                     rendered="#{!(handleAccount.isGoogleCollegato())}"
                                     style="-webkit-filter: grayscale(100%);-moz-filter: grayscale(100%);filter: grayscale(100%);padding: 2px;" />
                 </h:outputLink>
                 <h:outputLink rendered="#{(handleAccount.isFacebookCollegato())}">
-                    <p:graphicImage value="#{resource['images/facebook.svg']}"
+                    <h:graphicImage library="images" name="facebook.svg"
                                     height="200" width="200"
                                     rendered="#{handleAccount.isFacebookCollegato()}"
                                     style="padding: 2px;" />
-                    <p:graphicImage value="#{resource['images/facebook.svg']}"
+                    <h:graphicImage library="images" name="facebook.svg"
                                     height="200" width="200"
                                     rendered="#{!(handleAccount.isFacebookCollegato())}"
                                     style="-webkit-filter: grayscale(100%);-moz-filter: grayscale(100%);filter: grayscale(100%);padding: 2px;" />
                 </h:outputLink>
                 <h:outputLink rendered="#{!(handleAccount.isFacebookCollegato())}"
                               value="#{facebookLogin.linkLoginFacebook}">
-                    <p:graphicImage value="#{resource['images/facebook.svg']}"
+                    <h:graphicImage library="images" name="facebook.svg"
                                     height="200" width="200"
                                     rendered="#{handleAccount.isFacebookCollegato()}"
                                     style="padding: 2px;" />
-                    <p:graphicImage value="#{resource['images/facebook.svg']}"
+                    <h:graphicImage library="images" name="facebook.svg"
                                     height="200" width="200"
                                     rendered="#{!(handleAccount.isFacebookCollegato())}"
                                     style="-webkit-filter: grayscale(100%);-moz-filter: grayscale(100%);filter: grayscale(100%);padding: 2px;" />

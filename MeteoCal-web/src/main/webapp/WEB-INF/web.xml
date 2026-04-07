@@ -39,6 +39,10 @@
         <error-code>403</error-code>
         <location>/index.html</location>
     </error-page>
+    <error-page>
+        <exception-type>jakarta.faces.application.ViewExpiredException</exception-type>
+        <location>/index.xhtml</location>
+    </error-page>
     <context-param>
         <param-name>primefaces.THEME</param-name>
         <param-value>saga</param-value>
