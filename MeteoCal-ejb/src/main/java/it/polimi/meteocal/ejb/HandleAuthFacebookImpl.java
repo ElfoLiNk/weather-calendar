@@ -72,7 +72,7 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
         String accessToken;
         accessToken = user.getFacebookToken();
         FacebookClient facebookClient;
-        facebookClient = new DefaultFacebookClient(accessToken, APPSECRET, Version.VERSION_2_5);
+        facebookClient = new DefaultFacebookClient(accessToken, APPSECRET, Version.VERSION_3_1);
         return facebookClient;
     }
 
@@ -114,7 +114,7 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
                 LOGGER.log(Level.INFO, "AccessToken: " + accessToken);
 
                 facebookClient = new DefaultFacebookClient(accessToken,
-                        APPSECRET, Version.VERSION_2_5);
+                        APPSECRET, Version.VERSION_3_1);
                 com.restfb.types.User userFB = facebookClient.fetchObject("me", com.restfb.types.User.class);
 
                 if (!AuthUtil.isUserLogged()) {
@@ -255,16 +255,20 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
         utente.setFirstName(userFB.getFirstName());
         utente.setLastName(userFB.getLastName());
         utente.setEmail(userFB.getEmail());
-        utente.setDateBirth(userFB.getBirthdayAsDate());
-        if (utente.getDateBirth() == null && userFB.getBirthday() != null) {
-
+        java.util.Date birthdayDate = null;
+        String birthdayStr = userFB.getBirthday();
+        if (birthdayStr != null && !birthdayStr.isEmpty()) {
             try {
-                utente.setDateBirth(new SimpleDateFormat("MM/dd").parse(userFB.getBirthday()));
-            } catch (ParseException ex) {
-                LOGGER.log(Level.WARN, ex);
+                birthdayDate = new SimpleDateFormat("MM/dd/yyyy").parse(birthdayStr);
+            } catch (ParseException e) {
+                try {
+                    birthdayDate = new SimpleDateFormat("MM/dd").parse(birthdayStr);
+                } catch (ParseException ex) {
+                    LOGGER.log(Level.WARN, ex);
+                }
             }
-
         }
+        utente.setDateBirth(birthdayDate);
         utente.setAvatar("https://graph.facebook.com/" + userFB.getId() + "/picture?type=normal");
         try {
             utente.setPassword(PasswordHash.createHash(userFB.getFirstName() + "." + userFB.getLastName()));
