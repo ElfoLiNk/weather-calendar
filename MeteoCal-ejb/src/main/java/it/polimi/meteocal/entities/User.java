@@ -486,30 +486,12 @@ public class User implements Serializable {
         if (this == o) return true;
         if (!(o instanceof User)) return false;
         User user = (User) o;
-        return Objects.equals(firstName, user.firstName) &&
-                Objects.equals(lastName, user.lastName) &&
-                Objects.equals(dateBirth, user.dateBirth) &&
-                Objects.equals(email, user.email) &&
-                Objects.equals(password, user.password) &&
-                Objects.equals(avatar, user.avatar) &&
-                Objects.equals(calendar, user.calendar) &&
-                Objects.equals(listPreferedCalendars, user.listPreferedCalendars) &&
-                Objects.equals(setting, user.setting) &&
-                Objects.equals(listNotifications, user.listNotifications) &&
-                Objects.equals(role, user.role) &&
-                Objects.equals(twitterId, user.twitterId) &&
-                Objects.equals(twitterToken, user.twitterToken) &&
-                Objects.equals(twitterTokenSecret, user.twitterTokenSecret) &&
-                Objects.equals(googleId, user.googleId) &&
-                Objects.equals(googleToken, user.googleToken) &&
-                Objects.equals(facebookId, user.facebookId) &&
-                Objects.equals(facebookToken, user.facebookToken) &&
-                gender == user.gender;
+        return Objects.equals(id, user.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstName, lastName, dateBirth, email, password, avatar, calendar, listPreferedCalendars, setting, listNotifications, role, twitterId, twitterToken, twitterTokenSecret, googleId, googleToken, facebookId, facebookToken, gender);
+        return Objects.hash(id);
     }
 
 //    @Override

@@ -50,10 +50,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.TimeZone;
+import jakarta.annotation.PostConstruct;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import org.apache.logging.log4j.Level;
@@ -66,12 +65,19 @@ import org.apache.logging.log4j.Logger;
 @Stateless
 public class HandleAuthGoogleImpl implements HandleAuthGoogle {
 
-    private static final String CLIENT_ID = System.getenv("GOOGLE_CLIENT_ID");
-    private static final String CLIENT_SECRET = System.getenv("GOOGLE_CLIENT_SECRET");
+    private String CLIENT_ID;
+    private String CLIENT_SECRET;
     private static final String APPLICATION_NAME = "MeteoCal";
-    private static final String REDIRECT_URL = System.getenv().getOrDefault("APP_BASE_URL", "http://www.meteocal.tk") + "/MeteoCal-web/loginGoogle.xhtml";
-    
+    private String REDIRECT_URL;
+
     private static final Logger LOGGER = LogManager.getLogger(HandleAuthGoogleImpl.class.getName());
+
+    @PostConstruct
+    public void init() {
+        CLIENT_ID = System.getenv("GOOGLE_CLIENT_ID");
+        CLIENT_SECRET = System.getenv("GOOGLE_CLIENT_SECRET");
+        REDIRECT_URL = System.getenv().getOrDefault("APP_BASE_URL", "http://www.meteocal.tk") + "/MeteoCal-web/loginGoogle.xhtml";
+    }
     
     /**
      * Global instance of the HTTP transport.
@@ -91,7 +97,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
      * @param user the user in MeteoCal
      * @return null if there was a problem with the creation of the Plus object
      */
-    public static Plus getPlusObject(User user) {
+    public static Plus getPlusObject(EntityManager em, User user) {
         Plus plus = null;
         final User utente2 = user;
         if (user.getGoogleToken() == null) {
@@ -109,7 +115,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
                         @Override
                         public void onTokenResponse(Credential credential,
                                 TokenResponse tokenResponse) {
-                            HandleAuthGoogleImpl.setGoogleToken(credential,
+                            HandleAuthGoogleImpl.setGoogleToken(em, credential,
                                     tokenResponse, utente2);
                             // Handle success.
                             LOGGER.log(Level.INFO, "Credential was refreshed successfully.");
@@ -132,9 +138,9 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
             /* Though not necessary when first created, you can manually refresh the token, which is needed after 60 minutes. */
             if (credential.getExpiresInSeconds() < 1) {
                 boolean ref = credential.refreshToken();
-                LOGGER.log(Level.INFO, "Refresh token: " + ref);
-                LOGGER.log(Level.INFO, "Access token: " + credential.getAccessToken());
-                LOGGER.log(Level.INFO, "Refresh token: " + credential.getRefreshToken());
+                LOGGER.log(Level.DEBUG, "Refresh token refreshed: " + ref);
+                LOGGER.log(Level.DEBUG, "Access token: [redacted]");
+                LOGGER.log(Level.DEBUG, "Refresh token: [redacted]");
 
             }
 
@@ -158,15 +164,12 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
      * @see Credential
      * @see TokenResponse
      */
-    protected static void setGoogleToken(Credential credential, TokenResponse tokenResponse, User user) {
-        EntityManagerFactory emf = Persistence
-                .createEntityManagerFactory("MeteoCalEJB");
-        EntityManager em = emf.createEntityManager();
+    protected static void setGoogleToken(EntityManager em, Credential credential, TokenResponse tokenResponse, User user) {
         try {
             HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 
             String tokenGoogle = tokenResponse.toString();
-            LOGGER.log(Level.INFO, tokenGoogle);
+            LOGGER.log(Level.DEBUG, "Google token response received [redacted]");
             JsonObject newToken = JsonParser.parseString(tokenGoogle).getAsJsonObject();
             JsonObject oldToken = JsonParser.parseString(user.getGoogleToken())
                     .getAsJsonObject();
@@ -177,20 +180,15 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
             Streams.write(newToken, jsonWriter);
             tokenGoogle = stringWriter.toString();
 
-            LOGGER.log(Level.INFO, tokenGoogle);
-
             if (tokenGoogle.contains("refresh_token")) {
                 LOGGER.log(Level.INFO, "GoogleToken updated");
                 user.setGoogleToken(tokenGoogle);
                 em.merge(user);
-                em.joinTransaction();
                 em.flush();
             }
         } catch (GeneralSecurityException | IOException | JsonSyntaxException e) {
             LOGGER.log(Level.ERROR, e, e);
         }
-        em.close();
-        emf.close();
     }
 
     @PersistenceContext

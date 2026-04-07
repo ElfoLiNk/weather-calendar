@@ -25,6 +25,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Objects;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
+import jakarta.annotation.PostConstruct;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -47,11 +48,18 @@ import twitter4j.conf.ConfigurationBuilder;
 public class HandleAuthTwitterImpl implements HandleAuthTwitter {
 
     // OAuth Data
-    private static final String CLIENT_ID = System.getenv("TWITTER_CLIENT_ID");
-    private static final String CLIENT_SECRET = System.getenv("TWITTER_CLIENT_SECRET");
-    private static final String URL_BASE = System.getenv().getOrDefault("APP_BASE_URL", "http://www.meteocal.tk");
+    private String CLIENT_ID;
+    private String CLIENT_SECRET;
+    private String URL_BASE;
 
     private static final Logger LOGGER = LogManager.getLogger(HandleAuthTwitterImpl.class.getName());
+
+    @PostConstruct
+    public void init() {
+        CLIENT_ID = System.getenv("TWITTER_CLIENT_ID");
+        CLIENT_SECRET = System.getenv("TWITTER_CLIENT_SECRET");
+        URL_BASE = System.getenv().getOrDefault("APP_BASE_URL", "http://www.meteocal.tk");
+    }
 
     /**
      * Method that return the Twitter object that allows the access to the

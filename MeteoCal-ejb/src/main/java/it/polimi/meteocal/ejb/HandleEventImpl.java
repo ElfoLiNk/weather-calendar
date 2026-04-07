@@ -79,9 +79,8 @@ public class HandleEventImpl implements HandleEvent {
         Event event = new Event(user, insertEvent.getTitle(), insertEvent.getDescription(), insertEvent.getLocation(), insertEvent.getSite(), insertEvent.getStartDate(), insertEvent.getEndDate(), null, insertEvent.getVisibility(), new ArrayList<>(), new ArrayList<>());
         LocalDateTime today = LocalDateTime.now();
         
-        if (event.getStartDate().getDayOfYear() >= today.getDayOfYear()
-                && event.getStartDate().getDayOfYear() <= today.getDayOfYear() + 15
-                && insertEvent.getLocation() != null) {
+        long daysUntilEvent = ChronoUnit.DAYS.between(today.toLocalDate(), event.getStartDate().toLocalDate());
+        if (daysUntilEvent >= 0 && daysUntilEvent <= 15 && insertEvent.getLocation() != null) {
             // ADD FORECAST INFORMATION IF AVAILABLE
             ForecastDTO forecastDTO = handleForecast.getForecast(insertEvent.getLocation(), insertEvent.getStartDate());
             if (forecastDTO != null) {
@@ -662,7 +661,7 @@ public class HandleEventImpl implements HandleEvent {
             forecast.setLocation(forecastDTO.getLocation());
             // SETUP WEATHER
             Weather weather = new Weather();
-            weather.setId(weather.getId());
+            weather.setId(forecastDTO.getWeather().getId());
             weather.setDescription(forecastDTO.getWeather().getDescription());
             weather.setIcon(forecastDTO.getWeather().getIcon());
             weather.setTemperature(forecastDTO.getWeather().getTemperature());

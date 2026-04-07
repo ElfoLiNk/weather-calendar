@@ -235,29 +235,27 @@ public class HandleForecastImpl implements HandleForecast {
         TypedQuery<Forecast> query = em.createNamedQuery(Forecast.FIND_OLD_FORECAST,
                 Forecast.class);
         query.setParameter("today", today);
-        List<Event> oldForecastEvent = new ArrayList<>();
+        List<Event> eventsToUpdate = new ArrayList<>();
         for (Forecast oldForecast : query.getResultList()) {
             // CHECK EVENT RELATED TO OLD FORECAST
             TypedQuery<Event> q = em.createNamedQuery(Event.FIND_BY_FORECAST,
                     Event.class);
             q.setParameter("forecast", oldForecast);
-            oldForecastEvent = q.getResultList();
-            for (Event event : oldForecastEvent) {
+            for (Event event : q.getResultList()) {
                 if (event.getStartDate().isAfter(today)) {
-                    // EVENT IN THE FUTURE SO FORECAST AVAILABLE
+                    // EVENT IN THE FUTURE: REMOVE STALE FORECAST AND SCHEDULE REFRESH
                     event.setForecast(null);
                     em.merge(event);
                     em.remove(oldForecast);
                     em.flush();
                     LOGGER.log(Level.INFO, "REMOVED: " + oldForecast.toString());
-                }else{
-                    // EVENT IN THE PAST SO DON'T REMOVE FORECAST
-                    oldForecastEvent.remove(event);
+                    eventsToUpdate.add(event);
                 }
+                // past events: leave forecast as-is
             }
         }
         // UPDATE EVENT FORECAST
-        for (Event event : oldForecastEvent) {
+        for (Event event : eventsToUpdate) {
             ForecastDTO forecastDTO = getForecast(event.getLocation(), event.getStartDate());
             if (forecastDTO != null) {
                 event.setForecast(em.find(Forecast.class, forecastDTO.getId()));
@@ -316,7 +314,7 @@ public class HandleForecastImpl implements HandleForecast {
         final int BATCH_SIZE = 500;
         int count = 0;
         try {
-            InputStream inputStream = new URL("http://bulk.openweathermap.org/sample/city.list.json.gz").openStream();
+            InputStream inputStream = new URL("https://bulk.openweathermap.org/sample/city.list.json.gz").openStream();
             GZIPInputStream gis = new GZIPInputStream(inputStream);
             JSONTokener tokener = new JSONTokener(gis);
             // Skip opening '['
@@ -385,7 +383,7 @@ public class HandleForecastImpl implements HandleForecast {
         int hourDay = 24;
         for (Forecast forecastNearest : availableForecasts) {
             // FIND THE NEAREST FORECAST INFORMATION
-            if (forecastNearest.getForecastDate().getDayOfYear() == date.getDayOfYear() && Math.abs(forecastNearest.getForecastDate().getHour() - date.getHour()) < hourDay) {
+            if (forecastNearest.getForecastDate().toLocalDate().equals(date.toLocalDate()) && Math.abs(forecastNearest.getForecastDate().getHour() - date.getHour()) < hourDay) {
                 hourDay = Math.abs(forecastNearest.getForecastDate().getHour() - date.getHour());
                 forecastEntity = forecastNearest;
             }

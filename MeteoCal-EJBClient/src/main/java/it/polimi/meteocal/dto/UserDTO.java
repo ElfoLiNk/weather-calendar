@@ -35,7 +35,7 @@ public class UserDTO {
 
     private Date dateBirth;
     private String email;
-    private String password;
+    private transient String password;
     private String avatar;
 
     private String calendarId;

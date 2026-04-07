@@ -550,9 +550,9 @@ public class HandleUserImpl implements HandleUser {
 
         // RESCHEDULE NOTIFICATION
         RescheduleNotification rescheduleNotification = em.find(RescheduleNotification.class, Long.valueOf(selectedNotification.getId()));
-        if (rescheduleNotification != null && !rescheduleNotification.getStatus().equals(Status.ACCEPTED)) {
+        if (rescheduleNotification != null && !rescheduleNotification.getStatus().equals(Status.DECLINED)) {
             RescheduleNotificationDTO reschNotif = (RescheduleNotificationDTO) selectedNotification;
-            rescheduleNotification.setStatus(Status.ACCEPTED);
+            rescheduleNotification.setStatus(Status.DECLINED);
 
             User user = em.find(User.class, Long.valueOf(selectedNotification.getUserId()));
             if (user != null) {

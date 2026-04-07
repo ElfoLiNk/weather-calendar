@@ -32,6 +32,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Objects;
 import java.util.TimeZone;
+import jakarta.annotation.PostConstruct;
 import jakarta.ejb.Stateless;
 import jakarta.faces.context.FacesContext;
 import jakarta.persistence.EntityManager;
@@ -54,11 +55,18 @@ import org.apache.logging.log4j.Logger;
 @Stateless
 public class HandleAuthFacebookImpl implements HandleAuthFacebook {
 
-    private static final String APP_ID = System.getenv("FACEBOOK_APP_ID");
-    private static final String APPSECRET = System.getenv("FACEBOOK_APP_SECRET");
-    private static final String URL_BASE = System.getenv().getOrDefault("APP_BASE_URL", "http://www.meteocal.tk");
-    
+    private String APP_ID;
+    private String APPSECRET;
+    private String URL_BASE;
+
     private static final Logger LOGGER = LogManager.getLogger(HandleAuthFacebook.class.getName());
+
+    @PostConstruct
+    public void init() {
+        APP_ID = System.getenv("FACEBOOK_APP_ID");
+        APPSECRET = System.getenv("FACEBOOK_APP_SECRET");
+        URL_BASE = System.getenv().getOrDefault("APP_BASE_URL", "http://www.meteocal.tk");
+    }
 
     /**
      * Method that return the FacebookClient that allows the access to the
@@ -92,6 +100,7 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
     @Override
     public boolean doLoginFacebook(String faceCode) {
         if (faceCode != null && !"".equals(faceCode)) {
+            boolean success = false;
             String redirectUrl = URL_BASE
                     + "/MeteoCal-web/loginFacebook.xhtml";
             String newUrl = "https://graph.facebook.com/oauth/access_token?client_id="
@@ -99,7 +108,7 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
                     + "&redirect_uri="
                     + redirectUrl
                     + "&client_secret=" + APPSECRET + "&code=" + faceCode;
-            LOGGER.log(Level.INFO, "URL FB: " + newUrl);
+            LOGGER.log(Level.DEBUG, "URL FB: [redacted client_secret]");
             CloseableHttpClient httpclient = HttpClientBuilder.create().build();
             try {
                 HttpGet httpget = new HttpGet(newUrl);
@@ -111,7 +120,7 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
                         "access_token=");
                 int i = accessToken.indexOf("&");
                 accessToken = accessToken.substring(0, i);
-                LOGGER.log(Level.INFO, "AccessToken: " + accessToken);
+                LOGGER.log(Level.DEBUG, "AccessToken: [redacted]");
 
                 facebookClient = new DefaultFacebookClient(accessToken,
                         APPSECRET, Version.VERSION_3_1);
@@ -199,6 +208,7 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
                     }
 
                 }
+                success = true;
 
             } catch (IOException e) {
                 LOGGER.log(Level.ERROR, e);
@@ -210,9 +220,10 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
                     LOGGER.log(Level.WARN, e);
                 }
             }
+            return success;
         }
 
-        return true;
+        return false;
     }
 
     @Override

@@ -20,6 +20,7 @@ import it.polimi.meteocal.auth.User;
 import it.polimi.meteocal.dto.EventDTO;
 import it.polimi.meteocal.dto.EventNotificationDTO;
 import it.polimi.meteocal.dto.NotificationDTO;
+import it.polimi.meteocal.dto.RescheduleNotificationDTO;
 import it.polimi.meteocal.dto.ResultDTO;
 import it.polimi.meteocal.dto.UserDTO;
 import it.polimi.meteocal.ejb.HandleEvent;
@@ -281,8 +282,6 @@ public class CalendarBean implements Serializable {
      */
     @PostConstruct
     public void init() {
-        handleUser.removeOldNotification();
-        handleForecast.removeOldForecast();
         handleEvent.checkEventWeatherCondition(AuthUtil.getUserID());
         loadEventsModel(AuthUtil.getUserID());
         if(handleForecast.countLocations() == 0) {
@@ -470,7 +469,11 @@ public class CalendarBean implements Serializable {
             }
             eventModel.deleteEvent(event);
             // REMOVE NOTIFICATION RELATED TO EVENT
-            loggedUser.getNotifications().removeIf(notif -> ((EventNotificationDTO) notif).getEventId().equals(event.getId()));
+            loggedUser.getNotifications().removeIf(notif -> {
+                if (notif instanceof EventNotificationDTO en) return en.getEventId().equals(event.getId());
+                if (notif instanceof RescheduleNotificationDTO rn) return rn.getEventId().equals(event.getId());
+                return false;
+            });
             addMessage(new FacesMessage(FacesMessage.SEVERITY_INFO,
                     "Event removed", "Successfully removed " + event.getTitle()));
         }
@@ -501,7 +504,11 @@ public class CalendarBean implements Serializable {
             }
             eventModel.deleteEvent(event);
             // REMOVE NOTIFICATION RELATED TO EVENT
-            loggedUser.getNotifications().removeIf(notif -> ((EventNotificationDTO) notif).getEventId().equals(event.getId()));
+            loggedUser.getNotifications().removeIf(notif -> {
+                if (notif instanceof EventNotificationDTO en) return en.getEventId().equals(event.getId());
+                if (notif instanceof RescheduleNotificationDTO rn) return rn.getEventId().equals(event.getId());
+                return false;
+            });
             addMessage(new FacesMessage(FacesMessage.SEVERITY_INFO,
                     "Event canceled", "Not partecipating to " + event.getTitle()));
         }

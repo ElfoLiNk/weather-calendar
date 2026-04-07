@@ -56,8 +56,17 @@ public class AuthenticationFilter implements Filter {
         User userAuth = (User) session.getAttribute(User.AUTH_KEY);
 
         if (userAuth == null) {
-            ((HttpServletResponse) resp).sendError(
-                    HttpServletResponse.SC_FORBIDDEN, "Forbiden Access!");
+            HttpServletResponse response = (HttpServletResponse) resp;
+            String loginUrl = request.getContextPath() + "/index.xhtml";
+            String ajaxHeader = request.getHeader("Faces-Request");
+            if ("partial/ajax".equals(ajaxHeader)) {
+                response.setContentType("text/xml;charset=UTF-8");
+                response.getWriter().write(
+                        "<?xml version='1.0' encoding='UTF-8'?>"
+                        + "<partial-response><redirect url=\"" + loginUrl + "\"/></partial-response>");
+            } else {
+                response.sendRedirect(loginUrl);
+            }
         } else {
             chain.doFilter(req, resp);
         }
