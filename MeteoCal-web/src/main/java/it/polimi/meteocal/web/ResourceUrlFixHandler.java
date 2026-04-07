@@ -62,6 +62,17 @@ public class ResourceUrlFixHandler extends ResourceHandlerWrapper {
 
         String resourceName = pathInfo.startsWith("/") ? pathInfo.substring(1) : pathInfo;
 
+        // Mojarra 4.1 evaluates #{resource[...]} EL in CSS files and produces relative URLs like
+        // "../jakarta.faces.resource/primeicons/primeicons.woff2". The browser resolves these
+        // relative to the CSS URL (/jakarta.faces.resource/primeicons/) producing a doubled path:
+        // /jakarta.faces.resource/jakarta.faces.resource/primeicons/primeicons.woff2
+        // Strip the duplicate prefix so we can locate the actual resource.
+        String resourcePrefix = RESOURCE_IDENTIFIER.substring(1); // "jakarta.faces.resource"
+        if (resourceName.startsWith(resourcePrefix)) {
+            resourceName = resourceName.substring(resourcePrefix.length());
+            if (resourceName.startsWith("/")) resourceName = resourceName.substring(1);
+        }
+
         Resource resource = context.getApplication().getResourceHandler()
                 .createResource(resourceName, libraryName);
         if (resource == null) {
@@ -120,15 +131,32 @@ public class ResourceUrlFixHandler extends ResourceHandlerWrapper {
             public String getRequestPath() {
                 String path = getWrapped().getRequestPath();
                 if (path == null) return null;
+
+                // Strip .xhtml suffix (before or after query string)
                 int q = path.indexOf('?');
                 if (q > 0) {
                     String p = path.substring(0, q);
                     if (p.endsWith(XHTML_SUFFIX)) {
-                        return p.substring(0, p.length() - XHTML_SUFFIX.length()) + path.substring(q);
+                        path = p.substring(0, p.length() - XHTML_SUFFIX.length()) + path.substring(q);
                     }
                 } else if (path.endsWith(XHTML_SUFFIX)) {
-                    return path.substring(0, path.length() - XHTML_SUFFIX.length());
+                    path = path.substring(0, path.length() - XHTML_SUFFIX.length());
                 }
+
+                // Convert relative resource URLs to absolute to prevent CSS @font-face path doubling.
+                // Mojarra 4.1 may return paths like "../jakarta.faces.resource/..." which browsers
+                // resolve relative to the CSS location, producing doubled resource identifiers.
+                if (!path.startsWith("/") && !path.startsWith("http")) {
+                    int idx = path.indexOf(RESOURCE_IDENTIFIER);
+                    if (idx >= 0) {
+                        FacesContext ctx = FacesContext.getCurrentInstance();
+                        if (ctx != null) {
+                            String contextPath = ctx.getExternalContext().getRequestContextPath();
+                            path = contextPath + path.substring(idx);
+                        }
+                    }
+                }
+
                 return path;
             }
         };
