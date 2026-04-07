@@ -51,7 +51,7 @@
                 <version>3.2.0</version>
                 <inherited>false</inherited>
                 <configuration>
-                    <source>17</source>
+                    <source>21</source>
                     <encoding>utf8</encoding>
                     <quiet>true</quiet>
                     <links>
