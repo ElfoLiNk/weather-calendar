@@ -108,7 +108,7 @@ public class User implements Serializable {
     private String firstName;
     @NotNull(message = "Last Name cannot be empty")
     private String lastName;
-    @Temporal(javax.persistence.TemporalType.DATE)
+    @Temporal(jakarta.persistence.TemporalType.DATE)
     private Date dateBirth;
     @NotNull(message = "Email cannot be empty")
     @Pattern(regexp = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",
