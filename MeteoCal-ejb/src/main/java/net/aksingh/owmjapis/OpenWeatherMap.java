@@ -552,14 +552,6 @@ public class OpenWeatherMap {
         /*
         Constructors
          */
-        private OWMAddress(String appId) {
-            this(Units.IMPERIAL, Language.ENGLISH, appId);
-        }
-
-        private OWMAddress(Units units, String appId) {
-            this(units, Language.ENGLISH, appId);
-        }
-
         private OWMAddress(Units units, Language lang, String appId) {
             this.responseMode = MODE;
             this.units = units;

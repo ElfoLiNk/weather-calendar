@@ -376,7 +376,7 @@ public class HandleEventImpl implements HandleEvent {
             result.setId(event.getId().toString());
             result.setType("EVENT");
             result.setName(event.getName());
-            LOGGER.log(Level.INFO, event.toString());
+            LOGGER.log(Level.INFO, () -> event.toString());
             results.add(result);
 
         }
@@ -417,7 +417,7 @@ public class HandleEventImpl implements HandleEvent {
         if (event != null) {
             event.setStartDate(event.getStartDate().plus(startDelta));
             event.setEndDate(event.getEndDate().plus(endDelta));
-            LOGGER.log(Level.INFO, event.toString());
+            LOGGER.log(Level.INFO, () -> event.toString());
 
             em.merge(event);
             em.flush();

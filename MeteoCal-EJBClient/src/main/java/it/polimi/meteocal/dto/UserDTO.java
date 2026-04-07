@@ -57,6 +57,7 @@ public class UserDTO {
      * @param password the password of the user to set
      * @param avatar the avatar of the user to set
      */
+    @SuppressWarnings("java:S107")
     public UserDTO(String id, String firstName, String lastName, Gender gender, Date dateBirth, String email, String password, String avatar) {
         this.id = id;
         this.firstName = firstName;

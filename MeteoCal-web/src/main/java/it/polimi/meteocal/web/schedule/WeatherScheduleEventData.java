@@ -44,6 +44,7 @@ public class WeatherScheduleEventData {
      * @param invitedUsers the list of the invited user
      * @param weather the weather of the event
      */
+    @SuppressWarnings("java:S107")
     public WeatherScheduleEventData(String location, Site site, Visibility visibility, String eoId, List<UserDTO> listParticipantAndInvitedUsers, List<UserDTO> eventParticipants, List<UserDTO> invitedUsers, WeatherDTO weather) {
         this.location = location;
         this.eoId = eoId;

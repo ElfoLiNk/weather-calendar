@@ -84,7 +84,7 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
 
         AccessToken at = new AccessToken(user.getTwitterToken(),
                 user.getTwitterTokenSecret());
-        LOGGER.log(Level.INFO, at);
+        LOGGER.log(Level.INFO, () -> at.toString());
         try {
             twitter.setOAuthAccessToken(at);
         } catch (Exception e) {
@@ -170,22 +170,18 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
                         utente.setLastName(utente.getLastName() + " " + stok.nextToken());
 
                     }
-                    LOGGER.log(Level.INFO, utente.getLastName());
+                    LOGGER.log(Level.INFO, () -> utente.getLastName());
                     utente.setAvatar(user.getProfileImageURLHttps());
                     // MANCA EMAIL
                     utente.setEmail(utente.getFirstName().toLowerCase() + "." + utente.getLastName().toLowerCase().replaceAll("\\s", ".") + "@twitter.com");
                     // MANCA BIRTH DATE
-                    try {
-                        utente.setPassword(PasswordHash.createHash(utente.getFirstName() + "." + utente.getLastName()));
-                    } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
-                        LOGGER.log(Level.FATAL, ex, ex);
-                    }
+                    setHashedPassword(utente);
 
                     Setting setting = new Setting();
                     setting.setTimeZone(TimeZone.getTimeZone(user.getTimeZone()));
                     utente.setSetting(setting);
 
-                    LOGGER.log(Level.INFO, utente.toString());
+                    LOGGER.log(Level.INFO, () -> utente.toString());
 
                     em.persist(utente);
                     em.flush();
@@ -266,6 +262,14 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
             return false;
         }
         return true;
+    }
+
+    private void setHashedPassword(User utente) {
+        try {
+            utente.setPassword(PasswordHash.createHash(utente.getFirstName() + "." + utente.getLastName()));
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
+            LOGGER.log(Level.FATAL, ex, ex);
+        }
     }
 
     @Override

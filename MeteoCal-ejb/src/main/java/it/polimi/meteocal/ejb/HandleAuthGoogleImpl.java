@@ -166,10 +166,8 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
      * @see Credential
      * @see TokenResponse
      */
-    protected static void setGoogleToken(EntityManager em, Credential credential, TokenResponse tokenResponse, User user) {
+    protected static void setGoogleToken(EntityManager em, Credential _credential, TokenResponse tokenResponse, User user) {
         try {
-            HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-
             String tokenGoogle = tokenResponse.toString();
             LOGGER.log(Level.DEBUG, "Google token response received [redacted]");
             JsonObject newToken = JsonParser.parseString(tokenGoogle).getAsJsonObject();
@@ -188,7 +186,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
                 em.merge(user);
                 em.flush();
             }
-        } catch (GeneralSecurityException | IOException | JsonSyntaxException e) {
+        } catch (IOException | JsonSyntaxException e) {
             LOGGER.log(Level.ERROR, e, e);
         }
     }
@@ -254,21 +252,11 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
                         user.setEmail(mePerson.getEmails().get(0).getValue());
                     }
                     if (mePerson.getBirthday() != null) {
-
-                        try {
-                            user.setDateBirth(new SimpleDateFormat("MM/dd").parse(mePerson.getBirthday()));
-                        } catch (ParseException ex) {
-                            LOGGER.log(Level.WARN, ex);
-                        }
-
+                        setDateBirthFromBirthday(user, mePerson.getBirthday());
                     }
-                    try {
-                        user.setPassword(PasswordHash.createHash(user.getFirstName() + "." + user.getLastName()));
-                    } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
-                        LOGGER.log(Level.FATAL, ex, ex);
-                    }
+                    setHashedPassword(user);
 
-                    LOGGER.log(Level.INFO, user.toString());
+                    LOGGER.log(Level.INFO, () -> user.toString());
 
                     Setting setting = new Setting();
                     setting.setTimeZone(TimeZone.getTimeZone("GMT+1"));
@@ -351,6 +339,22 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
         }
 
         return true;
+    }
+
+    private void setDateBirthFromBirthday(User user, String birthday) {
+        try {
+            user.setDateBirth(new SimpleDateFormat("MM/dd").parse(birthday));
+        } catch (ParseException ex) {
+            LOGGER.log(Level.WARN, ex);
+        }
+    }
+
+    private void setHashedPassword(User user) {
+        try {
+            user.setPassword(PasswordHash.createHash(user.getFirstName() + "." + user.getLastName()));
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
+            LOGGER.log(Level.FATAL, ex, ex);
+        }
     }
 
     @Override

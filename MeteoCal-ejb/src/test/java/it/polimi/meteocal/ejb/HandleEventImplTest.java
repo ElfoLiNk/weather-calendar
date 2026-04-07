@@ -386,28 +386,6 @@ public class HandleEventImplTest {
     }
 
     /**
-     * Test of resizeEvent method, of class HandleEventImpl.
-     *
-     * @throws it.polimi.meteocal.exception.ErrorRequestException
-     */
-//    @Test
-//    public void testResizeEvent() throws ErrorRequestException {
-//        //Getting the current date
-//        Date date = new Date();
-//        //This method returns the time in millis
-//        long timeMilli = date.getTime();
-//        System.out.println("resizeEvent: " + timeMilli);
-//        int dayDelta = 0;
-//        int minuteDelta = 25;
-//        LocalDateTime startDate = event.getStartDate().plusDays(dayDelta);
-//        LocalDateTime endDate = event.getEndDate().plusDays(dayDelta);
-//        handleEvent.moveEvent(eventDTO.getId(), dayDelta, minuteDelta);
-//        handleEvent.resizeEvent(eventDTO.getId(), dayDelta, minuteDelta);
-//        assertEquals(event.getStartDate(), startDate);
-//        assertEquals(event.getEndDate(), endDate);
-//    }
-
-    /**
      * Test of addParticipant method, of class HandleEventImpl.
      *
      * @throws it.polimi.meteocal.exception.ErrorRequestException

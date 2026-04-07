@@ -99,7 +99,7 @@ public class HandleForecastImpl implements HandleForecast {
             for (Forecast forecastEntity : query.getResultList()) {
                 ForecastDTO forecast = mapForecastToForecastDTO(forecastEntity);
                 if (forecast != null) {
-                    LOGGER.log(Level.INFO, forecast.toString());
+                    LOGGER.log(Level.INFO, () -> forecast.toString());
                     forecasts.add(forecast);
                 }
             }
@@ -111,7 +111,7 @@ public class HandleForecastImpl implements HandleForecast {
                 for (Forecast forecastEntity : query.getResultList()) {
                     ForecastDTO forecast = mapForecastToForecastDTO(forecastEntity);
                     if (forecast != null) {
-                        LOGGER.log(Level.INFO, forecast.toString());
+                        LOGGER.log(Level.INFO, () -> forecast.toString());
                         forecasts.add(forecast);
                     }
                 }
@@ -157,7 +157,7 @@ public class HandleForecastImpl implements HandleForecast {
                             entityForecast.setWeather(entityWeather);
                             em.persist(entityForecast);
                             em.flush();
-                            LOGGER.log(Level.INFO, entityForecast.toString());
+                            LOGGER.log(Level.INFO, () -> entityForecast.toString());
                         }
                     }
                 }
@@ -203,7 +203,7 @@ public class HandleForecastImpl implements HandleForecast {
                             entityForecast.setWeather(entityWeather);
                             em.persist(entityForecast);
                             em.flush();
-                            LOGGER.log(Level.INFO, entityForecast.toString());
+                            LOGGER.log(Level.INFO, () -> entityForecast.toString());
                         }
                     }
                 }

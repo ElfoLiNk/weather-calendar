@@ -35,8 +35,6 @@ import jakarta.servlet.http.HttpSession;
  */
 public class AuthenticationFilter implements Filter {
 
-    private FilterConfig config;
-
     /**
      * The doFilter method that check if the user is authenticated so if there
      * is a valid session
@@ -79,15 +77,15 @@ public class AuthenticationFilter implements Filter {
      */
     @Override
     public void init(FilterConfig config) {
-        this.config = config;
+        // No initialization required
     }
 
     /**
-     * Destroy the filter config
+     * Destroy the filter
      */
     @Override
     public void destroy() {
-        config = null;
+        // No cleanup required
     }
 
 }
