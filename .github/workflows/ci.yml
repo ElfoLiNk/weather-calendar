@@ -23,6 +23,6 @@ jobs:
         cache: 'maven'
 
     - name: Build and run tests
-      run: mvn verify -B -DskipITs
+      run: mvn verify -B -DskipITs -Dmaven.javadoc.skip=true -Dmaven.source.skip=true
       env:
         OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}

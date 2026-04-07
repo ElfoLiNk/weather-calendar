@@ -35,7 +35,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.6</version>
+                <version>0.8.12</version>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
@@ -62,7 +62,7 @@
                 <executions>
                     <execution>
                         <id>create-javadoc</id>
-                        <phase>package</phase>
+                        <phase>none</phase>
                         <goals>
                             <goal>aggregate-jar</goal>
                         </goals>
@@ -76,7 +76,7 @@
                 <executions>
                     <execution>
                         <id>attach-sources</id>
-                        <phase>package</phase>
+                        <phase>none</phase>
                         <goals>
                             <goal>aggregate</goal>
                         </goals>

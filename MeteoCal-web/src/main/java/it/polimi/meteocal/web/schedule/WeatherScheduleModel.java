@@ -23,7 +23,7 @@ import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
 
 /**
- * Class that extends ScheduleModel to handle DefaultScheduleEvent<WeatherScheduleEventData>
+ * Class that extends ScheduleModel to handle DefaultScheduleEvent of WeatherScheduleEventData
  *
  * @author Matteo Gazzetta, Alessandro Fato
  */
