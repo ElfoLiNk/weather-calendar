@@ -1,0 +1,35 @@
+FROM maven:3.9-eclipse-temurin-21 AS builder
+
+WORKDIR /build
+COPY pom.xml .
+COPY MeteoCal-EJBClient/pom.xml MeteoCal-EJBClient/
+COPY MeteoCal-ejb/pom.xml MeteoCal-ejb/
+COPY MeteoCal-web/pom.xml MeteoCal-web/
+COPY MeteoCal-ear/pom.xml MeteoCal-ear/
+RUN mvn dependency:go-offline -B -q
+
+COPY MeteoCal-EJBClient/src MeteoCal-EJBClient/src
+COPY MeteoCal-ejb/src MeteoCal-ejb/src
+COPY MeteoCal-web/src MeteoCal-web/src
+COPY MeteoCal-ear/src MeteoCal-ear/src
+RUN mvn package -B -DskipTests -Dmaven.javadoc.skip=true -Dmaven.source.skip=true
+
+FROM ghcr.io/eclipse-ee4j/glassfish:8.0.0
+
+USER root
+
+# Download MySQL Connector/J
+RUN apt-get update -q && apt-get install -y -q wget && \
+    wget -q "https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.0.33/mysql-connector-j-8.0.33.jar" \
+         -O /opt/glassfish8/glassfish/domains/domain1/lib/ext/mysql-connector-j.jar && \
+    apt-get purge -y wget && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /build/MeteoCal-ear/target/MeteoCal-ear-*.ear \
+    /opt/glassfish8/glassfish/domains/domain1/autodeploy/MeteoCal-ear.ear
+
+COPY ws/scripts/glassfish-postboot.txt /opt/glassfish8/glassfish/domains/domain1/config/post-boot-commands.txt
+
+EXPOSE 4848 8080 8181
+
+CMD ["/opt/glassfish8/bin/asadmin", "start-domain", "--verbose", "--postbootcommandfile", \
+     "/opt/glassfish8/glassfish/domains/domain1/config/post-boot-commands.txt"]
