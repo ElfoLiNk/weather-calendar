@@ -93,6 +93,7 @@ public class HandleUserImplTest {
      */
     @BeforeClass
     public static void setUpClass() {
+        // no setup needed
     }
 
     /**
@@ -100,6 +101,7 @@ public class HandleUserImplTest {
      */
     @AfterClass
     public static void tearDownClass() {
+        // no teardown needed
     }
 
     /**
@@ -202,6 +204,7 @@ public class HandleUserImplTest {
      */
     @After
     public void tearDown() {
+        // no teardown needed
     }
 
     /**

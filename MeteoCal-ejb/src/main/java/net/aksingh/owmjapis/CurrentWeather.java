@@ -77,13 +77,13 @@ public class CurrentWeather extends AbstractWeather {
         this.cityId = (jsonObj != null) ? jsonObj.optLong(jsonCityID, Long.MIN_VALUE) : Long.MIN_VALUE;
         this.cityName = (jsonObj != null) ? jsonObj.optString(jsonCityName, null) : null;
 
-        JSONObject cloudsObj = (jsonObj != null) ? jsonObj.optJSONObject(CurrentWeather.JSON_CLOUDS) : null;
+        JSONObject cloudsObj = (jsonObj != null) ? jsonObj.optJSONObject(AbstractWeather.JSON_CLOUDS) : null;
         this.clouds = (cloudsObj != null) ? new Clouds(cloudsObj) : null;
 
-        JSONObject coordObj = (jsonObj != null) ? jsonObj.optJSONObject(CurrentWeather.JSON_COORD) : null;
+        JSONObject coordObj = (jsonObj != null) ? jsonObj.optJSONObject(AbstractWeather.JSON_COORD) : null;
         this.coord = (coordObj != null) ? new Coord(coordObj) : null;
 
-        JSONObject mainObj = (jsonObj != null) ? jsonObj.optJSONObject(CurrentWeather.JSON_MAIN) : null;
+        JSONObject mainObj = (jsonObj != null) ? jsonObj.optJSONObject(AbstractWeather.JSON_MAIN) : null;
         this.main = (mainObj != null) ? new Main(mainObj) : null;
 
         JSONObject rainObj = (jsonObj != null) ? jsonObj.optJSONObject(jsonRain) : null;
@@ -92,7 +92,7 @@ public class CurrentWeather extends AbstractWeather {
         JSONObject sysObj = (jsonObj != null) ? jsonObj.optJSONObject(jsonSys) : null;
         this.sys = (sysObj != null) ? new Sys(sysObj) : null;
 
-        JSONObject windObj = (jsonObj != null) ? jsonObj.optJSONObject(CurrentWeather.JSON_WIND) : null;
+        JSONObject windObj = (jsonObj != null) ? jsonObj.optJSONObject(AbstractWeather.JSON_WIND) : null;
         this.wind = (windObj != null) ? new Wind(windObj) : null;
     }
 

@@ -1,5 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xml:lang="en" lang="en"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -8,7 +9,7 @@
     <ui:composition template="/templates/commonTemplate.xhtml">
         <ui:define name="title">MeteoCal - Settings of #{settingBean.loggedUser.firstName} #{settingBean.loggedUser.lastName}</ui:define>
         <ui:define name="center">
-            <div style="margin:0 auto" align="center">
+            <div style="margin:0 auto; text-align:center">
                 <h:form id="settingsForm" enctype="multipart/form-data">
                     <h2>Personal Information</h2>
                     <p:messages id="msgs" showDetail="true" closable="true"/>

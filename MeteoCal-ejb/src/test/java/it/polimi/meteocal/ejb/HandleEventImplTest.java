@@ -104,6 +104,7 @@ public class HandleEventImplTest {
      */
     @BeforeClass
     public static void setUpClass() {
+        // no setup needed
     }
 
     /**
@@ -111,6 +112,7 @@ public class HandleEventImplTest {
      */
     @AfterClass
     public static void tearDownClass() {
+        // no teardown needed
     }
 
     /**

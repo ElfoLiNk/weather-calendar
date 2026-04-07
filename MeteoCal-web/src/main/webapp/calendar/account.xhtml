@@ -1,5 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xml:lang="en" lang="en"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -10,9 +11,10 @@
 
 
     <ui:composition template="/templates/commonTemplate.xhtml">
+        <ui:define name="title">MeteoCal - Social Accounts</ui:define>
         <ui:define name="center">
-            <h1 align="center">SocialNetwork Collegati</h1>
-            <p align="center">
+            <h1 style="text-align:center">SocialNetwork Collegati</h1>
+            <p style="text-align:center">
                 <h:outputLink rendered="#{(handleAccount.isTwitterCollegato())}">
                     <h:graphicImage library="images" name="twitter.svg"
                                     height="200" width="200"

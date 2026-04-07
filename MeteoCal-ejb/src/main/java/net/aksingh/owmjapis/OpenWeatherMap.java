@@ -544,7 +544,7 @@ public class OpenWeatherMap {
         private static final String MODE = "json";
         private static final String ENCODING = "UTF-8";
 
-        private String mode;
+        private String responseMode;
         private Units units;
         private String appId;
         private Language lang;
@@ -561,7 +561,7 @@ public class OpenWeatherMap {
         }
 
         private OWMAddress(Units units, Language lang, String appId) {
-            this.mode = MODE;
+            this.responseMode = MODE;
             this.units = units;
             this.lang = lang;
             this.appId = appId;
@@ -579,7 +579,7 @@ public class OpenWeatherMap {
         }
 
         private String getMode() {
-            return this.mode;
+            return this.responseMode;
         }
 
         private Language getLang() {
@@ -615,7 +615,7 @@ public class OpenWeatherMap {
         public String currentWeatherByCityName(String cityName) throws UnsupportedEncodingException {
             return URL_API + URL_CURRENT +
                     PARAM_CITY_NAME + URLEncoder.encode(cityName, ENCODING) + "&" +
-                    PARAM_MODE + this.mode + "&" +
+                    PARAM_MODE + this.responseMode + "&" +
                     PARAM_UNITS + this.units + "&" +
                     PARAM_LANG + this.lang + "&" +
                     PARAM_APPID + this.appId;
@@ -640,7 +640,7 @@ public class OpenWeatherMap {
         public String currentWeatherByCityCode(long cityCode) {
             return URL_API + URL_CURRENT +
                     PARAM_CITY_ID + cityCode + "&" +
-                    PARAM_MODE + this.mode + "&" +
+                    PARAM_MODE + this.responseMode + "&" +
                     PARAM_UNITS + this.units + "&" +
                     PARAM_LANG + this.lang + "&" +
                     PARAM_APPID + this.appId;
@@ -656,7 +656,7 @@ public class OpenWeatherMap {
             return URL_API + URL_CURRENT +
                     PARAM_LATITUDE + latitude + "&" +
                     PARAM_LONGITUDE + longitude + "&" +
-                    PARAM_MODE + this.mode + "&" +
+                    PARAM_MODE + this.responseMode + "&" +
                     PARAM_UNITS + this.units + "&" +
                     PARAM_APPID + this.appId;
         }
@@ -675,7 +675,7 @@ public class OpenWeatherMap {
         public String hourlyForecastByCityName(String cityName) throws UnsupportedEncodingException {
             return URL_API + URL_HOURLY_FORECAST +
                     PARAM_CITY_NAME + URLEncoder.encode(cityName, ENCODING) + "&" +
-                    PARAM_MODE + this.mode + "&" +
+                    PARAM_MODE + this.responseMode + "&" +
                     PARAM_UNITS + this.units + "&" +
                     PARAM_LANG + this.lang + "&" +
                     PARAM_APPID + this.appId;
@@ -700,7 +700,7 @@ public class OpenWeatherMap {
         public String hourlyForecastByCityCode(long cityCode) {
             return URL_API + URL_HOURLY_FORECAST +
                     PARAM_CITY_ID + cityCode + "&" +
-                    PARAM_MODE + this.mode + "&" +
+                    PARAM_MODE + this.responseMode + "&" +
                     PARAM_UNITS + this.units + "&" +
                     PARAM_LANG + this.lang + "&" +
                     PARAM_APPID + this.appId;
@@ -716,7 +716,7 @@ public class OpenWeatherMap {
             return URL_API + URL_HOURLY_FORECAST +
                     PARAM_LATITUDE + latitude + "&" +
                     PARAM_LONGITUDE + longitude + "&" +
-                    PARAM_MODE + this.mode + "&" +
+                    PARAM_MODE + this.responseMode + "&" +
                     PARAM_UNITS + this.units + "&" +
                     PARAM_LANG + this.lang + "&" +
                     PARAM_APPID + this.appId;
@@ -738,7 +738,7 @@ public class OpenWeatherMap {
             return URL_API + URL_DAILY_FORECAST +
                     PARAM_CITY_NAME + URLEncoder.encode(cityName, ENCODING) + "&" +
                     PARAM_COUNT + count + "&" +
-                    PARAM_MODE + this.mode + "&" +
+                    PARAM_MODE + this.responseMode + "&" +
                     PARAM_UNITS + this.units + "&" +
                     PARAM_LANG + this.lang + "&" +
                     PARAM_APPID + this.appId;
@@ -766,7 +766,7 @@ public class OpenWeatherMap {
             return URL_API + URL_DAILY_FORECAST +
                     PARAM_CITY_ID + cityCode + "&" +
                     PARAM_COUNT + count + "&" +
-                    PARAM_MODE + this.mode + "&" +
+                    PARAM_MODE + this.responseMode + "&" +
                     PARAM_UNITS + this.units + "&" +
                     PARAM_LANG + this.lang + "&" +
                     PARAM_APPID + this.appId;
@@ -784,7 +784,7 @@ public class OpenWeatherMap {
                     PARAM_LATITUDE + latitude + "&" +
                     PARAM_LONGITUDE + longitude + "&" +
                     PARAM_COUNT + count + "&" +
-                    PARAM_MODE + this.mode + "&" +
+                    PARAM_MODE + this.responseMode + "&" +
                     PARAM_UNITS + this.units + "&" +
                     PARAM_LANG + this.lang + "&" +
                     PARAM_APPID + this.appId;
@@ -880,16 +880,12 @@ public class OpenWeatherMap {
          * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html">HTTP - (9.3) GET</a>
          */
         private String httpGET(String requestAddress) {
-            URL request;
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
-
             String tmpStr;
             String response = null;
 
             try {
-                request = URI.create(requestAddress).toURL();
-                connection = (HttpURLConnection) request.openConnection();
+                URL request = URI.create(requestAddress).toURL();
+                HttpURLConnection connection = (HttpURLConnection) request.openConnection();
 
                 connection.setRequestMethod("GET");
                 connection.setUseCaches(false);
@@ -898,61 +894,46 @@ public class OpenWeatherMap {
                 connection.setRequestProperty("Accept-Encoding", "gzip, deflate");
                 connection.connect();
 
-                if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                    String encoding = connection.getContentEncoding();
+                try {
+                    if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        String encoding = connection.getContentEncoding();
 
-                    try {
                         if ("gzip".equalsIgnoreCase(encoding)) {
-                            reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(connection.getInputStream())));
+                            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(connection.getInputStream())))) {
+                                while ((tmpStr = reader.readLine()) != null) {
+                                    response = tmpStr;
+                                }
+                            }
                         } else if ("deflate".equalsIgnoreCase(encoding)) {
-                            reader = new BufferedReader(new InputStreamReader(new InflaterInputStream(connection.getInputStream(), new Inflater(true))));
+                            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new InflaterInputStream(connection.getInputStream(), new Inflater(true))))) {
+                                while ((tmpStr = reader.readLine()) != null) {
+                                    response = tmpStr;
+                                }
+                            }
                         } else {
-                            reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                        }
-
-                        while ((tmpStr = reader.readLine()) != null) {
-                            response = tmpStr;
-                        }
-                    } catch (IOException e) {
-                        LOGGER.log(Level.ERROR, e);
-                    } finally {
-                        if (reader != null) {
-                            try {
-                                reader.close();
-                            } catch (IOException e) {
-                                System.err.println("Error: " + e.getMessage());
+                            try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                                while ((tmpStr = reader.readLine()) != null) {
+                                    response = tmpStr;
+                                }
                             }
                         }
-                    }
-                } else { // if HttpURLConnection is not okay
-                    try {
-                        reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
-                        while ((tmpStr = reader.readLine()) != null) {
-                            response = tmpStr;
-                        }
-                    } catch (IOException e) {
-                        LOGGER.log(Level.ERROR, e);
-                    } finally {
-                        if (reader != null) {
-                            try {
-                                reader.close();
-                            } catch (IOException e) {
-                                LOGGER.log(Level.ERROR, e);
+                    } else { // if HttpURLConnection is not okay
+                        try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()))) {
+                            while ((tmpStr = reader.readLine()) != null) {
+                                response = tmpStr;
                             }
                         }
-                    }
 
-                    // if response is bad
-                    LOGGER.log(Level.ERROR, "Bad Response: " + response);
-                    return null;
-                }
-            } catch (IOException e) {
-                 LOGGER.log(Level.ERROR, e);
-                response = null;
-            } finally {
-                if (connection != null) {
+                        // if response is bad
+                        LOGGER.log(Level.ERROR, "Bad Response: " + response);
+                        return null;
+                    }
+                } finally {
                     connection.disconnect();
                 }
+            } catch (IOException e) {
+                LOGGER.log(Level.ERROR, e);
+                response = null;
             }
 
             return response;

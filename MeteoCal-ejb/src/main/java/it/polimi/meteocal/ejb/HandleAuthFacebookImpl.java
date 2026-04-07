@@ -55,16 +55,14 @@ import org.apache.logging.log4j.Logger;
 @Stateless
 public class HandleAuthFacebookImpl implements HandleAuthFacebook {
 
-    private static String APP_ID;
-    private static String APPSECRET;
+    private static final String APP_ID = System.getenv("FACEBOOK_APP_ID");
+    private static final String APPSECRET = System.getenv("FACEBOOK_APP_SECRET");
     private String URL_BASE;
 
     private static final Logger LOGGER = LogManager.getLogger(HandleAuthFacebook.class.getName());
 
     @PostConstruct
     public void init() {
-        APP_ID = System.getenv("FACEBOOK_APP_ID");
-        APPSECRET = System.getenv("FACEBOOK_APP_SECRET");
         URL_BASE = System.getenv().getOrDefault("APP_BASE_URL", "http://www.meteocal.tk");
     }
 
@@ -109,8 +107,7 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
                     + redirectUrl
                     + "&client_secret=" + APPSECRET + "&code=" + faceCode;
             LOGGER.log(Level.DEBUG, "URL FB: [redacted client_secret]");
-            CloseableHttpClient httpclient = HttpClientBuilder.create().build();
-            try {
+            try (CloseableHttpClient httpclient = HttpClientBuilder.create().build()) {
                 HttpGet httpget = new HttpGet(newUrl);
                 ResponseHandler<String> responseHandler = new BasicResponseHandler();
                 String responseBody = httpclient.execute(httpget,
@@ -213,13 +210,6 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
 
             } catch (IOException e) {
                 LOGGER.log(Level.ERROR, e);
-            } finally {
-                try {
-                    httpclient.close();
-                } catch (IOException e) {
-
-                    LOGGER.log(Level.WARN, e);
-                }
             }
             return success;
         }

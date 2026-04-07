@@ -62,7 +62,7 @@ public class HourlyForecast extends AbstractForecast {
     HourlyForecast(JSONObject jsonObj) {
         super(jsonObj);
 
-        JSONArray forecastArr = (jsonObj != null) ? jsonObj.optJSONArray(HourlyForecast.JSON_FORECAST_LIST) : new JSONArray();
+        JSONArray forecastArr = (jsonObj != null) ? jsonObj.optJSONArray(AbstractForecast.JSON_FORECAST_LIST) : new JSONArray();
         this.forecastList = (forecastArr != null) ? new ArrayList<>(forecastArr.length()) : Collections.emptyList();
         if (this.forecastList != Collections.<Forecast>emptyList()) {
             for (int i = 0; i < forecastArr.length(); i++) {
@@ -123,16 +123,16 @@ public class HourlyForecast extends AbstractForecast {
 
             this.dateTimeText = (jsonObj != null) ? jsonObj.optString(Forecast.JSON_DT_TEXT, null) : null;
 
-            JSONObject jsonObjClouds = (jsonObj != null) ? jsonObj.optJSONObject(Forecast.JSON_CLOUDS) : null;
+            JSONObject jsonObjClouds = (jsonObj != null) ? jsonObj.optJSONObject(AbstractWeather.JSON_CLOUDS) : null;
             this.clouds = (jsonObjClouds != null) ? new Clouds(jsonObjClouds) : null;
 
-            JSONObject jsonObjMain = (jsonObj != null) ? jsonObj.optJSONObject(Forecast.JSON_MAIN) : null;
+            JSONObject jsonObjMain = (jsonObj != null) ? jsonObj.optJSONObject(AbstractWeather.JSON_MAIN) : null;
             this.main = (jsonObjMain != null) ? new Main(jsonObjMain) : null;
 
             JSONObject jsonObjSys = (jsonObj != null) ? jsonObj.optJSONObject(Forecast.JSON_SYS) : null;
             this.sys = (jsonObjSys != null) ? new Sys(jsonObjSys) : null;
 
-            JSONObject jsonObjWind = (jsonObj != null) ? jsonObj.optJSONObject(Forecast.JSON_WIND) : null;
+            JSONObject jsonObjWind = (jsonObj != null) ? jsonObj.optJSONObject(AbstractWeather.JSON_WIND) : null;
             this.wind = (jsonObjWind != null) ? new Wind(jsonObjWind) : null;
         }
 

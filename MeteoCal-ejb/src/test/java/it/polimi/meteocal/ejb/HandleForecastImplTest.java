@@ -67,6 +67,7 @@ public class HandleForecastImplTest {
      */
     @BeforeClass
     public static void setUpClass() {
+        // no setup needed
     }
 
     /**
@@ -74,6 +75,7 @@ public class HandleForecastImplTest {
      */
     @AfterClass
     public static void tearDownClass() {
+        // no teardown needed
     }
 
     /**
@@ -124,6 +126,7 @@ public class HandleForecastImplTest {
      */
     @After
     public void tearDown() {
+        // no teardown needed
     }
 
     /**

@@ -48,16 +48,14 @@ import twitter4j.conf.ConfigurationBuilder;
 public class HandleAuthTwitterImpl implements HandleAuthTwitter {
 
     // OAuth Data
-    private static String CLIENT_ID;
-    private static String CLIENT_SECRET;
+    private static final String CLIENT_ID = System.getenv("TWITTER_CLIENT_ID");
+    private static final String CLIENT_SECRET = System.getenv("TWITTER_CLIENT_SECRET");
     private String URL_BASE;
 
     private static final Logger LOGGER = LogManager.getLogger(HandleAuthTwitterImpl.class.getName());
 
     @PostConstruct
     public void init() {
-        CLIENT_ID = System.getenv("TWITTER_CLIENT_ID");
-        CLIENT_SECRET = System.getenv("TWITTER_CLIENT_SECRET");
         URL_BASE = System.getenv().getOrDefault("APP_BASE_URL", "http://www.meteocal.tk");
     }
 

@@ -66,17 +66,18 @@ import org.apache.logging.log4j.Logger;
 @SuppressWarnings("deprecation")
 public class HandleAuthGoogleImpl implements HandleAuthGoogle {
 
-    private static String CLIENT_ID;
-    private static String CLIENT_SECRET;
+    private static final String CLIENT_ID = System.getenv("GOOGLE_CLIENT_ID");
+    private static final String CLIENT_SECRET = System.getenv("GOOGLE_CLIENT_SECRET");
     private static final String APPLICATION_NAME = "MeteoCal";
+    private static final String REFRESH_TOKEN = "refresh_token";
+    private static final String GOOGLE_ID = "googleId";
+    private static final String GOOGLE_TOKEN_UPDATED = "GoogleToken updated";
     private String REDIRECT_URL;
 
     private static final Logger LOGGER = LogManager.getLogger(HandleAuthGoogleImpl.class.getName());
 
     @PostConstruct
     public void init() {
-        CLIENT_ID = System.getenv("GOOGLE_CLIENT_ID");
-        CLIENT_SECRET = System.getenv("GOOGLE_CLIENT_SECRET");
         REDIRECT_URL = System.getenv().getOrDefault("APP_BASE_URL", "http://www.meteocal.tk") + "/MeteoCal-web/loginGoogle.xhtml";
     }
     
@@ -174,15 +175,15 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
             JsonObject newToken = JsonParser.parseString(tokenGoogle).getAsJsonObject();
             JsonObject oldToken = JsonParser.parseString(user.getGoogleToken())
                     .getAsJsonObject();
-            newToken.add("refresh_token", oldToken.get("refresh_token"));
+            newToken.add(REFRESH_TOKEN, oldToken.get(REFRESH_TOKEN));
             StringWriter stringWriter = new StringWriter();
             JsonWriter jsonWriter = new JsonWriter(stringWriter);
             jsonWriter.setLenient(true);
             Streams.write(newToken, jsonWriter);
             tokenGoogle = stringWriter.toString();
 
-            if (tokenGoogle.contains("refresh_token")) {
-                LOGGER.log(Level.INFO, "GoogleToken updated");
+            if (tokenGoogle.contains(REFRESH_TOKEN)) {
+                LOGGER.log(Level.INFO, GOOGLE_TOKEN_UPDATED);
                 user.setGoogleToken(tokenGoogle);
                 em.merge(user);
                 em.flush();
@@ -237,7 +238,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
                 // Saves the new data of the user in the DB
                 User user;
                 TypedQuery<User> q = em.createNamedQuery(User.FIND_BY_GOOGLE_ID, User.class);
-                q.setParameter("googleId", mePerson.getId());
+                q.setParameter(GOOGLE_ID, mePerson.getId());
                 TypedQuery<User> q2 = em.createNamedQuery(User.FIND_BY_EMAIL, User.class);
                 if (mePerson.getEmails() != null) {
 
@@ -283,8 +284,8 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
                     // The user is already in the system
                     LOGGER.log(Level.INFO, "User already registered with Google");
                     user = q.getResultList().get(0);
-                    if (tokenGoogle.contains("refresh_token")) {
-                        LOGGER.log(Level.INFO, "GoogleToken updated");
+                    if (tokenGoogle.contains(REFRESH_TOKEN)) {
+                        LOGGER.log(Level.INFO, GOOGLE_TOKEN_UPDATED);
                         user.setGoogleToken(tokenGoogle);
                         em.merge(user);
                         em.flush();
@@ -309,7 +310,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
                         AuthUtil.getUserID());
 
                 TypedQuery<User> q = em.createNamedQuery(User.FIND_BY_GOOGLE_ID, User.class);
-                q.setParameter("googleId", mePerson.getId());
+                q.setParameter(GOOGLE_ID, mePerson.getId());
                 if (q.getResultList().isEmpty()) {
                     // The user account isn't already present in the db so set the new GooglePlus data
                     utente.setGoogleId(mePerson.getId());
@@ -425,11 +426,11 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
                 TypedQuery<User> q = em
                         .createNamedQuery(User.FIND_BY_GOOGLE_ID,
                                 User.class);
-                q.setParameter("googleId", mePerson.getId());
+                q.setParameter(GOOGLE_ID, mePerson.getId());
                 utente = q.getResultList().get(0);
                 String tokenGoogle = tokenResponse.toString();
 
-                LOGGER.log(Level.INFO, "GoogleToken updated");
+                LOGGER.log(Level.INFO, GOOGLE_TOKEN_UPDATED);
                 utente.setGoogleToken(tokenGoogle);
                 em.merge(utente);
                 em.flush();
