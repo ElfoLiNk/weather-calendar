@@ -33,13 +33,11 @@ import jakarta.persistence.TypedQuery;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import twitter4j.AccessToken;
+import twitter4j.OAuthAuthorization;
+import twitter4j.RequestToken;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.auth.AccessToken;
-import twitter4j.auth.RequestToken;
-import twitter4j.conf.Configuration;
-import twitter4j.conf.ConfigurationBuilder;
 
 /**
  * Session Bean implementation class HandleAuthTwitterImpl
@@ -68,36 +66,26 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
      * object
      */
     public static Twitter getTwitterObject(User user) {
-        Twitter twitter;
-
         if (user.getTwitterToken() == null) {
             // Twitter not connected
             return null;
         }
 
-        ConfigurationBuilder builder = new ConfigurationBuilder();
-        builder.setOAuthConsumerKey(CLIENT_ID);
-        builder.setOAuthConsumerSecret(CLIENT_SECRET);
-        Configuration configuration = builder.build();
-        TwitterFactory factory = new TwitterFactory(configuration);
-        twitter = factory.getInstance();
-
-        AccessToken at = new AccessToken(user.getTwitterToken(),
-                user.getTwitterTokenSecret());
-        LOGGER.log(Level.INFO, at::toString);
         try {
-            twitter.setOAuthAccessToken(at);
+            return Twitter.newBuilder()
+                    .oAuthConsumer(CLIENT_ID, CLIENT_SECRET)
+                    .oAuthAccessToken(user.getTwitterToken(), user.getTwitterTokenSecret())
+                    .build();
         } catch (Exception e) {
             LOGGER.log(Level.ERROR, e);
             return null;
         }
-        return twitter;
     }
 
     @PersistenceContext
     EntityManager em;
 
-    private Twitter twitter;
+    private OAuthAuthorization auth;
     private RequestToken requestToken;
     private int cont;
 
@@ -105,12 +93,6 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
      * Default constructor.
      */
     public HandleAuthTwitterImpl() {
-        ConfigurationBuilder builder = new ConfigurationBuilder();
-        builder.setOAuthConsumerKey(CLIENT_ID);
-        builder.setOAuthConsumerSecret(CLIENT_SECRET);
-        Configuration configuration = builder.build();
-        TwitterFactory factory = new TwitterFactory(configuration);
-        twitter = factory.getInstance();
         cont = 0;
     }
 
@@ -119,13 +101,10 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
         String urlLogin = "../index.xhtml";
 
         try {
-            ConfigurationBuilder builder = new ConfigurationBuilder();
-            builder.setOAuthConsumerKey(CLIENT_ID);
-            builder.setOAuthConsumerSecret(CLIENT_SECRET);
-            Configuration configuration = builder.build();
-            TwitterFactory factory = new TwitterFactory(configuration);
-            twitter = factory.getInstance();
-            requestToken = twitter.getOAuthRequestToken(urlBase
+            auth = OAuthAuthorization.newBuilder()
+                    .oAuthConsumer(CLIENT_ID, CLIENT_SECRET)
+                    .build();
+            requestToken = auth.getOAuthRequestToken(urlBase
                     + "/MeteoCal-web/loginTwitter.xhtml");
             urlLogin = requestToken.getAuthenticationURL();
         } catch (TwitterException e) {
@@ -144,18 +123,23 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
         try {
             LOGGER.log(Level.INFO, () -> "Verifier: " + verifier);
 
-            AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, verifier);
+            AccessToken accessToken = auth.getOAuthAccessToken(requestToken, verifier);
+            long twitterUserId = accessToken.getUserId();
+            Twitter twitter = Twitter.newBuilder()
+                    .oAuthConsumer(CLIENT_ID, CLIENT_SECRET)
+                    .oAuthAccessToken(accessToken)
+                    .build();
 
             if (!AuthUtil.isUserLogged()) {
                 // Saves the new user data in the DB
                 User utente;
                 TypedQuery<User> q = em.createNamedQuery(User.FIND_BY_TWITTER_ID, User.class);
-                q.setParameter("twitterId", twitter.getId());
+                q.setParameter("twitterId", twitterUserId);
                 if (q.getResultList().isEmpty()) {
                     // The user isn't in the system
                     utente = new User();
-                    twitter4j.User user = twitter.showUser(twitter.getId());
-                    utente.setTwitterId(twitter.getId());
+                    twitter4j.v1.User user = twitter.v1().users().showUser(twitterUserId);
+                    utente.setTwitterId(twitterUserId);
                     utente.setTwitterToken(accessToken.getToken());
                     utente.setTwitterTokenSecret(accessToken.getTokenSecret());
                     StringTokenizer stok = new StringTokenizer(user.getName());
@@ -217,11 +201,11 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
                         AuthUtil.getUserID());
 
                 TypedQuery<User> q = em.createNamedQuery(User.FIND_BY_TWITTER_ID, User.class);
-                q.setParameter("twitterId", twitter.getId());
+                q.setParameter("twitterId", twitterUserId);
 
                 if (q.getResultList().isEmpty()) {
                     // The user account twitter isn't already present in the db so set the new Twitter data
-                    utente.setTwitterId(twitter.getId());
+                    utente.setTwitterId(twitterUserId);
                     utente.setTwitterToken(accessToken.getToken());
                     utente.setTwitterTokenSecret(accessToken.getTokenSecret());
                     em.merge(utente);
@@ -237,7 +221,7 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
                                 utenteVecchio);
 
                         // set the new Twitter data
-                        utente.setTwitterId(twitter.getId());
+                        utente.setTwitterId(twitterUserId);
                         utente.setTwitterToken(accessToken.getToken());
                         utente.setTwitterTokenSecret(accessToken
                                 .getTokenSecret());
