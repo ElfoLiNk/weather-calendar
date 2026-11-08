@@ -93,6 +93,7 @@ public class HandleForecastImplTest {
     public void setUp() {
         handleForecast = new HandleForecastImpl();
         handleForecast.em = mock(EntityManager.class);
+        org.mockito.Mockito.when(handleForecast.em.merge(org.mockito.ArgumentMatchers.any())).thenAnswer(inv -> inv.getArgument(0));
 
         query = mock(TypedQuery.class);
         when(handleForecast.em.createNamedQuery(Forecast.FIND_OLD_FORECAST,

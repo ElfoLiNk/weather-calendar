@@ -25,7 +25,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Objects;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
-import jakarta.annotation.PostConstruct;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -48,14 +47,11 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
     // OAuth Data
     private static final String CLIENT_ID = System.getenv("TWITTER_CLIENT_ID");
     private static final String CLIENT_SECRET = System.getenv("TWITTER_CLIENT_SECRET");
-    private String urlBase;
+    private static final String URL_BASE = System.getenv().getOrDefault("APP_BASE_URL", "http://www.meteocal.tk");
+    private static final String REQUEST_TOKEN_KEY = "TWITTER_REQUEST_TOKEN";
 
     private static final Logger LOGGER = LogManager.getLogger(HandleAuthTwitterImpl.class.getName());
 
-    @PostConstruct
-    public void init() {
-        urlBase = System.getenv().getOrDefault("APP_BASE_URL", "http://www.meteocal.tk");
-    }
 
     /**
      * Method that return the Twitter object that allows the access to the
@@ -85,15 +81,18 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
     @PersistenceContext
     EntityManager em;
 
-    private OAuthAuthorization auth;
-    private RequestToken requestToken;
-    private int cont;
 
     /**
      * Default constructor.
      */
     public HandleAuthTwitterImpl() {
-        cont = 0;
+        // Required no-arg constructor for EJB
+    }
+
+    private static OAuthAuthorization newAuthorization() {
+        return OAuthAuthorization.newBuilder()
+                .oAuthConsumer(CLIENT_ID, CLIENT_SECRET)
+                .build();
     }
 
     @Override
@@ -101,20 +100,14 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
         String urlLogin = "../index.xhtml";
 
         try {
-            auth = OAuthAuthorization.newBuilder()
-                    .oAuthConsumer(CLIENT_ID, CLIENT_SECRET)
-                    .build();
-            requestToken = auth.getOAuthRequestToken(urlBase
+            RequestToken requestToken = newAuthorization().getOAuthRequestToken(URL_BASE
                     + "/MeteoCal-web/loginTwitter.xhtml");
             urlLogin = requestToken.getAuthenticationURL();
+            AuthUtil.setSessionAttribute(REQUEST_TOKEN_KEY, requestToken);
         } catch (TwitterException e) {
             LOGGER.log(Level.ERROR, e);
         }
-        cont++;
-        final int contSnapshot = cont;
-        final String urlLoginSnapshot = urlLogin;
-        LOGGER.log(Level.INFO, () -> "Conteggio: " + contSnapshot);
-        LOGGER.log(Level.INFO, () -> "URL LOGIN " + urlLoginSnapshot);
+        LOGGER.log(Level.INFO, "URL LOGIN {}", urlLogin);
         return urlLogin;
     }
 
@@ -123,7 +116,12 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
         try {
             LOGGER.log(Level.INFO, () -> "Verifier: " + verifier);
 
-            AccessToken accessToken = auth.getOAuthAccessToken(requestToken, verifier);
+            Object requestToken = AuthUtil.removeSessionAttribute(REQUEST_TOKEN_KEY);
+            if (!(requestToken instanceof RequestToken token)) {
+                LOGGER.log(Level.WARN, "Twitter login without a pending request token");
+                return false;
+            }
+            AccessToken accessToken = newAuthorization().getOAuthAccessToken(token, verifier);
             long twitterUserId = accessToken.getUserId();
             Twitter twitter = Twitter.newBuilder()
                     .oAuthConsumer(CLIENT_ID, CLIENT_SECRET)
@@ -187,7 +185,7 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
                         utente.setTwitterToken(accessToken.getToken());
                         utente.setTwitterTokenSecret(accessToken
                                 .getTokenSecret());
-                        em.merge(utente);
+                        utente = em.merge(utente);
                         em.flush();
                     }
 
@@ -208,7 +206,7 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
                     utente.setTwitterId(twitterUserId);
                     utente.setTwitterToken(accessToken.getToken());
                     utente.setTwitterTokenSecret(accessToken.getTokenSecret());
-                    em.merge(utente);
+                    utente = em.merge(utente);
                     em.flush();
                 } else {
 
@@ -226,7 +224,7 @@ public class HandleAuthTwitterImpl implements HandleAuthTwitter {
                         utente.setTwitterTokenSecret(accessToken
                                 .getTokenSecret());
 
-                        em.merge(utente);
+                        utente = em.merge(utente);
                         em.flush();
 
                         // Transfer all the settings

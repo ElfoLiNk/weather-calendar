@@ -64,7 +64,7 @@ public class HourlyForecast extends AbstractForecast {
 
         JSONArray forecastArr = (jsonObj != null) ? jsonObj.optJSONArray(AbstractForecast.JSON_FORECAST_LIST) : new JSONArray();
         this.forecastList = (forecastArr != null) ? new ArrayList<>(forecastArr.length()) : Collections.emptyList();
-        if (this.forecastList != Collections.<Forecast>emptyList()) {
+        if (forecastArr != null) {
             for (int i = 0; i < forecastArr.length(); i++) {
                 JSONObject forecastObj = forecastArr.optJSONObject(i);
                 if (forecastObj != null) {

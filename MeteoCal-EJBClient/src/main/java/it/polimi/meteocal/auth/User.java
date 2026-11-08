@@ -16,12 +16,16 @@
  */
 package it.polimi.meteocal.auth;
 
+import java.io.Serializable;
+
 /**
  * Class for the user session on MeteoCal
  *
  * @author Matteo Gazzetta, Alessandro Fato
  */
-public class User {
+public class User implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long userID;
 

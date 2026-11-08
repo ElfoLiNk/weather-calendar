@@ -18,6 +18,7 @@ package it.polimi.meteocal.util;
 
 import it.polimi.meteocal.auth.User;
 import jakarta.faces.context.FacesContext;
+import java.io.Serializable;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
@@ -46,6 +47,42 @@ public class AuthUtil {
             User authUser = new User(userID);
             session.setAttribute(User.AUTH_KEY, authUser);
         }
+    }
+
+    /**
+     * Store a value in the current HTTP session
+     *
+     * @param key the attribute name
+     * @param value the attribute value
+     */
+    public static void setSessionAttribute(String key, Serializable value) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (context != null) {
+            HttpServletRequest request = (HttpServletRequest) context
+                    .getExternalContext().getRequest();
+            request.getSession(true).setAttribute(key, value);
+        }
+    }
+
+    /**
+     * Read and remove a value from the current HTTP session
+     *
+     * @param key the attribute name
+     * @return the attribute value, or null if absent
+     */
+    public static Object removeSessionAttribute(String key) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (context != null) {
+            HttpServletRequest request = (HttpServletRequest) context
+                    .getExternalContext().getRequest();
+            HttpSession session = request.getSession(false);
+            if (session != null) {
+                Object value = session.getAttribute(key);
+                session.removeAttribute(key);
+                return value;
+            }
+        }
+        return null;
     }
 
     /**

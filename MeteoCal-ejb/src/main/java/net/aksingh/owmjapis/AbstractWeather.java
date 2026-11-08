@@ -83,7 +83,7 @@ public abstract class AbstractWeather extends AbstractResponse {
 
         JSONArray weatherArray = (jsonObj != null) ? jsonObj.optJSONArray(jsonWeather) : new JSONArray();
         this.weatherList = (weatherArray != null) ? new ArrayList<>(weatherArray.length()) : Collections.emptyList();
-        if (this.weatherList != Collections.<Weather>emptyList()) {
+        if (weatherArray != null) {
             for (int i = 0; i < weatherArray.length(); i++) {
                 JSONObject weatherObj = weatherArray.optJSONObject(i);
                 if (weatherObj != null) {

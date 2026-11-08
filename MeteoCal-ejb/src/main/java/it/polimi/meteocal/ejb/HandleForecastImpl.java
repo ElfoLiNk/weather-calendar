@@ -242,7 +242,7 @@ public class HandleForecastImpl implements HandleForecast {
                 if (event.getStartDate().isAfter(today)) {
                     // EVENT IN THE FUTURE: REMOVE STALE FORECAST AND SCHEDULE REFRESH
                     event.setForecast(null);
-                    em.merge(event);
+                    event = em.merge(event);
                     em.remove(oldForecast);
                     em.flush();
                     LOGGER.log(Level.INFO, () -> "REMOVED: " + oldForecast.toString());
@@ -259,7 +259,7 @@ public class HandleForecastImpl implements HandleForecast {
             } else {
                 event.setForecast(null);
             }
-            em.merge(event);
+            event = em.merge(event);
             em.flush();
         }
 

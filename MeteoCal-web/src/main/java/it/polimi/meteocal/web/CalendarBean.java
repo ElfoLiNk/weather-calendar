@@ -195,6 +195,9 @@ public class CalendarBean implements Serializable {
      */
     public String getOwnerName(String calendarId) {
         UserDTO user = handleUser.getOwner(calendarId);
+        if (user == null) {
+            return "";
+        }
         return user.getFirstName() + " " + user.getLastName();
 
     }
@@ -768,9 +771,13 @@ public class CalendarBean implements Serializable {
      * @param preferedCalendarId the id of the preferred calendar
      */
     public void handlePreferedCalendar(String preferedCalendarId) {
+        UserDTO owner = handleUser.getOwner(preferedCalendarId);
+        if (owner == null) {
+            return;
+        }
         selectedCalendarId = preferedCalendarId;
         selectedResult = new ResultDTO();
-        selectedResult.setId(handleUser.getOwner(selectedCalendarId).getId());
+        selectedResult.setId(owner.getId());
         selectedResult.setType("USER");
         changeUser();
     }

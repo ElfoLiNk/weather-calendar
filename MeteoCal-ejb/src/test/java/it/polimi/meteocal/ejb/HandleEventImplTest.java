@@ -128,6 +128,7 @@ public class HandleEventImplTest {
         closeable = MockitoAnnotations.openMocks(this);
         handleEvent = new HandleEventImpl();
         handleEvent.em = mock(EntityManager.class);
+        org.mockito.Mockito.when(handleEvent.em.merge(org.mockito.ArgumentMatchers.any())).thenAnswer(inv -> inv.getArgument(0));
         handleEvent.handleForecast = mock(HandleForecastImpl.class);
         handleEvent.handleUser = mock(HandleUserImpl.class);
 

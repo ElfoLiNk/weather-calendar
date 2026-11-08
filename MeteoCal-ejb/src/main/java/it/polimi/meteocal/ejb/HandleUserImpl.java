@@ -71,17 +71,17 @@ public class HandleUserImpl implements HandleUser {
         // MOVE/CHANGE EO EVENTS
         for (Event event : oldUser.getCalendar().getOrganizedEvents()) {
             event.setEo(newUser);
-            em.merge(event);
+            event = em.merge(event);
             newUser.getCalendar().getOrganizedEvents().add(event);
         }
         // MOVE/CHANGE EP EVENTS
         for (Event event : oldUser.getCalendar().getParticipatedEvents()) {
             event.getEventParticipants().remove(oldUser);
             event.getEventParticipants().add(newUser);
-            em.merge(event);
+            event = em.merge(event);
             newUser.getCalendar().getParticipatedEvents().add(event);
         }
-        em.merge(newUser);
+        newUser = em.merge(newUser);
         em.flush();
     }
 
@@ -337,7 +337,7 @@ public class HandleUserImpl implements HandleUser {
             user.getSetting().setTimeFormat(loggedUser.getSetting().getTimeFormat());
             user.getSetting().setTimeZone(loggedUser.getSetting().getTimeZone());
 
-            em.merge(user);
+            user = em.merge(user);
             em.flush();
 
         } else {
@@ -367,7 +367,7 @@ public class HandleUserImpl implements HandleUser {
 
         if (user != null) {
             user.getCalendar().setVisibility(visibility);
-            em.merge(user);
+            user = em.merge(user);
             em.flush();
         } else {
             throw new ErrorRequestException("no user", false);
@@ -393,7 +393,7 @@ public class HandleUserImpl implements HandleUser {
                     notif.setEvent(event);
                     user.getListNotifications().add(notif);
                     em.persist(notif);
-                    em.merge(user);
+                    user = em.merge(user);
                     em.flush();
                     return true;
                 }
@@ -441,23 +441,23 @@ public class HandleUserImpl implements HandleUser {
             if (user != null && event != null && !event.getEventParticipants().contains(user)) {
                 event.getInvitedUsers().remove(user);
                 event.getEventParticipants().add(user);
-                em.merge(event);
+                event = em.merge(event);
 
                 // ADD EVENT TO PARTIPATED EVENTS
                 user.getCalendar().getParticipatedEvents().add(event);
                 // REMOVE NOTIFICATION FROM USER
                 user.getListNotifications().remove(eventNotification);
-                em.merge(user);
-                em.merge(eventNotification);
+                user = em.merge(user);
+                eventNotification = em.merge(eventNotification);
                 em.remove(eventNotification);
                 em.flush();
 
-                LOGGER.log(Level.INFO, () -> "ACCEPT PARTICEPITATION TO EVENT: " + eventNotification.getEvent().getId());
-                LOGGER.log(Level.INFO, () -> "CHECK REMOVED INVITED " + event.getInvitedUsers().size());
+                LOGGER.log(Level.INFO, "ACCEPT PARTICEPITATION TO EVENT: {}", eventNotification.getEvent().getId());
+                LOGGER.log(Level.INFO, "CHECK REMOVED INVITED {}", event.getInvitedUsers().size());
             } else {
                 // ALERT MESSAGE
                 eventNotification.setStatus(Status.ACCEPTED);
-                em.merge(eventNotification);
+                eventNotification = em.merge(eventNotification);
                 em.flush();
             }
         }
@@ -472,8 +472,8 @@ public class HandleUserImpl implements HandleUser {
             if (user != null) {
                 // REMOVE NOTIFICATION FROM USER
                 user.getListNotifications().remove(rescheduleNotification);
-                em.merge(user);
-                em.merge(rescheduleNotification);
+                user = em.merge(user);
+                rescheduleNotification = em.merge(rescheduleNotification);
                 em.remove(rescheduleNotification);
                 em.flush();
                 try {
@@ -497,8 +497,8 @@ public class HandleUserImpl implements HandleUser {
                             eventToAdd.getInvitedUsers().remove(user);
                             eventToAdd.getEventParticipants().add(user);
                         }
-                        em.merge(eventToAdd);
-                        em.merge(user);
+                        eventToAdd = em.merge(eventToAdd);
+                        user = em.merge(user);
 
                     }
 
@@ -525,22 +525,22 @@ public class HandleUserImpl implements HandleUser {
             Event event = notification.getEvent();
             if (user != null && event != null && !event.getEventParticipants().contains(user)) {
                 event.getInvitedUsers().remove(user);
-                em.merge(event);
+                event = em.merge(event);
 
                 // REMOVE NOTIFICATION FROM USER
                 user.getListNotifications().remove(notification);
-                em.merge(user);
-                em.merge(notification);
+                user = em.merge(user);
+                notification = em.merge(notification);
                 em.remove(notification);
                 em.flush();
-                LOGGER.log(Level.INFO, () -> "DECLINED PARTICEPITATION TO EVENT: " + notification.getEvent().getId());
+                LOGGER.log(Level.INFO, "DECLINED PARTICEPITATION TO EVENT: {}", notification.getEvent().getId());
             } else if (user != null && event != null) {
                 // USER DECLINE TO ALERT NOTIFICATION
                 event.getEventParticipants().remove(user);
                 user.getCalendar().getParticipatedEvents().remove(event);
                 user.getListNotifications().remove(notification);
-                em.merge(user);
-                em.merge(notification);
+                user = em.merge(user);
+                notification = em.merge(notification);
                 em.remove(notification);
                 em.flush();
             }
@@ -556,8 +556,8 @@ public class HandleUserImpl implements HandleUser {
             if (user != null) {
                 // REMOVE NOTIFICATION FROM USER
                 user.getListNotifications().remove(rescheduleNotification);
-                em.merge(user);
-                em.merge(rescheduleNotification);
+                user = em.merge(user);
+                rescheduleNotification = em.merge(rescheduleNotification);
                 em.remove(rescheduleNotification);
                 em.flush();
                 try {
@@ -572,7 +572,7 @@ public class HandleUserImpl implements HandleUser {
                             if (event != null) {
                                 event.getInvitedUsers().remove(user);
                                 event.getEventParticipants().remove(user);
-                                em.merge(event);
+                                event = em.merge(event);
                             }
                         }
                     }
@@ -595,7 +595,7 @@ public class HandleUserImpl implements HandleUser {
                     user.setListPreferedCalendars(new ArrayList<>());
                 }
                 user.getListPreferedCalendars().add(calendar);
-                em.merge(user);
+                user = em.merge(user);
                 em.flush();
             }
         }
@@ -610,7 +610,7 @@ public class HandleUserImpl implements HandleUser {
                 if (user.getListPreferedCalendars() != null) {
                     user.getListPreferedCalendars().remove(calendar);
                 }
-                em.merge(user);
+                user = em.merge(user);
                 em.flush();
             }
         }

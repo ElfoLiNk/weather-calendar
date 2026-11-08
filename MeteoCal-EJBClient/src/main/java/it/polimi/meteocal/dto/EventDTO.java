@@ -336,7 +336,7 @@ public class EventDTO {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, eoId, title, startDate, endDate, allDay, editable, site, visibility, description, location, eventParticipants, invitedUsers, weather);
+        return Objects.hash(id, eoId, title, allDay, editable, site, visibility, description, location, eventParticipants, invitedUsers, weather);
     }
 
     @Override

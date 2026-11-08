@@ -63,7 +63,7 @@ public class DailyForecast extends AbstractForecast {
 
         JSONArray dataArray = (jsonObj != null) ? jsonObj.optJSONArray(AbstractForecast.JSON_FORECAST_LIST) : new JSONArray();
         this.forecastList = (dataArray != null) ? new ArrayList<>(dataArray.length()) : Collections.emptyList();
-        if (this.forecastList != Collections.<Forecast>emptyList()) {
+        if (dataArray != null) {
             for (int i = 0; i < dataArray.length(); i++) {
                 JSONObject forecastObj = dataArray.optJSONObject(i);
                 if (forecastObj != null) {

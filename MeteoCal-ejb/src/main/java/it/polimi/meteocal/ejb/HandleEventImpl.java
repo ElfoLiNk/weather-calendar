@@ -107,7 +107,7 @@ public class HandleEventImpl implements HandleEvent {
         Calendar calendar = user.getCalendar();
         calendar.addOrganizedEvent(event);
         em.persist(event);
-        em.merge(user);
+        user = em.merge(user);
         em.flush();
         return event.getId();
     }
@@ -271,7 +271,7 @@ public class HandleEventImpl implements HandleEvent {
                 throw new ErrorRequestException("event eo != current user", false);
             }
             // MODIFY EVENT
-            em.merge(modifyEvent(event, insertEvent));
+            event = em.merge(modifyEvent(event, insertEvent));
             return event.getId();
         } else {
             throw new ErrorRequestException("no event", false);
@@ -294,7 +294,7 @@ public class HandleEventImpl implements HandleEvent {
                 // REMOVE EVENT FROM EP LIST
                 for (User ep : eventDb.getEventParticipants()) {
                     ep.getCalendar().getParticipatedEvents().remove(eventDb);
-                    em.merge(ep);
+                    ep = em.merge(ep);
                 }
 
                 // REMOVE NOTIFICATION RELATED TO EVENT
@@ -306,7 +306,7 @@ public class HandleEventImpl implements HandleEvent {
                     em.remove(notif);
                 }
 
-                em.merge(user);
+                user = em.merge(user);
                 // DELETE EVENT
                 em.remove(eventDb);
                 em.flush();
@@ -331,10 +331,10 @@ public class HandleEventImpl implements HandleEvent {
             if (eventDb.getEventParticipants().contains(user)) {
                 // DELETE USER FROM EVENT PARTICIPANTS
                 eventDb.getEventParticipants().remove(user);
-                em.merge(eventDb);
+                eventDb = em.merge(eventDb);
                 // REMOVE EVENT FROM USER CALENDAR
                 user.getCalendar().getParticipatedEvents().remove(eventDb);
-                em.merge(user);
+                user = em.merge(user);
                 em.flush();
             } else {
                 throw new ErrorRequestException("user not in the event participants", false);
@@ -402,8 +402,8 @@ public class HandleEventImpl implements HandleEvent {
                     event.setForecast(null);
                 }
             }
-            LOGGER.log(Level.INFO, () -> "EVENT MOVED: " + event.toString());
-            em.merge(event);
+            LOGGER.log(Level.INFO, "EVENT MOVED: {}", event);
+            event = em.merge(event);
             em.flush();
 
         } else {
@@ -419,7 +419,7 @@ public class HandleEventImpl implements HandleEvent {
             event.setEndDate(event.getEndDate().plus(endDelta));
             LOGGER.log(Level.INFO, event::toString);
 
-            em.merge(event);
+            event = em.merge(event);
             em.flush();
 
         } else {
@@ -454,8 +454,8 @@ public class HandleEventImpl implements HandleEvent {
         }
         event.getInvitedUsers().add(user);
 
-        LOGGER.log(Level.INFO, () -> "User participant " + user.toString() + " added to event: " + event.toString());
-        em.merge(event);
+        LOGGER.log(Level.INFO, "User participant {} added to event: {}", user, event);
+        event = em.merge(event);
         em.flush();
 
     }
@@ -473,7 +473,7 @@ public class HandleEventImpl implements HandleEvent {
                     Calendar.class);
             queryCalendar.setParameter(PARAM_EVENT, event);
             // UPDATE FORECAST
-            LOGGER.log(Level.INFO, () -> "CHECK EVENT WEATHER CONDITION DATE: " + event.getStartDate());
+            LOGGER.log(Level.INFO, "CHECK EVENT WEATHER CONDITION DATE: {}", event.getStartDate());
             ForecastDTO forecast = handleForecast.getForecast(event.getLocation(), event.getStartDate());
             if (forecast != null && !queryCalendar.getResultList().isEmpty()) {
                 // RECOMENDER SYSTEM
@@ -532,11 +532,11 @@ public class HandleEventImpl implements HandleEvent {
                     for (RescheduleNotification rnotif : q.getResultList()) {
                         User user = rnotif.getUser();
                         user.getListNotifications().remove(rnotif);
-                        em.merge(user);
+                        user = em.merge(user);
                         em.remove(rnotif);
                     }
 
-                    em.merge(event);
+                    event = em.merge(event);
                     em.flush();
                 }
             }

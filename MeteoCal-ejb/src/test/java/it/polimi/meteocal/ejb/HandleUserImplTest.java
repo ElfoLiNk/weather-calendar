@@ -115,6 +115,7 @@ public class HandleUserImplTest {
     public void setUp() {
         handleUser = new HandleUserImpl();
         handleUser.em = mock(EntityManager.class);
+        org.mockito.Mockito.when(handleUser.em.merge(org.mockito.ArgumentMatchers.any())).thenAnswer(inv -> inv.getArgument(0));
 
         newUser = new User();
         oldUser = new User();

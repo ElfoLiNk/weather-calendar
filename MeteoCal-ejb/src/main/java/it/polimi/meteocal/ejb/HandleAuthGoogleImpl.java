@@ -50,7 +50,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.TimeZone;
-import jakarta.annotation.PostConstruct;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -72,19 +71,12 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
     private static final String REFRESH_TOKEN = "refresh_token";
     private static final String GOOGLE_ID = "googleId";
     private static final String GOOGLE_TOKEN_UPDATED = "GoogleToken updated";
-    private String redirectUrl;
+    private static final String REDIRECT_URL = System.getenv().getOrDefault("APP_BASE_URL", "http://www.meteocal.tk") + "/MeteoCal-web/loginGoogle.xhtml";
+    private static final List<String> SCOPES = Arrays.asList(
+            "https://www.googleapis.com/auth/plus.login",
+            "https://www.googleapis.com/auth/userinfo.email");
 
     private static final Logger LOGGER = LogManager.getLogger(HandleAuthGoogleImpl.class.getName());
-
-    @PostConstruct
-    public void init() {
-        redirectUrl = System.getenv().getOrDefault("APP_BASE_URL", "http://www.meteocal.tk") + "/MeteoCal-web/loginGoogle.xhtml";
-    }
-    
-    /**
-     * Global instance of the HTTP transport.
-     */
-    private HttpTransport httpTransport;
 
     /**
      * Global instance of the JSON factory.
@@ -183,7 +175,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
             if (tokenGoogle.contains(REFRESH_TOKEN)) {
                 LOGGER.log(Level.INFO, GOOGLE_TOKEN_UPDATED);
                 user.setGoogleToken(tokenGoogle);
-                em.merge(user);
+                user = em.merge(user);
                 em.flush();
             }
         } catch (IOException | JsonSyntaxException e) {
@@ -194,7 +186,12 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
     @PersistenceContext
     EntityManager em;
 
-    private GoogleAuthorizationCodeFlow flow;
+    private static GoogleAuthorizationCodeFlow newFlow() {
+        return new GoogleAuthorizationCodeFlow.Builder(new NetHttpTransport(),
+                new JacksonFactory(), CLIENT_ID, CLIENT_SECRET, SCOPES)
+                .setAccessType("offline")
+                .build();
+    }
 
     /**
      * Default constructor.
@@ -206,11 +203,11 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
     @Override
     public boolean doLoginGoogle(String code) {
         try {
-            httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-            GoogleTokenResponse tokenResponse = flow
+            HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+            GoogleTokenResponse tokenResponse = newFlow()
                     .newTokenRequest(code)
                     .setRedirectUri(
-                            redirectUrl)
+                            REDIRECT_URL)
                     .execute();
             GoogleCredential credential = new GoogleCredential.Builder()
                     .setTransport(new NetHttpTransport())
@@ -271,7 +268,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
                     if (tokenGoogle.contains(REFRESH_TOKEN)) {
                         LOGGER.log(Level.INFO, GOOGLE_TOKEN_UPDATED);
                         user.setGoogleToken(tokenGoogle);
-                        em.merge(user);
+                        user = em.merge(user);
                         em.flush();
                     }
 
@@ -281,7 +278,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
                     user = q2.getResultList().get(0);
                     //TODO merge informazioni da google mancanti
 
-                    em.merge(user);
+                    user = em.merge(user);
                     em.flush();
                 }
 
@@ -299,7 +296,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
                     // The user account isn't already present in the db so set the new GooglePlus data
                     utente.setGoogleId(mePerson.getId());
                     utente.setGoogleToken(tokenGoogle);
-                    em.merge(utente);
+                    utente = em.merge(utente);
                     em.flush();
                 } else {
 
@@ -315,7 +312,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
                         utente.setGoogleId(mePerson.getId());
                         utente.setGoogleToken(tokenGoogle);
 
-                        em.merge(utente);
+                        utente = em.merge(utente);
                         em.flush();
 
                         // Transfer all the settings
@@ -373,15 +370,6 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
 
     @Override
     public String getUrlLoginGoogle() {
-        final List<String> scope = Arrays.asList(
-                "https://www.googleapis.com/auth/plus.login",
-                "https://www.googleapis.com/auth/userinfo.email");
-
-        flow = new GoogleAuthorizationCodeFlow.Builder(new NetHttpTransport(),
-                new JacksonFactory(), CLIENT_ID, CLIENT_SECRET, scope)
-                .setAccessType("offline")
-                .build();
-
         // This command-line server-side flow example requires the user to open
         // the
         // authentication URL in their browser to complete the process. In most
@@ -391,8 +379,8 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
         // You can also look at the client-side and one-time-code flows for
         // other
         // options at https://developers.google.com/+/web/signin/
-        return flow.newAuthorizationUrl()
-                .setRedirectUri(redirectUrl).build();
+        return newFlow().newAuthorizationUrl()
+                .setRedirectUri(REDIRECT_URL).build();
 
     }
 
@@ -405,8 +393,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
         public void onTokenResponse(Credential credential,
                 TokenResponse tokenResponse) {
             try {
-                httpTransport = new NetHttpTransport();
-                Plus plus = new Plus.Builder(httpTransport,
+                Plus plus = new Plus.Builder(new NetHttpTransport(),
                         JSON_FACTORY, credential)
                         .setApplicationName(APPLICATION_NAME)
                         .build();
@@ -423,7 +410,7 @@ public class HandleAuthGoogleImpl implements HandleAuthGoogle {
 
                 LOGGER.log(Level.INFO, GOOGLE_TOKEN_UPDATED);
                 utente.setGoogleToken(tokenGoogle);
-                em.merge(utente);
+                utente = em.merge(utente);
                 em.flush();
 
             } catch (IOException e) {

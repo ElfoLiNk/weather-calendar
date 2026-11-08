@@ -32,7 +32,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Objects;
 import java.util.TimeZone;
-import jakarta.annotation.PostConstruct;
 import jakarta.ejb.Stateless;
 import jakarta.faces.context.FacesContext;
 import jakarta.persistence.EntityManager;
@@ -56,14 +55,10 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
 
     private static final String APP_ID = System.getenv("FACEBOOK_APP_ID");
     private static final String APP_SECRET = System.getenv("FACEBOOK_APP_SECRET");
-    private String urlBase;
+    private static final String URL_BASE = System.getenv().getOrDefault("APP_BASE_URL", "http://www.meteocal.tk");
 
     private static final Logger LOGGER = LogManager.getLogger(HandleAuthFacebookImpl.class.getName());
 
-    @PostConstruct
-    public void init() {
-        urlBase = System.getenv().getOrDefault("APP_BASE_URL", "http://www.meteocal.tk");
-    }
 
     /**
      * Method that return the FacebookClient that allows the access to the
@@ -95,7 +90,7 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
     public boolean doLoginFacebook(String faceCode) {
         if (faceCode != null && !"".equals(faceCode)) {
             boolean success = false;
-            String redirectUrl = urlBase
+            String redirectUrl = URL_BASE
                     + "/MeteoCal-web/loginFacebook.xhtml";
             String newUrl = "https://graph.facebook.com/oauth/access_token?client_id="
                     + APP_ID
@@ -144,7 +139,7 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
                         } else {
                             LOGGER.log(Level.INFO, "Facebook token updated");
                             utente.setFacebookToken(accessToken);
-                            em.merge(utente);
+                            utente = em.merge(utente);
                             em.flush();
                         }
 
@@ -153,7 +148,7 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
                         utente = q2.getResultList().get(0);
                         //TODO merge informazioni da facebook mancanti
 
-                        em.merge(utente);
+                        utente = em.merge(utente);
                         em.flush();
 
                     }
@@ -172,7 +167,7 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
                         // The user account isn't already present in the db so set the new FB data
                         utente.setFacebookId(userFB.getId());
                         utente.setFacebookToken(accessToken);
-                        em.merge(utente);
+                        utente = em.merge(utente);
                         em.flush();
                     } else {
 
@@ -188,7 +183,7 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
                             utente.setFacebookId(userFB.getId());
                             utente.setFacebookToken(accessToken);
 
-                            em.merge(utente);
+                            utente = em.merge(utente);
                             em.flush();
 
                             // Transfer all the data that can block the old user remove
@@ -218,7 +213,7 @@ public class HandleAuthFacebookImpl implements HandleAuthFacebook {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
                 .getExternalContext().getSession(false);
         String sessionId = session.getId();
-        String redirectUrl = urlBase + "/MeteoCal-web/loginFacebook.xhtml";
+        String redirectUrl = URL_BASE + "/MeteoCal-web/loginFacebook.xhtml";
         return "https://www.facebook.com/dialog/oauth?client_id="
                 + APP_ID + "&redirect_uri=" + redirectUrl + "&scope="
                 + "public_profile,user_friends,email"/*scopeUser + scopeFriend + scopeExtended */ + "&state="
