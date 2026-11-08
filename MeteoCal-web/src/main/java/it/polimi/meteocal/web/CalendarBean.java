@@ -252,7 +252,7 @@ public class CalendarBean implements Serializable {
             // UPDATE EVENT
             try {
 
-                EventDTO evento = new EventDTO(event.getId(), event.getData().getEoId(), event.getTitle(), event.getStartDate(), event.getEndDate(), event.isEditable(), Site.valueOf(event.getData().getSite()), Visibility.valueOf(event.getData().getVisibility()), event.getDescription(), event.getData().getLocation(), event.getData().getEventParticipants(), event.getData().getInvitedUsers(), event.getData().getWeather());
+                EventDTO evento = new EventDTO(event.getId(), event.getData().getEoId(), event.getTitle(), event.getStartDate(), event.getEndDate(), Boolean.TRUE.equals(event.isDraggable()), Site.valueOf(event.getData().getSite()), Visibility.valueOf(event.getData().getVisibility()), event.getDescription(), event.getData().getLocation(), event.getData().getEventParticipants(), event.getData().getInvitedUsers(), event.getData().getWeather());
                 idEventDb = handleEvent.updateEvent(AuthUtil.getUserID(), evento);
 
             } catch (ErrorRequestException e) {
@@ -461,7 +461,7 @@ public class CalendarBean implements Serializable {
         } else {
             // REMOVE EVENT
             try {
-                EventDTO evento = new EventDTO(event.getId(), event.getData().getEoId(), event.getTitle(), event.getStartDate(), event.getEndDate(), event.isEditable(), Site.valueOf(event.getData().getSite()), Visibility.valueOf(event.getData().getVisibility()), event.getDescription(), event.getData().getLocation(), event.getData().getEventParticipants(), event.getData().getInvitedUsers(), event.getData().getWeather());
+                EventDTO evento = new EventDTO(event.getId(), event.getData().getEoId(), event.getTitle(), event.getStartDate(), event.getEndDate(), Boolean.TRUE.equals(event.isDraggable()), Site.valueOf(event.getData().getSite()), Visibility.valueOf(event.getData().getVisibility()), event.getDescription(), event.getData().getLocation(), event.getData().getEventParticipants(), event.getData().getInvitedUsers(), event.getData().getWeather());
                 handleEvent.removeEvent(AuthUtil.getUserID(), evento);
             } catch (ErrorRequestException e) {
                 LOGGER.log(Level.ERROR, e);
@@ -497,7 +497,7 @@ public class CalendarBean implements Serializable {
         } else {
             // CANCEL EVENT
             try {
-                EventDTO evento = new EventDTO(event.getId(), event.getData().getEoId(), event.getTitle(), event.getStartDate(), event.getEndDate(), event.isEditable(), Site.valueOf(event.getData().getSite()), Visibility.valueOf(event.getData().getVisibility()), event.getDescription(), event.getData().getLocation(), event.getData().getEventParticipants(), event.getData().getInvitedUsers(), event.getData().getWeather());
+                EventDTO evento = new EventDTO(event.getId(), event.getData().getEoId(), event.getTitle(), event.getStartDate(), event.getEndDate(), Boolean.TRUE.equals(event.isDraggable()), Site.valueOf(event.getData().getSite()), Visibility.valueOf(event.getData().getVisibility()), event.getDescription(), event.getData().getLocation(), event.getData().getEventParticipants(), event.getData().getInvitedUsers(), event.getData().getWeather());
                 handleEvent.cancelEvent(AuthUtil.getUserID(), evento);
             } catch (ErrorRequestException e) {
                 LOGGER.log(Level.ERROR, e);
